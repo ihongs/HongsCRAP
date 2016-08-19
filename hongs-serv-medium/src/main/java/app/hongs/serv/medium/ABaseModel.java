@@ -1,9 +1,9 @@
 package app.hongs.serv.medium;
 
 import app.hongs.HongsException;
-import app.hongs.db.FetchCase;
 import app.hongs.db.Model;
 import app.hongs.db.Table;
+import app.hongs.db.util.FetchCase;
 import java.util.Map;
 
 /**

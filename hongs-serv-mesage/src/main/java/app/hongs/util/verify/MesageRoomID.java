@@ -38,7 +38,7 @@ public class MesageRoomID extends Rule {
 
         ro = db.fetchCase()
             .from  (db.getTable("room").tableName)
-            .where ("id = ? AND state > 0" , rid )
+            .filter("id = ? AND state > 0" , rid )
             .select("id")
             .one   ();
         if (ro == null || ro.isEmpty()) {
@@ -47,7 +47,7 @@ public class MesageRoomID extends Rule {
 
         ro = db.fetchCase()
             .from  (db.getTable("room_mate").tableName)
-            .where ("rid = ? AND uid = ? AND state > 0", rid, uid)
+            .filter("rid = ? AND uid = ? AND state > 0", rid, uid)
             .select("rid")
             .one   ();
         if (ro == null || ro.isEmpty()) {

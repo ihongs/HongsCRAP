@@ -1,4 +1,4 @@
-package app.hongs.serv.handle;
+package app.hongs.serv.mesage.handle;
 
 import app.hongs.Cnst;
 import app.hongs.HongsException;
@@ -87,17 +87,17 @@ public class MesageAction {
         Set    uid = Synt.asTerms(rd.get("uid"));
         String mid = (String) helper.getSessibute(Cnst.UID_SES);
 
-        FetchCase fc = new FetchCase(   );
+        FetchCase fc = new FetchCase();
         // 禁用关联
-        fc.setOption("ASSOC_TYPES", new HashSet( ) );
-        fc.setOption("ASSOC_JOINS", new HashSet( ) );
+        fc.setOption("ASSOC_TYPES", new HashSet());
+        fc.setOption("ASSOC_JOINS", new HashSet());
         // 自己在内
-        fc.join (db.getTable("room_mate").tableName)
-          .by   (FetchCase.LEFT )
-          .on   (".rid = :id"   )
-          .where(".uid = ?", mid);
+        fc.join  (db.getTable("room_mate").tableName)
+          .by    (FetchCase.LEFT)
+          .on    (".rid = :id"  )
+          .filter(".uid = ?",mid);
         // 全部字段
-        rd.remove ( Cnst.RB_KEY );
+        rd.remove(Cnst.RB_KEY);
 
         Model   md = db.getModel ("room");
         Map     ro = md.retrieve (rd, fc);

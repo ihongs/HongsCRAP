@@ -53,7 +53,7 @@ public class ArticleFilter extends ActionDriver implements Filter {
         try {
             Table t = DB.getInstance("medium").getTable("browses");
             Map row = t.fetchCase()
-                .where(whr, uid)
+                .filter(whr, uid)
                 .select("id")
                 .one();
             if (row == null || row.isEmpty()) {
@@ -111,7 +111,7 @@ public class ArticleFilter extends ActionDriver implements Filter {
                 Map row = DB.getInstance("medium").getTable("article")
                         .fetchCase()
                         .select( "temp" )
-                        .where ("id = ?", aid)
+                        .filter("id = ?", aid)
                         .one();
                 if (row != null && !row.isEmpty( )) {
                     tpl  = (String) row.get("temp");

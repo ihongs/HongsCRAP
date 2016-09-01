@@ -43,9 +43,9 @@ public class ALinkModel extends Model {
     protected void filter(FetchCase fc, Map rd) throws HongsException {
         super.filter(fc, rd);
         if (link == null) {
-            fc.where(".`link` IS NULL"   );
+            fc.filter(".`link` IS NULL");
         } else {
-            fc.where(".`link` = ? ", link);
+            fc.filter(".`link`=?", link);
         }
     }
 

@@ -39,9 +39,9 @@ public class ABaseModel extends Model {
     protected void filter(FetchCase fc, Map rd) throws HongsException {
         super.filter(fc, rd);
         if (type == null) {
-            fc.where(".`type` IS NULL"   );
+            fc.filter(".`type` IS NULL");
         } else {
-            fc.where(".`type` = ? ", type);
+            fc.filter(".`type`=?", type);
         }
     }
 

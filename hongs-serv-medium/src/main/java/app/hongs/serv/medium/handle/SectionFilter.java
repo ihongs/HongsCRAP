@@ -68,7 +68,7 @@ public class SectionFilter extends ActionDriver implements Filter {
                 Map row = DB.getInstance("medium").getTable("section")
                         .fetchCase()
                         .select( "temp" )
-                        .where ("id = ?", sid)
+                        .filter("id = ?", sid)
                         .one();
                 if (row != null && !row.isEmpty( )) {
                     tpl  = (String) row.get("temp");

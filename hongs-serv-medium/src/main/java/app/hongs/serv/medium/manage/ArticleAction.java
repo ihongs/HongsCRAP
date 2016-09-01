@@ -38,14 +38,14 @@ public class ArticleAction extends LuceneAction {
         FetchCase c = new FetchCase();
         if (req.containsKey("sect_id")) {
             Object sid = req.get("sect_id");
-            c.join(art.db.getTable("segment").tableName)
-             .on  ("link_id = :id AND link = 'article'")
-             .by  (FetchCase.INNER)
-             .where("sect_id IN (?)", sid );
+            c.join  (art.db.getTable("segment").tableName)
+             .on    ("link_id = :id AND link = 'article'")
+             .by    (FetchCase.INNER)
+             .filter("sect_id IN (?)", sid);
         }
         c.setOption("INCLUDE_REMOVED", Synt.declare(req.get("include-removed"), false));
         
-        Map     rsp = art.retrieve(req, c);
+        Map     rsp = art.retrieve(req, c );
                 rsp = getRspMap(helper, art, "retrieve", rsp);
         helper.reply(rsp);
     }

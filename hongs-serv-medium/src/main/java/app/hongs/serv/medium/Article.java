@@ -202,7 +202,7 @@ public class Article extends LuceneRecord {
         }
 
         // 获取旧的数据
-        Map dd = model.table.fetchCase().where("`id` = ?", id).one();
+        Map dd = model.table.fetchCase().filter("`id` = ?", id).one();
         boolean cr = dd.isEmpty();
 
         // 合并新旧数据
@@ -268,7 +268,7 @@ public class Article extends LuceneRecord {
         Set<String> ss = new HashSet();
         List<Map>   ls = model.db.fetchCase()
             .from   (    model.db.getTable( "segment" ).tableName )
-            .where  ("`link_id` = ? AND `link` = ?", id, "article")
+            .filter ("`link_id` = ? AND `link` = ?", id, "article")
             .select ("`sect_id`"   )
             .orderBy("`seria` DESC")
             .all();

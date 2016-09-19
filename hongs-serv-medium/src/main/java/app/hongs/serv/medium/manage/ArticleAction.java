@@ -5,6 +5,7 @@ import app.hongs.action.ActionHelper;
 import app.hongs.action.anno.Action;
 import app.hongs.action.anno.Select;
 import app.hongs.db.DB;
+import app.hongs.db.Table;
 import app.hongs.db.util.FetchCase;
 import app.hongs.dh.lucene.LuceneAction;
 import app.hongs.dh.lucene.LuceneRecord;
@@ -32,21 +33,21 @@ public class ArticleAction extends LuceneAction {
         ABaseModel art = (ABaseModel) DB.getInstance("medium").getModel("article");
                    art.setType("default");
 
-        Map     req = helper.getRequestData();
-                req = getReqMap(helper, art, "retrieve", req);
+        Map req = helper.getRequestData();
+            req = getReqMap(helper, art, "retrieve", req);
 
-        FetchCase c = new FetchCase();
+        FetchCase c = new FetchCase(FetchCase.STRICT);
         if (req.containsKey("sect_id")) {
-            Object sid = req.get("sect_id");
-            c.join  (art.db.getTable("segment").tableName)
-             .on    ("link_id = :id AND link = 'article'")
-             .by    (FetchCase.INNER)
-             .filter("sect_id IN (?)", sid);
+            Object sid = req.get( "sect_id" );
+            Table  seg = art.db.getTable( "segment" );
+            c.join  (seg.tableName, seg.name)
+             .on    (seg.name+".link_id = "+art.table.name+".id AND "+seg.name+".link = 'article'")
+             .filter(seg.name+".sect_id IN (?)", sid);
         }
         c.setOption("INCLUDE_REMOVED", Synt.declare(req.get("include-removed"), false));
         
-        Map     rsp = art.retrieve(req, c );
-                rsp = getRspMap(helper, art, "retrieve", rsp);
+        Map rsp = art.retrieve(req, c);
+            rsp = getRspMap(helper, art, "retrieve", rsp);
         helper.reply(rsp);
     }
 

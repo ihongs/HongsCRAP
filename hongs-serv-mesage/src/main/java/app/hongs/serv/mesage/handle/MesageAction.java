@@ -10,6 +10,7 @@ import app.hongs.action.anno.Select;
 import app.hongs.db.DB;
 import app.hongs.db.util.FetchCase;
 import app.hongs.db.Model;
+import app.hongs.db.Table;
 import app.hongs.serv.mesage.MesageHelper;
 import app.hongs.util.Data;
 import app.hongs.util.Synt;
@@ -87,15 +88,15 @@ public class MesageAction {
         Set    uid = Synt.asTerms(rd.get("uid"));
         String mid = (String) helper.getSessibute(Cnst.UID_SES);
 
-        FetchCase fc = new FetchCase();
+        FetchCase fc = new FetchCase(FetchCase.STRICT);
         // 禁用关联
-        fc.setOption("ASSOC_TYPES", new HashSet());
-        fc.setOption("ASSOC_JOINS", new HashSet());
+        fc.setOption("ASSOCS", new HashSet());
         // 自己在内
-        fc.join  (db.getTable("room_mate").tableName)
+        Table rm = db.getTable("room_mate");
+        fc.join  (rm.tableName, rm.name)
           .by    (FetchCase.LEFT)
-          .on    (".rid = :id"  )
-          .filter(".uid = ?",mid);
+          .on    (rm.name+".rid = room.id")
+          .filter(rm.name+".uid = ?", mid );
         // 全部字段
         rd.remove(Cnst.RB_KEY);
 

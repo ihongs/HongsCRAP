@@ -3,11 +3,9 @@ package app.hongs.serv.mesage;
 import app.hongs.CoreLogger;
 import app.hongs.HongsException;
 import app.hongs.db.DB;
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
-import javax.websocket.Session;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -58,7 +56,7 @@ public class MesageKeepWorker implements Runnable {
                             msg = msg.substring(1 + pos);
                             ids = idc.split(",");
                         
-                            db.connect();
+                            db.open();
                             ps.setString(1, ids[0]);
                             ps.setString(2, ids[1]);
                             ps.setString(3, ids[2]);

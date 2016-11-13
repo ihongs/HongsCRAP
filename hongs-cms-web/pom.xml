@@ -58,7 +58,7 @@
         </dependency>
         //-->
         <dependency>
-            <groupId>com.baidu.ueditor</groupId>
+            <groupId>app.hongs</groupId>
             <artifactId>hongs-ueditor</artifactId>
             <version>1.1.2</version>
         </dependency>

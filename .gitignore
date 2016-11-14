@@ -10,7 +10,7 @@
 
 .project
 nbproject
-nbactions*
+nbactions.xml
 nb-configuration.xml
 
-hongs-cms-web.iml
+*.iml

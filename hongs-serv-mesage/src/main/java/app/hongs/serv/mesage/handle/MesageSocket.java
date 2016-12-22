@@ -6,8 +6,9 @@ import app.hongs.HongsException;
 import app.hongs.action.ActionHelper;
 import app.hongs.action.SocketHelper;
 import app.hongs.action.VerifyHelper;
-import app.hongs.serv.mesage.MesageChatWorker;
+import app.hongs.serv.mesage.Mesage;
 import app.hongs.serv.mesage.MesageHelper;
+import app.hongs.serv.mesage.MesageWorker;
 import app.hongs.util.Data;
 import app.hongs.util.Synt;
 import app.hongs.util.verify.Wrongs;
@@ -22,8 +23,6 @@ import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 
 /**
  * 消息连通器
@@ -38,17 +37,12 @@ public class MesageSocket {
     public void onOpen(Session sess) {
         SocketHelper hepr = SocketHelper.getInstance(sess);
         try {
-            Map           prop = sess.getUserProperties( );
-            Map           data;
-            VerifyHelper  veri;
-            Producer      prod;
-            String        pipe;
+            Map           prop = sess.getUserProperties();
+            Map           data = new HashMap();
+            VerifyHelper  veri = new VerifyHelper();
+            MesageWorker  queu = MesageHelper.getWorker();
 
-            pipe = MesageHelper.getProperty("core.mesage.chat.topic");
-            prod = MesageHelper.newProducer();
-            veri = new VerifyHelper();
-            data = new HashMap();
-            veri.isPrompt(true );
+            veri.isPrompt(true);
 
             /**
              * 这里相较 Action 的校验不同
@@ -73,9 +67,8 @@ public class MesageSocket {
 
             // 注入环境备后用
             prop.put("data", data);
-            prop.put("pipe", pipe);
-            prop.put(Producer.class.getName(), prod);
             prop.put(VerifyHelper.class.getName(), veri);
+            prop.put(MesageWorker.class.getName(), queu);
 
             setSession(sess, true); // 登记会话
         }
@@ -116,10 +109,9 @@ public class MesageSocket {
         SocketHelper hepr = SocketHelper.getInstance(sess);
         try {
             Map          prop = sess.getUserProperties();
-            Map          data = (Map   ) prop.get("data");
-            String       pipe = (String) prop.get("pipe");
-            Producer     prod = (Producer) prop.get(Producer.class.getName());
+            Map          data = (Map) prop.get("data");
             VerifyHelper veri = (VerifyHelper) prop.get(VerifyHelper.class.getName());
+            MesageWorker queu = (MesageWorker) prop.get(MesageWorker.class.getName());
 
             // 解析数据
             Map dat;
@@ -130,26 +122,31 @@ public class MesageSocket {
             }
 
             // 验证数据
-            String uid, id, tm;
+            String uid;
+            String id;
+            String kd;
+            long   st;
             try {
                 dat.putAll(data);
                 dat = veri.verify( dat );
-                 id = Core.getUniqueId();
-                dat.put("id",id);
-                 tm = Synt.declare(dat.get("time"), "");
+                id  = Core.getUniqueId();
                 uid = Synt.declare(dat.get("uid" ), "");
-            } catch (Wrongs wr ) {
+                kd  = Synt.declare(dat.get("kind"), "");
+                st  = Synt.declare(dat.get("time"), Long.class);
+                dat.put("id", id);
+            } catch (Wrongs wr) {
                 hepr.reply( wr.toReply(( byte ) 9 ));
                 return;
             } catch (HongsException ex ) {
                 hepr.fault(ex.getLocalizedMessage());
                 return;
             }
-            msg = rid+","+uid+","+id+","+tm+"|"+Data.toString(dat);
+            msg = Data.toString(dat);
 
-            prod.send(new ProducerRecord< >(pipe , rid , msg));
+            queu.add(new Mesage(id, uid, rid, kd, msg, st));
+            
             if (Core.DEBUG > 0) {
-                CoreLogger.trace("Send to {}: {}", pipe, msg );
+                CoreLogger.trace("From {} to {}: {}", uid, rid, msg);
             }
         }
         catch (Exception|Error er) {
@@ -162,106 +159,61 @@ public class MesageSocket {
 
     //** 静态工具方法 **/
 
-    public  static final Set<Session > conns = new HashSet();
-    public  static final Set<Runnable> works = new HashSet();
-    public  static final Map<String, Set<Session>> roomConns = new HashMap(); // room_id:[Session]
-    public  static final Map<String, Set<Session>> userConns = new HashMap(); // user_id:[Session]
-    public  static final Map<String, Set<String >> roomUsers = new HashMap(); // room_id:[user_id]
+    public static final Set<Session> CONNS = new HashSet();
+    public static final Map<String, Set<Session>> USER_CONNS = new HashMap(); // user_id:[Session]
+    public static final Map<String, Set<Session>> ROOM_CONNS = new HashMap(); // room_id:[Session]
+    public static final Map<String, Set<String >> ROOM_USERS = new HashMap(); // room_id:[user_id]
 
     synchronized private static void setSession(Session sess, boolean add) {
         SocketHelper hlpr = (SocketHelper) sess.getUserProperties().get(SocketHelper.class.getName());
         String rid = hlpr.getParameter("rid");
         String uid = hlpr.getParameter("uid");
-        Set roomConn = roomConns.get(rid);
-        Set userConn = userConns.get(uid);
-        Set roomUser = roomUsers.get(rid);
+        Set roomConn = ROOM_CONNS.get(rid);
+        Set userConn = USER_CONNS.get(uid);
+        Set roomUser = ROOM_USERS.get(rid);
 
         if (add) {
-            conns.add(sess);
+            CONNS.add(sess);
 
             if (roomConn == null) {
                 roomConn  = new HashSet();
-                roomConns.put(rid, roomConn);
+                ROOM_CONNS.put(rid, roomConn);
             }
             roomConn.add(sess);
 
             if (userConn == null) {
                 userConn  = new HashSet();
-                roomConns.put(rid, userConn);
+                ROOM_CONNS.put(rid, userConn);
             }
             userConn.add(sess);
 
             if (roomUser == null) {
                 roomUser  = new HashSet();
-                roomUsers.put(rid, roomUser);
+                ROOM_USERS.put(rid, roomUser);
             }
             roomUser.add(uid );
         } else {
-            conns.remove(sess);
+            CONNS.remove(sess);
 
             if (roomConn != null) {
                 roomConn.remove(sess);
                 if (roomConn.isEmpty()) {
-                    roomConns.remove(rid);
+                    ROOM_CONNS.remove(rid);
                 }
             }
 
             if (userConn != null) {
                 userConn.remove(sess);
                 if (userConn.isEmpty()) {
-                    userConns.remove(uid);
+                    USER_CONNS.remove(uid);
                 }
             }
 
             if (roomUser != null) {
                 roomUser.remove(uid );
                 if (roomUser.isEmpty()) {
-                    roomUsers.remove(rid);
+                    ROOM_USERS.remove(rid);
                 }
-            }
-        }
-
-        /**
-         * 首次调用时启动工作线程
-         */
-        if (works.isEmpty()) {
-            String topic;
-            String group;
-            int    count;
-
-            // 聊天
-            topic = MesageHelper.getProperty("core.mesage.chat.topic");
-            group = MesageHelper.getProperty("core.mesage.chat.group");
-            count = Synt.asserts(MesageHelper.getProperty("core.mesage.chat.works"), 0);
-            for (int i = 0; i < count; i ++) {
-              works.add(new MesageChatWorker(group, topic, roomConns));
-            }
-
-            // 分发
-            group = MesageHelper.getProperty("core.mesage.dist.group");
-            count = Synt.asserts(MesageHelper.getProperty("core.mesage.dist.works"), 0);
-            for (int i = 0; i < count; i ++) {
-              works.add(new MesageChatWorker(group, topic, roomConns));
-            }
-
-            // 记录
-            group = MesageHelper.getProperty("core.mesage.keep.group");
-            count = Synt.asserts(MesageHelper.getProperty("core.mesage.keep.works"), 0);
-            for (int i = 0; i < count; i ++) {
-              works.add(new MesageChatWorker(group, topic, roomConns));
-            }
-
-            // 通知
-            topic = MesageHelper.getProperty("core.mesage.note.topic");
-            group = MesageHelper.getProperty("core.mesage.note.group");
-            count = Synt.asserts(MesageHelper.getProperty("core.mesage.note.works"), 0);
-            for (int i = 0; i < count; i ++) {
-              works.add(new MesageChatWorker(group, topic, roomConns));
-            }
-
-            // 把这些工作线程都启动起来
-            for ( Runnable run : works) {
-                new Thread(run).start();
             }
         }
     }

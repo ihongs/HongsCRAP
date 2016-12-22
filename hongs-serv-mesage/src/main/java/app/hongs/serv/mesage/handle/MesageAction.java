@@ -1,6 +1,7 @@
 package app.hongs.serv.mesage.handle;
 
 import app.hongs.Cnst;
+import app.hongs.Core;
 import app.hongs.HongsException;
 import app.hongs.action.ActionHelper;
 import app.hongs.action.VerifyHelper;
@@ -11,7 +12,9 @@ import app.hongs.db.DB;
 import app.hongs.db.util.FetchCase;
 import app.hongs.db.Model;
 import app.hongs.db.Table;
+import app.hongs.serv.mesage.Mesage;
 import app.hongs.serv.mesage.MesageHelper;
+import app.hongs.serv.mesage.MesageWorker;
 import app.hongs.util.Data;
 import app.hongs.util.Synt;
 import app.hongs.util.verify.Wrongs;
@@ -22,8 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 
 /**
  * 消息处理器
@@ -40,7 +41,13 @@ public class MesageAction {
         Model  mod = db.getModel   ( "note" );
         Map    req = helper.getRequestData( );
 
-        // time 是 stime 的别名
+        // 别名映射
+        if (req.containsKey("uid")) {
+            req.put("user_id", req.get("uid"));
+        }
+        if (req.containsKey("rid")) {
+            req.put("room_id", req.get("rid"));
+        }
         if (req.containsKey("time")) {
             req.put("stime", req.get("time"));
         }
@@ -95,8 +102,8 @@ public class MesageAction {
         Table rm = db.getTable("room_mate");
         fc.join  (rm.tableName, rm.name)
           .by    (FetchCase.LEFT)
-          .on    (rm.name+".rid = room.id")
-          .filter(rm.name+".uid = ?", mid );
+          .on    (rm.name+".room_id = room.id")
+          .filter(rm.name+".user_id = ?", mid );
         // 全部字段
         rd.remove(Cnst.RB_KEY);
 
@@ -116,6 +123,7 @@ public class MesageAction {
         DB      db = DB.getInstance( "mesage" );
         String uid = helper.getParameter("id" );
         String mid = (String) helper.getSessibute(Cnst.UID_SES);
+        String rid ;
         Map     ro ;
         Map     rx ;
 
@@ -140,26 +148,26 @@ public class MesageAction {
             Set<Map> rs = new HashSet();
 
             ro = new HashMap();
-            ro.put("uid", mid);
+            ro.put("user_id", mid);
             rs.add(ro);
 
             ro = new HashMap();
-            ro.put("uid", uid);
+            ro.put("user_id", uid);
             rs.add(ro);
 
             ro = new HashMap();
             ro.put("users",rs);
             ro.put("state", 1);
 
-            uid = db.getModel("room").add(ro);
+            rid = db.getModel("room").add(ro);
         } else {
-            uid = ( String )  ro.get( "rid" );
+            rid = ( String )  ro.get( "rid" );
         }
 
         // 查询会话信息
         ro = db.fetchCase()
             .from  (db.getTable("room").tableName)
-            .filter("id = ? AND state > ?", uid,0)
+            .filter("id = ? AND state > ?", rid,0)
             .one   ();
         if (ro == null || ro.isEmpty()) {
             helper.fault("会话不存在");
@@ -180,12 +188,10 @@ public class MesageAction {
     @Permit(conf="$", role={"", "handle", "manage"})
     @Select(conf="mesage", form="message", mode=2)
     public void create(ActionHelper helper) throws HongsException {
+        MesageWorker que = MesageHelper.getWorker();
         VerifyHelper ver = new VerifyHelper( );
         Map      dat = helper.getRequestData();
         byte     mod = Synt.declare(dat.get("md"), (byte) 0);
-        Producer pcr = MesageHelper.newProducer();
-        String   top = MesageHelper.getProperty("core.mesage.chat.topic");
-        String   rid ;
         Map      tmp ;
 
         ver.isUpdate( false );
@@ -197,7 +203,6 @@ public class MesageAction {
             tmp = ver.verify(dat);
 
             // 提取主题并将连接数据并入消息数据, 清空规则为校验消息做准备
-            rid = (String) tmp.get("rid");
             ver.getRules().clear();
             dat.putAll(tmp);
 
@@ -205,8 +210,15 @@ public class MesageAction {
             ver.addRulesByForm("mesage", "message");
             tmp = ver.verify(dat);
 
+            String uid = (String) tmp.get("uid");
+            String rid = (String) tmp.get("rid");
+            String kd = (String) tmp.get("kind");
+            long   st = Synt.declare(dat.get("time"), 0L);
+            String id = Core.getUniqueId();
+            tmp.put("id", id);
+
             // 送入消息队列
-            pcr.send(new ProducerRecord<>(top, rid, tmp));
+            que.add(new Mesage(id, uid, rid, kd, Data.toString(dat), System.currentTimeMillis()));
 
             dat = new HashMap(  );
             dat.put("info" , tmp);
@@ -241,7 +253,7 @@ public class MesageAction {
 
         // 获取到 rid 映射
         for(Map ro : rs) {
-            if (Synt.asserts(ro.get("state"), 0) == 1) {
+            if (Synt.asserts(ro.get("level"), 1) == 1) { // 私聊
                 fmp.put(ro.get("id"), ro );
             }
                 gmp.put(ro.get("id"), ro );
@@ -256,10 +268,10 @@ public class MesageAction {
         FetchCase fc = db.fetchCase()
             .from   (db.getTable("room_mate").tableName)
             .orderBy("state DESC")
-            .select ("rid, uid, name, state")
-            .filter ("rid IN (?)", rids);
+            .select ("room_id AS rid, user_id AS uid, name, state")
+            .filter ("room_id IN (?)", rids);
         if (uids != null && ! uids.isEmpty()) {
-          fc.filter ("uid IN (?)", uids);
+          fc.filter ("user_id IN (?)", uids);
         }
         rz = fc.all ();
         for(Map rv : rz) {
@@ -308,17 +320,16 @@ public class MesageAction {
         // 补充好友名称
         rz = db.fetchCase()
             .from   (db.getTable("user_mate").tableName)
-            .filter ("uid IN (?) AND mid = ? AND name != ? AND name IS NOT NULL", uids, mid, "")
-            .select ("uid, name")
+            .filter ("user_id IN (?) AND mate_id = ? AND name != '' AND name IS NOT NULL", uids, mid)
+            .select ("user_id AS uid , name")
             .all    ();
         for(Map rv : rz) {
            List<Map> rx = ump.get(rv.remove("uid"));
             for(Map  ro : rx) {
              Object nam = ro.get("name");
-                if (nam != null && !"".equals(nam)) {
-                    continue ; // 已有别名则不设置
+                if (nam ==  null || "".equals(nam)) {
+                    ro.put("name" , rv.get("name"));
                 }
-                ro.putAll(rv);
             }
         }
 
@@ -326,16 +337,17 @@ public class MesageAction {
         rz = db.fetchCase()
             .from   (db.getTable("user").tableName)
             .filter ("id IN (?)", uids )
-            .select ("id AS uid, name, head, note")
+            .select ("id AS uid, name, note, head")
             .all    ();
         for(Map rv : rz) {
            List<Map> rx = ump.get(rv.remove("uid"));
             for(Map  ro : rx) {
              Object nam = ro.get("name");
-                if (nam != null && !"".equals(nam)) {
-                    continue ; // 已有别名则不设置
+                if (nam ==  null || "".equals(nam)) {
+                    ro.put("name" , rv.get("name"));
                 }
-                ro.putAll(rv);
+                ro.put("note", rv.get("note"));
+                ro.put("head", rv.get("head"));
             }
         }
     }

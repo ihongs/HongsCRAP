@@ -17,11 +17,58 @@ xsi:schemaLocation="http://hongs-core db.xsd">
         <table name="note"
                tableName="a_mesage_note"
                primaryKey="id">
+            <assoc name="room"
+                   type="BLS_TO"
+                   join="INNER"
+                   tableName="room"
+                   foreignKey="room_id">
+            </assoc>
+            <assoc name="user"
+                   type="BLS_TO"
+                   join="INNER"
+                   tableName="user"
+                   foreignKey="user_id">
+            </assoc>
         </table>
         <table name="room_mate"
-               tableName="a_mesage_room_mate"/>
+               tableName="a_mesage_room_mate">
+            <assoc name="room"
+                   type="BLS_TO"
+                   join="INNER"
+                   tableName="room"
+                   foreignKey="room_id">
+            </assoc>
+            <assoc name="user"
+                   type="BLS_TO"
+                   join="INNER"
+                   tableName="user"
+                   foreignKey="user_id">
+            </assoc>
+        </table>
         <table name="user_mate"
-               tableName="a_mesage_user_mate"/>
+               tableName="a_mesage_user_mate">
+            <assoc name="mate"
+                   type="BLS_TO"
+                   join="INNER"
+                   tableName="user"
+                   foreignKey="mate_id">
+            </assoc>
+            <assoc name="user"
+                   type="BLS_TO"
+                   join="INNER"
+                   tableName="user"
+                   foreignKey="user_id">
+            </assoc>
+        </table>
+        <table name="user_term"
+               tableName="a_mesage_user_term">
+            <assoc name="user"
+                   type="BLS_TO"
+                   join="INNER"
+                   tableName="user"
+                   foreignKey="user_id">
+            </assoc>
+        </table>
         <!-- 其他表 -->
         <table name="user"
                tableName="a_member_user"

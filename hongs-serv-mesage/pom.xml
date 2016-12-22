@@ -24,11 +24,6 @@
             <artifactId>hongs-serv-socket</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <version>0.10.0.0</version>
-        </dependency>
     </dependencies>
     <name>hongs-serv-mesage</name>
 </project>

@@ -1,12 +1,10 @@
-package app.hongs.serv.mesage.worker;
+package app.hongs.serv.mesage;
 
 import app.hongs.Core;
 import app.hongs.CoreConfig;
 import app.hongs.HongsException;
 import app.hongs.db.DB;
 import app.hongs.db.link.Loop;
-import app.hongs.serv.mesage.Mesage;
-import app.hongs.serv.mesage.Mesage2;
 import app.hongs.util.Async;
 import app.hongs.util.Synt;
 import java.util.List;
@@ -15,10 +13,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * 消息存储管道
  * @author Hongs
  */
-public class MesageKeepQueue extends Async<Mesage2> implements Core.GlobalSingleton {
+public class MesageNoteWorker extends Async<Mesage2> implements Core.GlobalSingleton {
 
     private final MesagePushWorker pushWorker;
 
@@ -28,8 +26,8 @@ public class MesageKeepQueue extends Async<Mesage2> implements Core.GlobalSingle
     private final String getStatSql;
     private final String getMateSql;
 
-    protected MesageKeepQueue(int maxTasks, int maxServs) throws HongsException {
-        super(MesageKeepQueue.class.getName( ), maxTasks, maxServs);
+    protected MesageNoteWorker(int maxTasks, int maxServs) throws HongsException {
+        super(MesageNoteWorker.class.getName( ), maxTasks, maxServs);
 
         pushWorker = MesagePushWorker.getInstance();
 
@@ -44,12 +42,12 @@ public class MesageKeepQueue extends Async<Mesage2> implements Core.GlobalSingle
         getMateSql = "SELECT user_id FROM `"+mateTableName+"` WHERE room_id = ? WHERE user_id NOT IN (?)";
     }
 
-    public static MesageKeepQueue getInstance() throws HongsException {
-        String name = MesageKeepQueue.class.getName();
-        MesageKeepQueue inst = (MesageKeepQueue) Core.GLOBAL_CORE.got(name);
+    public static MesageNoteWorker getInstance() throws HongsException {
+        String name = MesageNoteWorker.class.getName();
+        MesageNoteWorker inst = (MesageNoteWorker) Core.GLOBAL_CORE.got(name);
         if (inst == null) {
             CoreConfig conf = CoreConfig.getInstance("mesage");
-            inst =  new MesageKeepQueue(
+            inst =  new MesageNoteWorker(
                 conf.getProperty("core.mesage.keep.worker.max.tasks", Integer.MAX_VALUE),
                 conf.getProperty("core.mesage.keep.worker.max.servs", 1));
             Core.GLOBAL_CORE.put(name, inst);
@@ -68,7 +66,7 @@ public class MesageKeepQueue extends Async<Mesage2> implements Core.GlobalSingle
             db.execute(addNoteSql, info.id, info.userId, info.roomId, info.data, info.stime, ct);
 
             // 登记未读
-            Loop loop = db.query(getMateSql, 0, 0, info.roomId, msg2.onlines);
+            Loop loop = db.query(getMateSql, 0, 0, info.roomId, msg2.userIds);
             for(Map row : loop) {
                 String uid = ( String ) row.get( "user_id" );
                 List   lst = db.fetch(getStatSql, 0, 1, uid);
@@ -83,7 +81,7 @@ public class MesageKeepQueue extends Async<Mesage2> implements Core.GlobalSingle
                 pushWorker.add(new Mesage2(info, Synt.asSet(uid)));
             }
         } catch (HongsException ex) {
-            Logger.getLogger(MesageChatWorker.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MesageNoteWorker.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

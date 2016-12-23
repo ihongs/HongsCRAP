@@ -11,7 +11,7 @@ xsi:schemaLocation="http://hongs-core db.xsd">
             <assoc type="HAS_MANY"
                    name="users"
                    tableName="room_mate"
-                   foreignKey="rid">
+                   foreignKey="room_id">
             </assoc>
         </table>
         <table name="note"
@@ -68,6 +68,9 @@ xsi:schemaLocation="http://hongs-core db.xsd">
                    tableName="user"
                    foreignKey="user_id">
             </assoc>
+        </table>
+        <table name="note_stat"
+               tableName="a_mesage_note_stat">
         </table>
         <!-- 其他表 -->
         <table name="user"

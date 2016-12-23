@@ -1,13 +1,12 @@
-package app.hongs.serv.mesage.worker;
+package app.hongs.serv.mesage;
 
 import app.hongs.Core;
 import app.hongs.CoreConfig;
 import app.hongs.HongsException;
-import app.hongs.serv.mesage.Mesage2;
 import app.hongs.util.Async;
 
 /**
- *
+ * 消息推送管道
  * @author Hongs
  */
 public class MesagePushWorker extends Async<Mesage2> implements Core.GlobalSingleton {

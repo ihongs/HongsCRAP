@@ -1,11 +1,9 @@
-package app.hongs.serv.mesage.worker;
+package app.hongs.serv.mesage;
 
 import app.hongs.Core;
 import app.hongs.CoreConfig;
 import app.hongs.CoreLogger;
 import app.hongs.HongsException;
-import app.hongs.serv.mesage.Mesage;
-import app.hongs.serv.mesage.Mesage2;
 import app.hongs.serv.mesage.handle.MesageSocket;
 import app.hongs.util.Async;
 import java.io.IOException;
@@ -14,7 +12,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.websocket.Session;
-import app.hongs.serv.mesage.MesageWorker;
 
 /**
  * 消息主要管道
@@ -25,22 +22,22 @@ import app.hongs.serv.mesage.MesageWorker;
  *
  * @author Hongs
  */
-public class MesageChatWorker extends Async<Mesage> implements MesageWorker, Core.GlobalSingleton {
+public class MesageMainWorker extends Async<Mesage> implements MesageWorker, Core.GlobalSingleton {
 
-    private final MesageKeepQueue keepWorker;
+    private final MesageNoteWorker keepWorker;
 
-    protected MesageChatWorker(int maxTasks, int maxServs) throws HongsException {
-        super(MesageChatWorker.class.getName( ), maxTasks, maxServs);
+    protected MesageMainWorker(int maxTasks, int maxServs) throws HongsException {
+        super(MesageMainWorker.class.getName( ), maxTasks, maxServs);
 
-        keepWorker = MesageKeepQueue.getInstance();
+        keepWorker = MesageNoteWorker.getInstance();
     }
 
-    public static MesageChatWorker getInstance() throws HongsException {
-        String name = MesageChatWorker.class.getName();
-        MesageChatWorker inst = (MesageChatWorker) Core.GLOBAL_CORE.got(name);
+    public static MesageMainWorker getInstance() throws HongsException {
+        String name = MesageMainWorker.class.getName();
+        MesageMainWorker inst = (MesageMainWorker) Core.GLOBAL_CORE.got(name);
         if (inst == null) {
             CoreConfig conf = CoreConfig.getInstance("mesage");
-            inst =  new MesageChatWorker(
+            inst =  new MesageMainWorker(
                     conf.getProperty("core.mesage.chat.worker.max.tasks", Integer.MAX_VALUE),
                     conf.getProperty("core.mesage.chat.worker.max.servs", 1));
             Core.GLOBAL_CORE.put(name, inst);
@@ -59,7 +56,7 @@ public class MesageChatWorker extends Async<Mesage> implements MesageWorker, Cor
             keepWorker.add(msg2);
 
             // 发送消息
-            String msg = "{\"ok\":true,\"ern\":\"\",\"err\":\"\",\"msg\":\"\",\"info\":" + info.data + "}";
+            String  msg  = "{\"ok\":true,\"ern\":\"\",\"err\":\"\",\"msg\":\"\",\"info\":" + info.data + "}";
             for(Session  ses  : sess) {
                 try {
                     ses.getBasicRemote().sendText(msg);
@@ -68,7 +65,7 @@ public class MesageChatWorker extends Async<Mesage> implements MesageWorker, Cor
                 }
             }
         } catch (Exception | Error ex) {
-            Logger.getLogger(MesageChatWorker.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MesageMainWorker.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -153,10 +153,10 @@ public class MesageSocket {
     @OnError
     public void onError(Session sess, Throwable ta) {
         try {
-            CoreLogger.debug ( ta.getMessage() );
+            CoreLogger.error ( ta);
         }
         finally {
-            onClose(sess);
+            onClose (sess);
         }
     }
 

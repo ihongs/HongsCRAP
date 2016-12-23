@@ -8,6 +8,7 @@ import app.hongs.action.VerifyHelper;
 import app.hongs.action.anno.Action;
 import app.hongs.action.anno.Permit;
 import app.hongs.action.anno.Select;
+import app.hongs.action.anno.Verify;
 import app.hongs.db.DB;
 import app.hongs.db.util.FetchCase;
 import app.hongs.db.Model;
@@ -18,7 +19,6 @@ import app.hongs.serv.mesage.MesageWorker;
 import app.hongs.util.Data;
 import app.hongs.util.Synt;
 import app.hongs.util.verify.Wrongs;
-import java.util.Collection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -202,7 +202,15 @@ public class MesageAction {
 
     @Action("file/create")
     @Permit(conf="$", role={"", "handle", "manage"})
+    @Verify(conf="mesage", form="file")
     public void createFile(ActionHelper helper) {
+        helper.reply("", helper.getRequestData());
+    }
+
+    @Action("image/create")
+    @Permit(conf="$", role={"", "handle", "manage"})
+    @Verify(conf="mesage", form="file_image")
+    public void createImage(ActionHelper helper) {
         helper.reply("", helper.getRequestData());
     }
 

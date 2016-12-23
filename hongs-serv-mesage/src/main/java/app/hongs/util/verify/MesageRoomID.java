@@ -47,8 +47,8 @@ public class MesageRoomID extends Rule {
 
         ro = db.fetchCase()
             .from  (db.getTable("room_mate").tableName)
-            .filter("rid = ? AND uid = ? AND state > 0", rid, uid)
-            .select("rid")
+            .filter("room_id = ? AND user_id = ? AND state > 0", rid, uid)
+            .select("room_id")
             .one   ();
         if (ro == null || ro.isEmpty()) {
             throw new Wrong("core.user.not.in.room").setLocalizedSection("mesage");

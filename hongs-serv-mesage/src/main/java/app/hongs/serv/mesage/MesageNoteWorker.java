@@ -39,7 +39,7 @@ public class MesageNoteWorker extends Async<Mesage2> implements Core.GlobalSingl
         addStatSql = "INSERT INTO `"+statTableName+"` (`stati`, `mtime`, `data`, `room_id`, `user_id`, `mate_id`) VALUES (?, ?, ?, ?, ?, ?)";
         setStatSql = "UPDATE `"+statTableName+"` SET `stati` = `stati` + ?, `mtime` = ?, `data` = ?, `room_id` = ?, `user_id` = ? WHERE `mate_id` = ?";
         getStatSql = "SELECT user_id FROM `"+statTableName+"` WHERE user_id = ?";
-        getMateSql = "SELECT user_id FROM `"+mateTableName+"` WHERE room_id = ? WHERE user_id NOT IN (?)";
+        getMateSql = "SELECT user_id FROM `"+mateTableName+"` WHERE room_id = ? AND user_id NOT IN (?)";
     }
 
     public static MesageNoteWorker getInstance() throws HongsException {

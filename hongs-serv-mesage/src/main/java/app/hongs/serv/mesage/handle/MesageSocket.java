@@ -1,5 +1,6 @@
 package app.hongs.serv.mesage.handle;
 
+import app.hongs.Cnst;
 import app.hongs.Core;
 import app.hongs.CoreLogger;
 import app.hongs.HongsException;
@@ -60,8 +61,9 @@ public class MesageSocket {
             } catch (Wrongs wr ) {
                 hepr.reply( wr.toReply(( byte ) 9 ));
                 return;
-            } catch (HongsException ex) {
+            } catch (HongsException ex ) {
                 hepr.fault(ex.getLocalizedMessage());
+                CoreLogger.error  ( ex );
                 return;
             }
 
@@ -77,30 +79,6 @@ public class MesageSocket {
         }
         finally {
             hepr.destroy(); // 销毁环境
-        }
-    }
-
-    @OnClose
-    public void onClose(Session sess) {
-        SocketHelper hepr = SocketHelper.getInstance(sess);
-        try {
-            setSession(sess,false); // 删除会话
-        }
-        catch (Exception|Error er) {
-            CoreLogger.error ( er);
-        }
-        finally {
-            hepr.destroy(); // 销毁环境
-        }
-    }
-
-    @OnError
-    public void onError(Session sess, Throwable ta) {
-        try {
-            CoreLogger.debug ( ta.getMessage() );
-        }
-        finally {
-            onClose(sess);
         }
     }
 
@@ -139,6 +117,7 @@ public class MesageSocket {
                 return;
             } catch (HongsException ex ) {
                 hepr.fault(ex.getLocalizedMessage());
+                CoreLogger.error  ( ex );
                 return;
             }
             msg = Data.toString(dat);
@@ -157,6 +136,30 @@ public class MesageSocket {
         }
     }
 
+    @OnClose
+    public void onClose(Session sess) {
+        SocketHelper hepr = SocketHelper.getInstance(sess);
+        try {
+            setSession(sess,false); // 删除会话
+        }
+        catch (Exception|Error er) {
+            CoreLogger.error ( er);
+        }
+        finally {
+            hepr.destroy(); // 销毁环境
+        }
+    }
+
+    @OnError
+    public void onError(Session sess, Throwable ta) {
+        try {
+            CoreLogger.debug ( ta.getMessage() );
+        }
+        finally {
+            onClose(sess);
+        }
+    }
+
     //** 静态工具方法 **/
 
     public static final Set<Session> CONNS = new HashSet();
@@ -166,26 +169,26 @@ public class MesageSocket {
 
     synchronized private static void setSession(Session sess, boolean add) {
         SocketHelper hlpr = (SocketHelper) sess.getUserProperties().get(SocketHelper.class.getName());
+        String uid = (String) hlpr.getSessibute(Cnst.UID_SES);
         String rid = hlpr.getParameter("rid");
-        String uid = hlpr.getParameter("uid");
-        Set roomConn = ROOM_CONNS.get(rid);
         Set userConn = USER_CONNS.get(uid);
+        Set roomConn = ROOM_CONNS.get(rid);
         Set roomUser = ROOM_USERS.get(rid);
 
         if (add) {
             CONNS.add(sess);
+
+            if (userConn == null) {
+                userConn  = new HashSet();
+                USER_CONNS.put(uid, userConn);
+            }
+            userConn.add(sess);
 
             if (roomConn == null) {
                 roomConn  = new HashSet();
                 ROOM_CONNS.put(rid, roomConn);
             }
             roomConn.add(sess);
-
-            if (userConn == null) {
-                userConn  = new HashSet();
-                ROOM_CONNS.put(rid, userConn);
-            }
-            userConn.add(sess);
 
             if (roomUser == null) {
                 roomUser  = new HashSet();
@@ -195,17 +198,17 @@ public class MesageSocket {
         } else {
             CONNS.remove(sess);
 
-            if (roomConn != null) {
-                roomConn.remove(sess);
-                if (roomConn.isEmpty()) {
-                    ROOM_CONNS.remove(rid);
-                }
-            }
-
             if (userConn != null) {
                 userConn.remove(sess);
                 if (userConn.isEmpty()) {
                     USER_CONNS.remove(uid);
+                }
+            }
+
+            if (roomConn != null) {
+                roomConn.remove(sess);
+                if (roomConn.isEmpty()) {
+                    ROOM_CONNS.remove(rid);
                 }
             }
 

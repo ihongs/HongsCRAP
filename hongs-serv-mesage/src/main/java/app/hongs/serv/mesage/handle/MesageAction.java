@@ -160,10 +160,10 @@ public class MesageAction {
     @Select(conf="mesage", form="message", mode=2)
     public void create(ActionHelper helper) throws HongsException {
         MesageWorker que = MesageHelper.getWorker();
-        VerifyHelper ver = new VerifyHelper( );
-        Map      dat = helper.getRequestData();
-        byte     mod = Synt.declare(dat.get("md"), (byte) 0);
-        Map      tmp ;
+        VerifyHelper ver = new VerifyHelper();
+        Map    dat = helper.getRequestData( );
+        byte   mod = Synt.declare(dat.get("md"), (byte) 0);
+        Map    tmp ;
 
         ver.isUpdate(  false );
         ver.isPrompt(mod <= 0);

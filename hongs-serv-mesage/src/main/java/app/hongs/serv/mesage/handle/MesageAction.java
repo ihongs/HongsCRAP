@@ -214,4 +214,17 @@ public class MesageAction {
         helper.reply("", helper.getRequestData());
     }
 
+    @Action("image/create")
+    @Permit(conf="$", role={"", "handle", "manage"})
+    @Verify(conf="mesage", form="file_video")
+    public void createVideo(ActionHelper helper) {
+        helper.reply("", helper.getRequestData());
+    }
+    
+    @Action("image/create")
+    @Permit(conf="$", role={"", "handle", "manage"})
+    @Verify(conf="mesage", form="file_voice")
+    public void createVoice(ActionHelper helper) {
+        helper.reply("", helper.getRequestData());
+    }
 }

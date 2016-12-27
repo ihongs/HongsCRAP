@@ -82,6 +82,35 @@ public class MesageSocket {
         }
     }
 
+    @OnClose
+    public void onClose(Session sess) {
+        SocketHelper hepr = SocketHelper.getInstance(sess);
+        try {
+            setSession(sess,false); // 删除会话
+        }
+        catch (Exception|Error er) {
+            CoreLogger.error ( er);
+        }
+        finally {
+            hepr.destroy(); // 销毁环境
+        }
+    }
+
+    @OnError
+    public void onError(Session sess, Throwable ta) {
+        SocketHelper hepr = SocketHelper.getInstance(sess);
+        try {
+            setSession(sess,false); // 删除会话
+            CoreLogger.error ( ta); // 记录异常
+        }
+        catch (Exception|Error er) {
+            CoreLogger.error ( er);
+        }
+        finally {
+            hepr.destroy(); // 销毁环境
+        }
+    }
+
     @OnMessage
     public void onMessage(Session sess, String msg, @PathParam("rid") String rid) {
         SocketHelper hepr = SocketHelper.getInstance(sess);
@@ -133,30 +162,6 @@ public class MesageSocket {
         }
         finally {
             hepr.destroy(); // 销毁环境
-        }
-    }
-
-    @OnClose
-    public void onClose(Session sess) {
-        SocketHelper hepr = SocketHelper.getInstance(sess);
-        try {
-            setSession(sess,false); // 删除会话
-        }
-        catch (Exception|Error er) {
-            CoreLogger.error ( er);
-        }
-        finally {
-            hepr.destroy(); // 销毁环境
-        }
-    }
-
-    @OnError
-    public void onError(Session sess, Throwable ta) {
-        try {
-            CoreLogger.error ( ta);
-        }
-        finally {
-            onClose (sess);
         }
     }
 

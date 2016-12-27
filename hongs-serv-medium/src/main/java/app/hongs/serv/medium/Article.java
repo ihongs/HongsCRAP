@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.servlet.http.Part;
 
 /**
  * 文章记录模型
@@ -210,17 +211,16 @@ public class Article extends LuceneRecord {
             if (   "id".equals(fn)) {
                 dd.put(fn, id);
             } else
-            if ( "word".equals(fn)) {
-                ASubsModel sm = (ASubsModel) model.db.getModel("species");
+            if ( "word".equals(fn)) { // 标签云
                 String fr = Synt.declare(rd.get(fn), "");
+                ASubsModel sm = (ASubsModel) model.db.getModel("species");
                 sm.setLink("article");
-                sm.setSubs (id , Synt.asTerms(fr).toArray(new String[]{}));
+                sm.setSubs(id , Synt.asTerms(fr).toArray(new String[]{}));
                 dd.put(fn, fr);
             } else
-            if ( "snap".equals(fn)) {
+            if ( "snap".equals(fn)) { // 缩略图
                 String fv = Synt.declare(dd.get(fn), "");
-                String fr = Synt.declare(rd.get(fn), "");
-                fr = saveSnap(fr, fv);
+                String fr = saveSnap(rd.get(fn),fv);
                 rd.put(fn, fr);
                 dd.put(fn, fr);
             } else
@@ -291,19 +291,32 @@ public class Article extends LuceneRecord {
         setDoc(id, map2Doc(dd));
     }
 
-    protected String saveSnap(String nv, String ov) throws Wrong, HongsException {
-        if (null == nv || "".equals(nv)) {
+    protected String saveSnap(Object rv, String ov) throws Wrong, HongsException {
+        if (null == rv || "".equals(rv)) {
             return  ov;
         }
+        
+        UploadHelper uh = new UploadHelper();
+        uh.setUploadPath( snap );
+        uh.setUploadHref( snap );
+        String nv = null;
 
-        // 移动图片
-        if (nv.indexOf('/') < 0 ) {
-            UploadHelper uh = new UploadHelper();
-            uh.setUploadPath( snap );
-            uh.setUploadHref( snap );
+        // 移动源图片
+        if (rv instanceof Part ) {
+            uh.upload((Part) rv);
+        } else
+        if (rv instanceof File ) {
+            uh.upload((Part) rv);
+        } else {
+            nv  = rv.toString( );
+        if (nv.indexOf('/') < 0) {
             uh.upload(nv);
+        } else {
+            uh  = null; // 修改模式给的路径
+        }}
 
-            // 生成缩略图
+        // 生成缩略图
+        if (uh != null) {
             String fv;
             fv = uh.getResultPath( );
             nv = uh.getResultHref( );
@@ -314,7 +327,7 @@ public class Article extends LuceneRecord {
             }
         }
 
-        if (null == ov || nv.equals(ov)) {
+        if (null == ov || ov.equals(nv)) {
             return  nv;
         }
 

@@ -220,7 +220,7 @@ public class MesageAction {
     public void createVideo(ActionHelper helper) {
         helper.reply("", helper.getRequestData());
     }
-    
+
     @Action("image/create")
     @Permit(conf="$", role={"", "handle", "manage"})
     @Verify(conf="mesage", form="file_voice")

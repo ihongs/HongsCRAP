@@ -7,10 +7,10 @@
 **/WEB-INF/var
 
 .DS_Store
-
 .project
+.idea
+*.iml
+*.iws
 nbproject
 nbactions.xml
 nb-configuration.xml
-
-*.iml

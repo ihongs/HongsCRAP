@@ -136,7 +136,7 @@ public class MesageSocket {
             try {
                 dat.putAll(data);
                 dat = veri.verify( dat );
-                id  = Core.getUniqueId();
+                id  = Core.newIdentity();
                 uid = Synt.declare(dat.get("uid" ), "");
                 kd  = Synt.declare(dat.get("kind"), "");
                 st  = Synt.declare(dat.get("time"), Long.class);

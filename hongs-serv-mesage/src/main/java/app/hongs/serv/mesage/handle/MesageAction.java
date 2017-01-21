@@ -185,7 +185,7 @@ public class MesageAction {
             String rid = (String) tmp.get("rid");
             String kd = (String) tmp.get("kind");
             long   st = Synt.declare(dat.get("time"), 0L);
-            String id = Core.getUniqueId();
+            String id = Core.newIdentity();
             tmp.put("id", id);
 
             // 送入消息队列
@@ -214,14 +214,14 @@ public class MesageAction {
         helper.reply("", helper.getRequestData());
     }
 
-    @Action("image/create")
+    @Action("video/create")
     @Permit(conf="$", role={"", "handle", "manage"})
     @Verify(conf="mesage", form="file_video")
     public void createVideo(ActionHelper helper) {
         helper.reply("", helper.getRequestData());
     }
 
-    @Action("image/create")
+    @Action("voice/create")
     @Permit(conf="$", role={"", "handle", "manage"})
     @Verify(conf="mesage", form="file_voice")
     public void createVoice(ActionHelper helper) {

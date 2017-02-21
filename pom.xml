@@ -7,8 +7,8 @@
     <version>0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>hongs-serv-mesage</module>
         <module>hongs-serv-medium</module>
+        <module>hongs-serv-masque</module>
         <module>hongs-serv-market</module>
         <module>hongs-ueditor</module>
         <module>hongs-cms-web</module>

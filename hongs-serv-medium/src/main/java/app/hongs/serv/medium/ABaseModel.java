@@ -4,6 +4,7 @@ import app.hongs.HongsException;
 import app.hongs.db.Model;
 import app.hongs.db.Table;
 import app.hongs.db.util.FetchCase;
+import app.hongs.util.Synt;
 import java.util.Map;
 
 /**
@@ -38,10 +39,11 @@ public class ABaseModel extends Model {
     @Override
     protected void filter(FetchCase fc, Map rd) throws HongsException {
         super.filter(fc, rd);
+        String tn = Synt.defoult(fc.getName(), table.name);
         if (type == null) {
-            fc.filter("`"+fc.getName()+"`.`type` IS NULL");
+            fc.filter("`"+tn+"`.`type` IS NULL");
         } else {
-            fc.filter("`"+fc.getName()+"`.`type`=?", type);
+            fc.filter("`"+tn+"`.`type`=?", type);
         }
     }
 

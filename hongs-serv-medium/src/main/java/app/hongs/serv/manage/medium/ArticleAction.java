@@ -1,4 +1,4 @@
-package app.hongs.serv.medium.manage;
+package app.hongs.serv.manage.medium;
 
 import app.hongs.HongsException;
 import app.hongs.action.ActionHelper;

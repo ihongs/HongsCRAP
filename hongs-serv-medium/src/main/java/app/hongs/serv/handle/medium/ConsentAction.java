@@ -1,4 +1,4 @@
-package app.hongs.serv.medium.handle;
+package app.hongs.serv.handle.medium;
 
 import app.hongs.Cnst;
 import app.hongs.HongsException;

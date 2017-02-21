@@ -2,7 +2,6 @@ package app.hongs.serv.medium;
 
 import app.hongs.Cnst;
 import app.hongs.Core;
-import app.hongs.HongsError;
 import app.hongs.HongsException;
 import app.hongs.action.UploadHelper;
 import app.hongs.db.DB;
@@ -40,7 +39,7 @@ public class Article extends LuceneRecord {
         super(path);
         this.type = type;
         this.name = "medium.article";
-        this.snap = "upload/medium/snap";
+        this.snap = "public/upload/medium/snap";
     }
 
     public Article(String type) throws HongsException {
@@ -154,7 +153,7 @@ public class Article extends LuceneRecord {
      */
     @Override
     public String add(Map rd) throws HongsException {
-        String id = Core.getUniqueId();
+        String id = Core.newIdentity();
         save(id, rd);
         return id;
     }

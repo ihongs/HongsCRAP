@@ -12,6 +12,15 @@
         <field name="body" type="search">
             <param name="unstored">0</param>
         </field>
+        <field name="snap" type="file" rule="Thumb">
+            <param name="path">public/upload/medium/snap</param>
+            <param name="href">public/upload/medium/snap</param>
+            <param name="thumb-extn">png</param>
+            <param name="thumb-pick">_tp:1*1;temp</param>
+            <param name="thumb-zoom">_lg:256*256,_md:128*128,_sm:64*64</param>
+            <param name="drop-origin">yes</param>
+            <param name="pass-remote">yes</param>
+        </field>
     </form>
     <enum name="dissent_cause">
         <value code="1">虚假信息</value>

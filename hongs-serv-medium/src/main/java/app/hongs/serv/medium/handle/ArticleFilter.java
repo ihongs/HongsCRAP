@@ -58,7 +58,7 @@ public class ArticleFilter extends ActionDriver implements Filter {
             if (row == null || row.isEmpty()) {
                 // 记录浏览
                 Map d = new HashMap();
-                d.put(  "id" , Core.getUniqueId( ));
+                d.put(  "id" , Core.newIdentity( ));
                 d.put("ctime", new Date().getTime() / 1000);
                 if (has) {
                     d.put("user_id", uid);

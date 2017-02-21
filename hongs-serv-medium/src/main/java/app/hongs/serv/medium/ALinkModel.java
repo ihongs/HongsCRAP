@@ -4,6 +4,7 @@ import app.hongs.HongsException;
 import app.hongs.db.Model;
 import app.hongs.db.Table;
 import app.hongs.db.util.FetchCase;
+import app.hongs.util.Synt;
 import java.util.Map;
 
 /**
@@ -42,10 +43,11 @@ public class ALinkModel extends Model {
     @Override
     protected void filter(FetchCase fc, Map rd) throws HongsException {
         super.filter(fc, rd);
+        String tn = Synt.defoult(fc.getName(), table.name);
         if (link == null) {
-            fc.filter("`"+fc.getName()+"`.`link` IS NULL");
+            fc.filter("`"+tn+"`.`link` IS NULL");
         } else {
-            fc.filter("`"+fc.getName()+"`.`link`=?", link);
+            fc.filter("`"+tn+"`.`link`=?", link);
         }
     }
 

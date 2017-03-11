@@ -80,7 +80,7 @@ public class SectionFilter extends ActionDriver implements Filter {
                     break;
                 }
             } catch (HongsException ex) {
-                throw ex.toUnchecked( );
+                throw ex.toExpedient( );
             }
 
             fil = new File(Core.BASE_PATH + "/medium/action/section/%"+tpl+".jsp");

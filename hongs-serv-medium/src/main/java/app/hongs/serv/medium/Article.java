@@ -70,7 +70,7 @@ public class Article extends LuceneRecord {
             fs = getMveiw().getFields();
             fs = new  HashMap ( fs);
         } catch (HongsException ex) {
-            throw ex.toUnchecked( );
+            throw ex.toExpedient( );
         }
 
         // href,snap 等字段均仅需存储

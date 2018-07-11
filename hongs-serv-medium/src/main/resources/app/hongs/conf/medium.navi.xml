@@ -1,48 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <rsname>@manage</rsname>
-    <menu disp="内容管理" href="common/menu.act?m=medium">
-        <menu disp="文章" href="manage/medium/#article" hrel="manage/medium/section/tree.html">
-            <role disp="查看文章" name="manage/medium/article/retrieve">
-                <depend>manage</depend>
-                <depend>manage/medium/section/retrieve</depend>
-                <action>manage/medium/article/retrieve.act</action>
-                <action>manage/medium/article/comment/retrieve.act</action>
-                <action>manage/medium/article/dissent/retrieve.act</action>
-            </role>
-            <role disp="添加文章" name="manage/medium/article/create">
-                <depend>manage/medium/article/retrieve</depend>
-                <action>manage/medium/article/create.act</action>
-            </role>
-            <role disp="修改文章" name="manage/medium/article/update">
-                <depend>manage/medium/article/retrieve</depend>
-                <action>manage/medium/article/update.act</action>
-            </role>
-            <role disp="删除文章" name="manage/medium/article/delete">
-                <depend>manage/medium/article/retrieve</depend>
-                <action>manage/medium/article/delete.act</action>
-            </role>
-            <role disp="查看分类" name="manage/medium/section/retrieve">
-                <depend>manage/medium/article/retrieve</depend>
-                <action>manage/medium/section/retrieve.act</action>
-            </role>
-            <role disp="添加分类" name="manage/medium/section/create">
-                <depend>manage/medium/section/retrieve</depend>
-                <action>manage/medium/section/create.act</action>
-            </role>
-            <role disp="修改分类" name="manage/medium/section/update">
-                <depend>manage/medium/section/retrieve</depend>
-                <action>manage/medium/article/update.act</action>
-            </role>
-            <role disp="删除分类" name="manage/medium/section/delete">
-                <depend>manage/medium/section/retrieve</depend>
-                <action>manage/medium/section/delete.act</action>
-            </role>
-            <role disp="处理举报" name="manage/medium/article/dissent/manage">
-                <depend>manage/medium/article/retrieve</depend>
-                <action>manage/medium/article/dissent/update.act</action>
-                <action>manage/medium/article/dissent/comment/create.act</action>
-            </role>
-        </menu>
+    <menu text="举报" href="centra/medium/dissent/" hrel="centra/medium/dissent/list.html">
+        <role text="查看举报" name="centra/medium/dissent/search">
+            <depend>centra</depend>
+            <action>centra/medium/dissent/search.act</action>
+        </role>
+        <role text="管理举报" name="centra/medium/dissent/modify">
+            <depend>centra</depend>
+            <action>centra/medium/dissent/create.act</action>
+            <action>centra/medium/dissent/update.act</action>
+            <action>centra/medium/dissent/delete.act</action>
+        </role>
+    </menu>
+    <menu text="评论" href="centra/medium/comment/" hrel="centra/medium/comment/list.html">
+        <role text="查看评论" name="centra/medium/comment/search">
+            <depend>centra</depend>
+            <action>centra/medium/comment/search.act</action>
+        </role>
+        <role text="管理评论" name="centra/medium/comment/modify">
+            <depend>centra</depend>
+            <action>centra/medium/comment/create.act</action>
+            <action>centra/medium/comment/update.act</action>
+            <action>centra/medium/comment/delete.act</action>
+        </role>
     </menu>
 </root>

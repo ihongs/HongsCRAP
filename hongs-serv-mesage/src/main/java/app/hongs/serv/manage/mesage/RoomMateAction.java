@@ -13,9 +13,9 @@ import app.hongs.db.DBAction;
 public class RoomMateAction extends DBAction {
     
     @Override
-    public void initiate(ActionHelper helper, ActionRunner runner) {
-        this.mod = "mesage";
-        this.ent = "room_mate";
+    public void acting(ActionHelper helper, ActionRunner runner) {
+        runner.setModule("mesage");
+        runner.setEntity("room_mate");
     }
 
 }

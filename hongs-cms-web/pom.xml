@@ -3,15 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <name>Hong's CMS</name>
-    <groupId>app.hongs</groupId>
-    <artifactId>hongs-cms-web</artifactId>
-    <!--version>0.3-SNAPSHOT</version-->
     <packaging>war</packaging>
+    <name>Hong's CMS</name>
+    <artifactId>hongs-cms-web</artifactId>
     <parent>
+        <artifactId>hongs-cmms</artifactId>
         <groupId>app.hongs</groupId>
-        <artifactId>hongs-cms</artifactId>
-        <version>0.3-SNAPSHOT</version>
+        <version>0.4-SNAPSHOT</version>
     </parent>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,19 +18,19 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>hongs-wms</artifactId>
+            <groupId>${project.groupId}</groupId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>hongs-serv-medium</artifactId>
+            <groupId>${project.groupId}</groupId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>hongs-serv-market</artifactId>
+            <groupId>${project.groupId}</groupId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

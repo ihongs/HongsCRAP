@@ -45,7 +45,7 @@ public class MesageHelper {
             .join  (db.getTable("room_mate").tableName, "mate2", "mate2.room_id = room.id")
             .filter("mate1.user_id = ? AND mate2.user_id = ?", uid, mid)
             .select("mate1.room_id")
-            .one   ();
+            .getOne();
 
         if (ro == null || ro.isEmpty()) {
             // TODO: 检查好友关系
@@ -89,7 +89,7 @@ public class MesageHelper {
 
         // 获取到 rid 映射
         for(Map ro : rs) {
-            if (Synt.asserts(ro.get("level"), 1) == 1) { // 私聊
+            if (Synt.declare(ro.get("level"), 1) == 1) { // 私聊
                 fmp.put(ro.get("id"), ro );
             }
                 gmp.put(ro.get("id"), ro );
@@ -103,13 +103,13 @@ public class MesageHelper {
          */
         FetchCase fc = db.fetchCase()
             .from   (db.getTable("room_mate").tableName)
-            .orderBy("state DESC")
+            .assort ("state DESC")
             .select ("room_id, user_id, name, level")
             .filter ("room_id IN (?)", rids);
         if (uids != null && ! uids.isEmpty()) {
           fc.filter ("user_id IN (?)", uids);
         }
-        rz = fc.all ();
+        rz = fc.getAll();
         for(Map rv : rz) {
             Object rid = rv.get("room_id");
             Object nid = rv.get("user_id");
@@ -160,7 +160,7 @@ public class MesageHelper {
             .from   (db.getTable("user_mate").tableName)
             .filter ("user_id IN (?) AND mate_id = ?", uids, mid)
             .select ("user_id AS uid, name, level")
-            .all    ();
+            .getAll ();
         for(Map rv : rz) {
            List<Map> rx = ump.get(rv.remove("uid"));
             for(Map  ro : rx) {
@@ -179,7 +179,7 @@ public class MesageHelper {
             .from   (db.getTable("user").tableName)
             .filter ("id IN (?)", uids )
             .select ("id AS uid, name, note, head")
-            .all    ();
+            .getAll ();
         for(Map rv : rz) {
            List<Map> rx = ump.get(rv.remove("uid"));
             for(Map  ro : rx) {

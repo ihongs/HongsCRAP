@@ -36,7 +36,7 @@ public class MesageAction {
     @Action("retrieve")
     @Permit(conf="$", role={"", "handle", "manage"})
     @Select(conf="mesage", form="message")
-    public void retrieve(ActionHelper helper) throws HongsException {
+    public void search(ActionHelper helper) throws HongsException {
         DB      db = DB.getInstance("mesage");
         Model  mod = db.getModel   ( "note" );
         Map    req = helper.getRequestData( );
@@ -61,7 +61,7 @@ public class MesageAction {
         // 检查操作权限
         // TODO:
 
-        Map rsp = mod.retrieve(req);
+        Map rsp = mod.search(req);
 
         /**
          * 直接取出消息数据列表
@@ -92,7 +92,7 @@ public class MesageAction {
     public void retrieveRoom(ActionHelper helper) throws HongsException {
         DB      db = DB.getInstance( "mesage" );
         Map     rd = helper.getRequestData(   );
-        Set    uid = Synt.asTerms(rd.get("uid"));
+        Set    uid = Synt.toTerms(rd.get("uid"));
         String mid = (String) helper.getSessibute(Cnst.UID_SES);
 
         FetchCase fc = new FetchCase(FetchCase.STRICT);
@@ -108,7 +108,7 @@ public class MesageAction {
         rd.remove(Cnst.RB_KEY);
 
         Model md = db.getModel ("room");
-        Map   ro = md.retrieve (rd, fc);
+        Map   ro = md.search   (rd, fc);
         List  rs = (List)ro.get("list");
 
         // 追加用户信息
@@ -141,7 +141,7 @@ public class MesageAction {
         ro = db.fetchCase()
             .from  (db.getTable("room").tableName)
             .filter("id = ? AND state > ?", rid,0)
-            .one   ();
+            .getOne();
         if (ro == null || ro.isEmpty()) {
             helper.fault("会话不存在");
         }

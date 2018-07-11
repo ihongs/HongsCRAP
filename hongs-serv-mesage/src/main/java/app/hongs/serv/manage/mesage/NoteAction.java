@@ -13,9 +13,9 @@ import app.hongs.db.DBAction;
 public class NoteAction extends DBAction {
 
     @Override
-    public void initiate(ActionHelper helper, ActionRunner runner) {
-        this.mod = "mesage";
-        this.ent = "note";
+    public void acting(ActionHelper helper, ActionRunner runner) {
+        runner.setModule("mesage");
+        runner.setEntity( "note" );
     }
 
 }

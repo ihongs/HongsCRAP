@@ -13,9 +13,9 @@ import app.hongs.db.DBAction;
 public class UserTermAction extends DBAction {
 
     @Override
-    public void initiate(ActionHelper helper, ActionRunner runner) {
-        this.mod = "mesage";
-        this.ent = "user_term";
+    public void acting(ActionHelper helper, ActionRunner runner) {
+        runner.setModule("mesage");
+        runner.setEntity("user_term");
     }
 
 }

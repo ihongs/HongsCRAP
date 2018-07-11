@@ -27,10 +27,10 @@ public class MesageRoomID extends Rule {
         values.put("gid", gid);
 
         if (rid == null || "".equals(rid)) {
-            throw new Wrong("core.rid.cannot.be.empty").setLocalizedSection("mesage");
+            throw new Wrong("core.rid.cannot.be.empty").setLocalizedContext("mesage");
         }
         if (uid == null || "".equals(uid)) {
-            throw new Wrong("core.uid.cannot.be.empty").setLocalizedSection("mesage");
+            throw new Wrong("core.uid.cannot.be.empty").setLocalizedContext("mesage");
         }
 
         DB  db = DB.getInstance("mesage");
@@ -40,18 +40,18 @@ public class MesageRoomID extends Rule {
             .from  (db.getTable("room").tableName)
             .filter("id = ? AND state > 0" , rid )
             .select("id")
-            .one   ();
+            .getOne();
         if (ro == null || ro.isEmpty()) {
-            throw new Wrong("core.room.not.exists" ).setLocalizedSection("mesage");
+            throw new Wrong("core.room.not.exists" ).setLocalizedContext("mesage");
         }
 
         ro = db.fetchCase()
             .from  (db.getTable("room_mate").tableName)
             .filter("room_id = ? AND user_id = ? AND state > 0", rid, uid)
             .select("room_id")
-            .one   ();
+            .getOne();
         if (ro == null || ro.isEmpty()) {
-            throw new Wrong("core.user.not.in.room").setLocalizedSection("mesage");
+            throw new Wrong("core.user.not.in.room").setLocalizedContext("mesage");
         }
 
         return rid;

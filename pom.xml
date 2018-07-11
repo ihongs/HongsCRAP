@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <name>Hong's Cms</name>
+    <name>Hong's CMMS</name>
     <groupId>app.hongs</groupId>
-    <artifactId>hongs-cms</artifactId>
-    <version>0.3-SNAPSHOT</version>
+    <artifactId>hongs-cmms</artifactId>
+    <version>0.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>hongs-serv-medium</module>
-        <module>hongs-serv-masque</module>
         <module>hongs-serv-market</module>
+        <module>hongs-serv-medium</module>
         <module>hongs-serv-mesage</module>
+        <module>hongs-serv-graphs</module>
+        <module>hongs-serv-socket</module>
         <module>hongs-ueditor</module>
         <module>hongs-cms-web</module>
     </modules>

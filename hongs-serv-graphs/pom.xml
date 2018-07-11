@@ -5,15 +5,13 @@
     <artifactId>hongs-serv-graphs</artifactId>
     <parent>
         <artifactId>hongs-cmms</artifactId>
-        <groupId>app.hongs</groupId>
+        <groupId>foo.hongs</groupId>
         <version>0.4-SNAPSHOT</version>
     </parent>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <hongs.core.groupId>app.hongs</hongs.core.groupId>
-        <hongs.core.version>0.4-SNAPSHOT</hongs.core.version>
     </properties>
     <dependencies>
         <dependency>

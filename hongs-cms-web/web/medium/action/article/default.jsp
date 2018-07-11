@@ -1,10 +1,10 @@
-<%@page import="app.hongs.HongsException"%>
-<%@page import="app.hongs.action.ActionDriver"%>
-<%@page import="app.hongs.db.DB"%>
-<%@page import="app.hongs.db.Table"%>
-<%@page import="app.hongs.serv.medium.ABaseModel"%>
-<%@page import="app.hongs.serv.medium.Article"%>
-<%@page import="app.hongs.util.Synt"%>
+<%@page import="foo.hongs.HongsException"%>
+<%@page import="foo.hongs.action.ActionDriver"%>
+<%@page import="foo.hongs.db.DB"%>
+<%@page import="foo.hongs.db.Table"%>
+<%@page import="foo.hongs.serv.medium.ABaseModel"%>
+<%@page import="foo.hongs.serv.medium.Article"%>
+<%@page import="foo.hongs.util.Synt"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.LinkedHashSet"%>
 <%@page import="java.util.List"%>
@@ -12,7 +12,7 @@
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Set"%>
-<%@page extends="app.hongs.jsp.Pagelet"%>
+<%@page extends="foo.hongs.jsp.Pagelet"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
 <%@include file="../Functions.jsp"%>
 <%

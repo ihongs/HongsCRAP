@@ -6,7 +6,7 @@
     <version>1.1.2</version>
     <parent>
         <artifactId>hongs-cmms</artifactId>
-        <groupId>app.hongs</groupId>
+        <groupId>foo.hongs</groupId>
         <version>0.4-SNAPSHOT</version>
     </parent>
     <properties>

@@ -1,10 +1,10 @@
-<%@page import="app.hongs.HongsException"%>
-<%@page import="app.hongs.db.DB"%>
-<%@page import="app.hongs.db.FetchCase"%>
-<%@page import="app.hongs.db.Model"%>
-<%@page import="app.hongs.db.Table"%>
-<%@page import="app.hongs.db.link.Loop"%>
-<%@page import="app.hongs.serv.medium.ABaseModel"%>
+<%@page import="foo.hongs.HongsException"%>
+<%@page import="foo.hongs.db.DB"%>
+<%@page import="foo.hongs.db.FetchCase"%>
+<%@page import="foo.hongs.db.Model"%>
+<%@page import="foo.hongs.db.Table"%>
+<%@page import="foo.hongs.db.link.Loop"%>
+<%@page import="foo.hongs.serv.medium.ABaseModel"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
@@ -36,7 +36,7 @@
         
         FetchCase fc = mod.table.fetchCase()
                 .where  ("state > ?", 0)
-                .orderBy("score DESC")
+                .assort ("score DESC")
                 .select ("id, name")
                 .limit  (10);
         fc.join   (seg.tableName, seg.name )

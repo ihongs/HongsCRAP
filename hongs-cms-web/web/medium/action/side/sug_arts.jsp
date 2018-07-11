@@ -1,4 +1,4 @@
-<%@page import="app.hongs.HongsException"%>
+<%@page import="foo.hongs.HongsException"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>

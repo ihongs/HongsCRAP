@@ -1,7 +1,7 @@
-<%@page import="app.hongs.action.NaviMap"%>
-<%@page import="app.hongs.db.DB"%>
-<%@page import="app.hongs.db.Table"%>
-<%@page import="app.hongs.HongsException"%>
+<%@page import="foo.hongs.action.NaviMap"%>
+<%@page import="foo.hongs.db.DB"%>
+<%@page import="foo.hongs.db.Table"%>
+<%@page import="foo.hongs.HongsException"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.HashSet"%>

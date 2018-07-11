@@ -1,10 +1,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" isErrorPage="true" trimDirectiveWhitespaces="true"%>
-<%@page import="app.hongs.Cnst"%>
-<%@page import="app.hongs.Core"%>
-<%@page import="app.hongs.CoreLocale"%>
+<%@page import="foo.hongs.Cnst"%>
+<%@page import="foo.hongs.Core"%>
+<%@page import="foo.hongs.CoreLocale"%>
 <%@page import="java.io.PrintStream"%>
 <%@page import="java.io.ByteArrayOutputStream"%>
-<%@page extends="app.hongs.jsp.Pagelet"%>
+<%@page extends="foo.hongs.jsp.Pagelet"%>
 <%
     // 如果有内部返回, 则不要显示此页
     if (request.getAttribute(Cnst.RESP_ATTR) != null) {

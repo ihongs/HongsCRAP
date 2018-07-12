@@ -3,7 +3,7 @@ package io.github.ihongs.serv.mesage;
 import io.github.ihongs.Core;
 import io.github.ihongs.CoreConfig;
 import io.github.ihongs.HongsException;
-import io.github.ihongs.util.Async;
+import io.github.ihongs.util.thread.Async;
 
 /**
  * 消息推送管道

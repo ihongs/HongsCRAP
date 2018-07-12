@@ -8,7 +8,7 @@ import io.github.ihongs.CoreLogger;
 import io.github.ihongs.HongsError;
 import io.github.ihongs.action.ActionHelper;
 import io.github.ihongs.cmdlet.serv.ServerCmdlet;
-import io.github.ihongs.util.Clses;
+import io.github.ihongs.util.Classes;
 import io.github.ihongs.util.Data;
 import io.github.ihongs.util.Synt;
 import io.github.ihongs.util.Tool;
@@ -547,7 +547,7 @@ public class SocketHelper extends ActionHelper {
             if (pkgn.endsWith(".**")) {
                 pkgn = pkgn.substring(0, pkgn.length() - 3);
                 try {
-                    clss = Clses.getClassNames(pkgn, true );
+                    clss = Classes.getClassNames(pkgn, true );
                 } catch (IOException ex) {
                     throw new HongsError.Common("Can not load package '" + pkgn + "'.", ex);
                 }
@@ -558,7 +558,7 @@ public class SocketHelper extends ActionHelper {
             if (pkgn.endsWith(".*" )) {
                 pkgn = pkgn.substring(0, pkgn.length() - 2);
                 try {
-                    clss = Clses.getClassNames(pkgn, false);
+                    clss = Classes.getClassNames(pkgn, false);
                 } catch (IOException ex) {
                     throw new HongsError.Common("Can not load package '" + pkgn + "'.", ex);
                 }

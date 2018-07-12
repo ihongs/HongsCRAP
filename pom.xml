@@ -7,7 +7,6 @@
     <version>0.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>hongs-serv-market</module>
         <module>hongs-serv-medium</module>
         <module>hongs-serv-mesage</module>
         <module>hongs-serv-graphs</module>

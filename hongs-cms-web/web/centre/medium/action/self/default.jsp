@@ -1,5 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
-<%@page extends="foo.hongs.jsp.Pagelet"%>
+<%@page extends="io.github.ihongs.jsp.Pagelet"%>
 <%@include file="../Functions.jsp"%>
 <%
     String root = request.getContextPath();

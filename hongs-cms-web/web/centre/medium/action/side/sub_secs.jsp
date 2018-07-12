@@ -1,7 +1,7 @@
-<%@page import="foo.hongs.HongsException"%>
-<%@page import="foo.hongs.db.DB"%>
-<%@page import="foo.hongs.db.Model"%>
-<%@page import="foo.hongs.serv.medium.ABaseModel"%>
+<%@page import="io.github.ihongs.HongsException"%>
+<%@page import="io.github.ihongs.db.DB"%>
+<%@page import="io.github.ihongs.db.Model"%>
+<%@page import="io.github.ihongs.serv.medium.ABaseModel"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>

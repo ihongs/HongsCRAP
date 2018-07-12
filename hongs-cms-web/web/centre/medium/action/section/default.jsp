@@ -1,12 +1,12 @@
-<%@page import="foo.hongs.Core"%>
-<%@page import="foo.hongs.HongsException"%>
-<%@page import="foo.hongs.action.ActionHelper"%>
-<%@page import="foo.hongs.db.DB"%>
-<%@page import="foo.hongs.db.Model"%>
-<%@page import="foo.hongs.db.Table"%>
-<%@page import="foo.hongs.serv.medium.ABaseModel"%>
-<%@page import="foo.hongs.serv.medium.Article"%>
-<%@page import="foo.hongs.util.Synt"%>
+<%@page import="io.github.ihongs.Core"%>
+<%@page import="io.github.ihongs.HongsException"%>
+<%@page import="io.github.ihongs.action.ActionHelper"%>
+<%@page import="io.github.ihongs.db.DB"%>
+<%@page import="io.github.ihongs.db.Model"%>
+<%@page import="io.github.ihongs.db.Table"%>
+<%@page import="io.github.ihongs.serv.medium.ABaseModel"%>
+<%@page import="io.github.ihongs.serv.medium.Article"%>
+<%@page import="io.github.ihongs.util.Synt"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.util.ArrayList"%>
@@ -16,7 +16,7 @@
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Set"%>
-<%@page extends="foo.hongs.jsp.Pagelet"%>
+<%@page extends="io.github.ihongs.jsp.Pagelet"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
 <%@include file="../Functions.jsp"%>
 <%

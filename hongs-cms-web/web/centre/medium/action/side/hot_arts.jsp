@@ -1,10 +1,10 @@
-<%@page import="foo.hongs.HongsException"%>
-<%@page import="foo.hongs.db.DB"%>
-<%@page import="foo.hongs.db.FetchCase"%>
-<%@page import="foo.hongs.db.Model"%>
-<%@page import="foo.hongs.db.Table"%>
-<%@page import="foo.hongs.db.link.Loop"%>
-<%@page import="foo.hongs.serv.medium.ABaseModel"%>
+<%@page import="io.github.ihongs.HongsException"%>
+<%@page import="io.github.ihongs.db.DB"%>
+<%@page import="io.github.ihongs.db.FetchCase"%>
+<%@page import="io.github.ihongs.db.Model"%>
+<%@page import="io.github.ihongs.db.Table"%>
+<%@page import="io.github.ihongs.db.link.Loop"%>
+<%@page import="io.github.ihongs.serv.medium.ABaseModel"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>

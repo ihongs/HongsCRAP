@@ -5,7 +5,7 @@
     <artifactId>hongs-serv-medium</artifactId>
     <parent>
         <artifactId>hongs-cmms</artifactId>
-        <groupId>foo.hongs</groupId>
+        <groupId>io.github.ihongs</groupId>
         <version>0.4-SNAPSHOT</version>
     </parent>
     <properties>

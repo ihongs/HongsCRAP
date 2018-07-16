@@ -67,11 +67,11 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
     /**
      * 关系类型
      */
-    public static final String RT_KEY = "kind";
+    public static final String RL_KEY = "labs";
     /**
      * 表单标签
      */
-    public static final String DT_KEY = "dn-type";
+    public static final String DL_KEY = "db-label";
 
     private Session     db = null;
     private Transaction tx = null;
@@ -247,7 +247,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         ca.retur( "n" );
 
         // 限制当前表的标签
-        Set<String> la  = Synt.asSet(p.get(DT_KEY));
+        Set<String> la  = Synt.asSet(p.get(DL_KEY));
         if (null != la && ! la.isEmpty()) {
             for(String lb : la) {
                ca.where("n:"+nquotes(lb));
@@ -447,8 +447,8 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
         // 预定义数据
         Map at = getParams();
-        if (at.containsKey(DT_KEY)) {
-            Set las = Synt.asSet(at.get(DT_KEY));
+        if (at.containsKey(DL_KEY)) {
+            Set las = Synt.asSet(at.get(DL_KEY));
             if (las!= null)for(Object fv2 : las) {
                 String fv3 = Synt.asString( fv2);
                 String fv4 = nquotes( fv3);
@@ -496,7 +496,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             if ("part".equals(ft)) {
                 Set res;
                 Set ids = new HashSet( );
-                String rt = Synt.declare(fc.get(RT_KEY), "");
+                String rt = Synt.declare(fc.get(RL_KEY), "");
                 int    rd = Synt.declare(fc.get(RD_KEY), 2 );
                 if (Synt.declare(fc.get("__repeated__"), false)) {
                     res = Synt.asSet(fv);
@@ -508,7 +508,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                     Map  reo = Synt.asMap(fv2);
                     ids .add(reo.get(ID_KEY) );
                     reo .put(RD_KEY, rd);
-                    reo .put(RT_KEY, rt);
+                    reo .put(RL_KEY, rt);
                     rels.add(reo);
                 }
 
@@ -532,7 +532,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             if ("pick".equals(ft)) {
                 Set res;
                 Set ids = new HashSet( );
-                String rt = Synt.declare(fc.get(RT_KEY), "");
+                String rt = Synt.declare(fc.get(RL_KEY), "");
                 int    rd = Synt.declare(fc.get(RD_KEY), 2 );
                 if (Synt.declare(fc.get("__repeated__"), false)) {
                     res = Synt.asSet(fv);
@@ -543,7 +543,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                 for(Object fv2 : res) {
                     Map  reo = Synt.mapOf(ID_KEY, fv2 );
                     reo .put(RD_KEY, rd);
-                    reo .put(RT_KEY, rt);
+                    reo .put(RL_KEY, rt);
                     ids .add(fv2);
                     rels.add(reo);
                 }
@@ -635,7 +635,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             for(Map rel : rels) {
                 String la , ra;
                 String fk = Synt.asString(rel.get(ID_KEY));
-                String rt = Synt.asString(rel.get(RT_KEY));
+                String rt = Synt.asString(rel.get(RL_KEY));
                 if (Synt.declare(rel.get(RD_KEY), 0) != 1) {
                     ra = "->"; la = "-";
                 } else {
@@ -666,7 +666,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                     Map.Entry et = (Map.Entry)ot;
                     String fn = Synt.asString(et.getKey());
                     if (! ID_KEY.equals(fn)
-                    &&  ! RT_KEY.equals(fn)
+                    &&  ! RL_KEY.equals(fn)
                     &&  ! RD_KEY.equals(fn)) {
                         String k =""+vals.size();
                         Object v = et.getValue();
@@ -735,7 +735,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             } else
             if ("pick".equals(ft)) {
                 String name = "r";
-                String type = Synt.declare(fc.get(RT_KEY), "");
+                String type = Synt.declare(fc.get(RL_KEY), "");
                 int    dirn = Synt.declare(fc.get(RD_KEY), 2 );
                 if (type.length() != 0) {
                     name +=  ":" + nquotes(type);
@@ -755,7 +755,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             } else
             if ("part".equals(ft)) {
                 String name = "r";
-                String type = Synt.declare(fc.get(RT_KEY), "");
+                String type = Synt.declare(fc.get(RL_KEY), "");
                 int    dirn = Synt.declare(fc.get(RD_KEY), 2 );
                 if (type.length() != 0) {
                     name +=  ":" + nquotes(type);
@@ -1244,7 +1244,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
             String mn = nquotes( fn + "_n" );
             String rn = nquotes( fn + "_r" );
-            String rt = Synt.declare(fc.get(RT_KEY), "");
+            String rt = Synt.declare(fc.get(RL_KEY), "");
             int    rl = Synt.declare(fc.get(RD_KEY), 0 );
             rt  =  rt.isEmpty()? rn: rn+ ":"+nquotes(rt);
             String ru = "[" + rt + "]";

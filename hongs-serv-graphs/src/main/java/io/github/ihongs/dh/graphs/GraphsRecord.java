@@ -1044,12 +1044,10 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
         @Override
         public  void close( ) throws Exception {
-            if (CONN != null) {
-                CONN.close( );
-                CONN  = null ;
-            } else {
-                return;
-            }
+            if (CONN == null) return ;
+
+            CONN.close( );
+            CONN  = null ;
 
             if (0 < Core.DEBUG && 4 != (4 & Core.DEBUG)) {
                 CoreLogger.trace ( "Disconnect graph database " + HREF );

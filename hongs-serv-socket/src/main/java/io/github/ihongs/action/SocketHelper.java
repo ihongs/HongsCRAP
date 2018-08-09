@@ -38,11 +38,11 @@ import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainer
  *  // 事件处理器示例:
  *  @ServerEndpoint(value="/sock/path/{xxx}", configurator=SocketHelper.Config.class)
  *  public class Xxxx {
- *      @OnXxxx
- *      public void onXxxx(Session ss) {
- *          SocketHelper sh = SocketHelper.getInstance(ss);
+ *      @OnYyyy
+ *      public void onYyyy(Session zz) {
+ *          SocketHelper sh = SocketHelper.getInstance(zz);
  *          try {
- *              // TODO: Some thing...
+ *              // TODO: Something ...
  *          }
  *          catch (Error|Exception ex) {
  *              CoreLogger.error ( ex);
@@ -52,8 +52,12 @@ import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainer
  *          }
  *      }
  *  }
- *  // 并将此类名(含包名)加入 defines.properties 中 apply.sock 值
  * </code>
+ * <pre>
+ *  编辑 defines.properties,
+ *  在 aplly.sock 配置中加入 前面定义的类的完整路径
+ *  在 jetty.init 配置中加入 io.github.ihongs.action.ScoketHelper.Loader
+ * </pre>
  *
  * @author Hongs
  */
@@ -476,11 +480,11 @@ public class SocketHelper extends ActionHelper {
                 HandshakeRequest  request,
                 HandshakeResponse response)
         {
-            Map prop = config.getUserProperties();
-            Map head = request.getHeaders (    );
-            Map data = request.getParameterMap();
-            data = ActionHelper.parseParan(data);
+            Map head = request.getHeaders();
+            Map data = request.getParameterMap(/**/);
+                data = ActionHelper.parseParan(data);
 
+            Map prop = config.getUserProperties();
             prop.put(SocketHelper.class.getName()+".httpHeaders", head);
             prop.put(SocketHelper.class.getName()+".httpRequest", data);
             prop.put( HttpSession.class.getName(), request.getHttpSession());

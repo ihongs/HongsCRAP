@@ -13,12 +13,18 @@ import io.github.ihongs.util.thread.Classes;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.InetSocketAddress;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import javax.websocket.DeploymentException;
@@ -311,17 +317,44 @@ public class SocketHelper extends ActionHelper {
     }
 
     /**
-     * @deprecated 不支持 Cookie
+     * 获取 Cookies
      * @param name
      * @return
      */
     @Override
-    public String getCookibute(String  name) {
-        throw new UnsupportedOperationException("Can not get cookie in web socket");
+    public String getCookibute(String name) {
+        Map head  = (Map) getAttribute(SocketHelper.class.getName() + ".httpHeaders");
+        if (head == null) {
+            return  null;
+        }
+        String cook = (String) head.get ( "Cookie" );
+        if (cook == null) {
+            return  null;
+        }
+        name = encode ( name );
+
+        int beg  =  0;
+        int end  =  0;
+        while(0  > (end = cook.indexOf  ("=", beg) ) ) {
+            String  key = cook.substring(beg, end).trim( );
+            beg  =  end + 1;
+            if ( !  key.equals(name)) {
+                beg = cook.indexOf(";" , beg);
+            } else {
+                end = cook.indexOf(";" , beg);
+                if (end < 0) {
+                    return decode(cook.substring(beg /**/).trim());
+                } else {
+                    return decode(cook.substring(beg, end).trim());
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
-     * @deprecated 不支持 Cookie
+     * @deprecated 不支持写 Cookie
      * @param name
      * @param value
      */
@@ -331,7 +364,7 @@ public class SocketHelper extends ActionHelper {
     }
 
     /**
-     * @deprecated 不支持 Cookie
+     * @deprecated 不支持写 Cookie
      * @param name
      * @param value
      */
@@ -466,6 +499,22 @@ public class SocketHelper extends ActionHelper {
     @Override
     public void error500(String msg) {
         throw new UnsupportedOperationException("Can not send http stat 500 in web socket, msg: "+msg);
+    }
+
+    private String encode(String n) {
+        try {
+            return URLEncoder.encode(n, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return "";
+        }
+    }
+
+    private String decode(String v) {
+        try {
+            return URLDecoder.decode(v, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return "";
+        }
     }
 
     /**

@@ -205,7 +205,7 @@ public class SocketHelper extends ActionHelper {
         /**
          * 输出一些调试信息
          */
-        if (Core.DEBUG > 0) {
+        if (0 < Core.DEBUG && 8 != (8 & Core.DEBUG)) {
             StringBuilder sb = new StringBuilder("WebSocket start");
               sb.append("\r\n\tACTION_NAME : ").append(Core.ACTION_NAME.get())
                 .append("\r\n\tACTION_TIME : ").append(Core.ACTION_TIME.get())
@@ -221,7 +221,7 @@ public class SocketHelper extends ActionHelper {
     public void destroy() {
         Core core = getCore();
 
-        if ( Core.DEBUG > 0 ) {
+        if (0 < Core.DEBUG && 8 != (8 & Core.DEBUG)) {
             long time = System.currentTimeMillis(  ) - Core.ACTION_TIME.get();
             StringBuilder sb = new StringBuilder("...");
               sb.append("\r\n\tACTION_NAME : ").append(Core.ACTION_NAME.get())

@@ -1011,9 +1011,8 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
     public static class Conn implements AutoCloseable {
 
-        private static final ReadWriteLock LOCK = new ReentrantReadWriteLock();
-        private        final String        HREF;
-        private              Driver        CONN;
+        private final  String HREF;
+        private        Driver CONN;
 
         private Conn ( String href , Map opts ) {
             if (href == null || href.isEmpty()) {
@@ -1103,25 +1102,13 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             String href = Synt.declare(opts.get("db-href"), "");
             String name = Conn.class.getName(  ) + ";" + href  ;
 
-            // 尝试从全局提取连接对象
-            LOCK.readLock( ).lock();
-            try {
+            synchronized (Core.GLOBAL_CORE) {
                 Conn conn = (Conn) Core.GLOBAL_CORE.got( name );
-                if ( conn != null) {
-                    return   conn;
+                if ( conn == null) {
+                     conn =  new   Conn(href, opts);
+                  Core.GLOBAL_CORE.put (name, conn);
                 }
-            } finally {
-                LOCK.readLock( ).unlock();
-            }
-
-            // 建立新的连接并存入全局
-            LOCK.writeLock().lock();
-            try {
-                Conn conn = new Conn(href, opts);
-                Core.GLOBAL_CORE.put(name, conn);
                 return conn;
-            } finally {
-                LOCK.writeLock().unlock();
             }
         }
 

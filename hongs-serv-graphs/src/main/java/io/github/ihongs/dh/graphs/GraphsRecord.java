@@ -1009,7 +1009,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         return sb.toString(  );
     }
 
-    public static class Conn implements AutoCloseable {
+    public static class Conn implements AutoCloseable, Core.Singleton {
 
         private final  String HREF;
         private        Driver CONN;

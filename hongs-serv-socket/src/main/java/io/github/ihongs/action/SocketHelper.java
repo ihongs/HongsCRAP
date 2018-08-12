@@ -101,6 +101,7 @@ public class SocketHelper extends ActionHelper {
          */
         Core.ACTION_TIME.set(System.currentTimeMillis());
         Core.ACTION_NAME.set(Synt.declare(prop.get("ACTION_NAME"), ""));
+        Core.CLIENT_ADDR.set(Synt.declare(prop.get("ACTION_ADDR"), ""));
         Core.ACTION_LANG.set(Synt.declare(prop.get("ACTION_LANG"), ""));
         Core.ACTION_ZONE.set(Synt.declare(prop.get("ACTION_ZONE"), ""));
     }
@@ -137,7 +138,7 @@ public class SocketHelper extends ActionHelper {
         InetSocketAddress addr = (InetSocketAddress)
             getAttribute( "javax.websocket.endpoint.remoteAddress" );
         if (addr != null) {
-            Core.ACTION_NAME.set(addr.getAddress().getHostAddress());
+            Core.CLIENT_ADDR.set(addr.getAddress().getHostAddress());
         }
 
         CoreConfig conf = core.get(CoreConfig.class);

@@ -26,8 +26,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.neo4j.driver.v1.GraphDatabase;
 import org.neo4j.driver.v1.AuthTokens;
@@ -57,8 +55,9 @@ import org.neo4j.driver.v1.types.Relationship;
  */
 public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoCloseable {
 
-    protected boolean TRNSCT_MODE = false;
     protected boolean OBJECT_MODE = false;
+    protected boolean TRNSCT_MODE = false;
+    protected final  boolean TRNSCT_BASE ;
 
     /**
      * 关系方向, 0 出, 1 进, 2 双向
@@ -79,19 +78,21 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
     public GraphsRecord(Map form) {
         super.setFields(form);
 
-        // 是否要开启事务
-        Object tr  = Core.getInstance().got(Cnst.TRNSCT_MODE);
-        if ( ( tr != null  &&  Synt.declare( tr , false  )  )
-        ||     CoreConfig.getInstance().getProperty("core.in.trnsct.mode", false)) {
-            TRNSCT_MODE = true;
-        }
-
         // 是否为对象模式
         Object ox  = Core.getInstance().got(Cnst.OBJECT_MODE);
         if ( ( ox != null  &&  Synt.declare( ox , false  )  )
         ||     CoreConfig.getInstance().getProperty("core.in.object.mode", false)) {
             OBJECT_MODE = true;
         }
+
+        // 是否要开启事务
+        Object tr  = Core.getInstance().got(Cnst.TRNSCT_MODE);
+        if ( ( tr != null  &&  Synt.declare( tr , false  )  )
+        ||     CoreConfig.getInstance().getProperty("core.in.trnsct.mode", false)) {
+            TRNSCT_MODE = true;
+        }
+        
+        TRNSCT_BASE = TRNSCT_MODE;
     }
 
     /**
@@ -169,6 +170,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
     @Override
     public void commit() {
+        TRNSCT_MODE = TRNSCT_BASE;
         if (tx != null ) {
             tx.success();
             tx  = null;
@@ -177,6 +179,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
     @Override
     public void revert() {
+        TRNSCT_MODE = TRNSCT_BASE;
         if (tx != null ) {
             tx.failure();
             tx  = null;

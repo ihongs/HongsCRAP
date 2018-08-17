@@ -1104,7 +1104,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
         private static Conn openByHref(final Map opts) {
             final String href = Synt.declare(opts.get("db-href"), "");
-            final String name = Conn.class.getName(  ) + ";" + href  ;
+            final String name = Conn.class.getName(  ) + ":" + href  ;
 
             return Core.GLOBAL_CORE.get ( name ,
             new Supplier<Conn> () {

@@ -9,7 +9,7 @@ import io.github.ihongs.util.thread.Async;
  * 消息推送管道
  * @author Hongs
  */
-public class MesagePushWorker extends Async<Mesage2> implements Core.GlobalSingleton {
+public class MesagePushWorker extends Async<Mesage2> implements Core.Singleton {
 
     protected MesagePushWorker(int maxTasks, int maxServs) throws HongsException {
         super(MesagePushWorker.class.getName( ), maxTasks, maxServs);

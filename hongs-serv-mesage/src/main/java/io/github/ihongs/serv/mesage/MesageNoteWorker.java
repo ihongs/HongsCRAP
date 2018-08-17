@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * 消息存储管道
  * @author Hongs
  */
-public class MesageNoteWorker extends Async<Mesage2> implements Core.GlobalSingleton {
+public class MesageNoteWorker extends Async<Mesage2> implements Core.Singleton {
 
     private final MesagePushWorker pushWorker;
 

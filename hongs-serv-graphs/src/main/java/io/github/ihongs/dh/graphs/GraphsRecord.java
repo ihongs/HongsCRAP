@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import org.neo4j.driver.v1.GraphDatabase;
 import org.neo4j.driver.v1.AuthTokens;
@@ -1092,27 +1093,26 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
          * @param opts
          * @return
          */
-        public static Conn getInstance(Map opts) {
-            String link = Synt.declare(opts.get("db-link"), "");
-            if  (  link.length() != 0 ) {
+        public static Conn getInstance(final Map opts) {
+            final String link = Synt.declare(opts.get("db-link"), "");
+            if ( 0 != link.length(  ) ) {
                 return openByLink(link);
             } else {
                 return openByHref(opts);
             }
         }
 
-        private static Conn openByHref(Map opts) {
-            String href = Synt.declare(opts.get("db-href"), "");
-            String name = Conn.class.getName(  ) + ";" + href  ;
+        private static Conn openByHref(final Map opts) {
+            final String href = Synt.declare(opts.get("db-href"), "");
+            final String name = Conn.class.getName(  ) + ";" + href  ;
 
-            synchronized (Core.GLOBAL_CORE) {
-                Conn conn = (Conn) Core.GLOBAL_CORE.got( name );
-                if ( conn == null) {
-                     conn =  new   Conn(href, opts);
-                  Core.GLOBAL_CORE.put (name, conn);
+            return Core.GLOBAL_CORE.get ( name ,
+            new Supplier<Conn> () {
+                @Override
+                public Conn get() {
+                    return new Conn(href, opts);
                 }
-                return conn;
-            }
+            });
         }
 
         private static Conn openByLink(String link) {

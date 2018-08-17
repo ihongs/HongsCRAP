@@ -22,7 +22,7 @@ import javax.websocket.Session;
  *
  * @author Hongs
  */
-public class MesageMainWorker extends Async<Mesage> implements MesageWorker, Core.GlobalSingleton {
+public class MesageMainWorker extends Async<Mesage> implements MesageWorker, Core.Singleton {
 
     private final MesageNoteWorker keepWorker;
 

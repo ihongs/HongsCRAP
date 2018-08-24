@@ -59,6 +59,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
     protected boolean OBJECT_MODE = false;
     protected boolean TRNSCT_MODE = false;
     protected final  boolean TRNSCT_BASE ;
+    protected final  Pattern UPDATE_RULE = Pattern.compile("(^|\\s)(CREATE|UPADTE|DELETE|REMOVE|SET)\\s");
 
     /**
      * 关系方向, 0 出, 1 进, 2 双向
@@ -92,7 +93,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         ||     CoreConfig.getInstance().getProperty("core.in.trnsct.mode", false)) {
             TRNSCT_MODE = true;
         }
-        
+
         TRNSCT_BASE = TRNSCT_MODE;
     }
 
@@ -174,6 +175,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         TRNSCT_MODE = TRNSCT_BASE;
         if (tx != null ) {
             tx.success();
+            tx.close();
             tx  = null;
         }
     }
@@ -183,6 +185,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         TRNSCT_MODE = TRNSCT_BASE;
         if (tx != null ) {
             tx.failure();
+            tx.close();
             tx  = null;
         }
     }
@@ -365,10 +368,9 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             // 调试用日志
             CoreLogger.debug("GraphsRecord.run: "+cql);
         }
-        if (TRNSCT_MODE) {
+        if (TRNSCT_MODE ) { // && UPDATE_RULE.matcher(cql).find(  )) {
             return conn().run(cql);
         } else {
-            open( );
             return open().run(cql);
         }
     }
@@ -384,7 +386,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             // 调试用日志
             CoreLogger.debug("GraphsRecord.run: "+injects(cql, pms));
         }
-        if (TRNSCT_MODE) {
+        if (TRNSCT_MODE ) { // && UPDATE_RULE.matcher(cql).find(  )) {
             return conn().run(cql, pms);
         } else {
             return open().run(cql, pms);

@@ -4,7 +4,7 @@ import io.github.ihongs.Core;
 import io.github.ihongs.CoreConfig;
 import io.github.ihongs.CoreLogger;
 import io.github.ihongs.HongsException;
-import io.github.ihongs.serv.handle.mesage.MesageSocket;
+import io.github.ihongs.serv.centre.MesageSocket;
 import io.github.ihongs.util.thread.Async;
 import java.io.IOException;
 import java.util.HashSet;

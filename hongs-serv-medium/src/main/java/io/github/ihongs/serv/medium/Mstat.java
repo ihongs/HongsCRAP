@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- *
+ * 计数模型
  * @author Hongs
  */
 public class Mstat extends Mlink {

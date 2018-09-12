@@ -1,4 +1,4 @@
-package io.github.ihongs.serv.handle.mesage;
+package io.github.ihongs.serv.centre;
 
 import io.github.ihongs.Cnst;
 import io.github.ihongs.Core;

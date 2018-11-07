@@ -10,6 +10,7 @@
         <module>hongs-serv-medium</module>
         <module>hongs-serv-mesage</module>
         <module>hongs-serv-graphs</module>
+        <module>hongs-serv-mongos</module>
         <module>hongs-serv-socket</module>
         <module>hongs-ueditor</module>
         <module>hongs-cms-web</module>

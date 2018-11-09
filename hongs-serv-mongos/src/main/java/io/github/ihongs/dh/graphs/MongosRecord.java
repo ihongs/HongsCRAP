@@ -1,6 +1,7 @@
 package io.github.ihongs.dh.graphs;
 
 import com.mongodb.MongoClient;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import static io.github.ihongs.Cnst.ID_KEY;
@@ -996,7 +997,7 @@ public class MongosRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             if (href == null || href.isEmpty()) {
                 href = "localhost:27017";
             }
-            
+
             String[] aa = href.split(":",2);
             String host = aa[0];
             int    port = 27017;
@@ -1005,7 +1006,7 @@ public class MongosRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             }
 
             HREF = href ;
-            CONN = new MongoClient(host, port);
+            CONN = new MongoClient(new ServerAddress(host, port));
 
             if (0 < Core.DEBUG && 4 != (4 & Core.DEBUG)) {
                 CoreLogger.trace ( "Connect to mongo database " + HREF );
@@ -1013,7 +1014,7 @@ public class MongosRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         }
 
         @Override
-        public  void close( ) throws Exception {
+        public synchronized void close() throws Exception {
             if (CONN == null) {
                 return;
             }
@@ -1033,9 +1034,10 @@ public class MongosRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
         /**
          * 获取数据连接会话
+         * 用完后务必 close
          * @return
          */
-        public MongoClient getClient() {
+        public synchronized MongoClient start() {
             if (CONN != null) {
                 CONT +=  1  ;
                 return  CONN;
@@ -1124,43 +1126,44 @@ public class MongosRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
     }
 
-    public static class Coll {
-        
+    public static class Coll implements AutoCloseable {
+
         private final Conn      CONN;
         private MongoClient     CLIE;
         private MongoDatabase   BASE;
         private MongoCollection COLL;
-        
+
         private Coll(Conn conn, String dn, String tn) {
             CONN = conn;
-            CLIE = CONN.getClient    (  );
+            CLIE = CONN.start        (  );
             BASE = CLIE.getDatabase  (dn);
             COLL = BASE.getCollection(tn);
         }
-        
+
+        @Override
         public void close() throws Exception {
             if (CLIE == null) {
                 return;
             }
-            
+
             CONN.close();
             CLIE = null;
             BASE = null;
             COLL = null;
         }
-        
+
         public MongoClient getClient() {
             return CLIE;
         }
-        
+
         public MongoDatabase getDatabase() {
             return BASE;
         }
-        
+
         public MongoCollection getCollection() {
             return COLL;
         }
-        
+
         /**
          * 使用配置名称连接
          * @param conf
@@ -1180,21 +1183,28 @@ public class MongosRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                 throw new HongsExemption.Common("Can not find form params in "+conf+"."+form);
             }
         }
-        
+
         /**
          * 使用配置参数连接
          * @param opts
          * @return
          */
         public static Coll getInstance(final Map opts) {
-            String base = Synt.declare(opts.get("database"), (String) opts.get("conf"));
-            String coll = Synt.declare(opts.get("dataname"), (String) opts.get("name"));
-            Conn conn = Conn.getInstance(opts);
-            return new  Coll(conn, base, coll);
+            final String dn = Synt.declare(opts.get("db-database"), (String) opts.get("conf"));
+            final String tn = Synt.declare(opts.get("db-basename"), (String) opts.get("name"));
+
+            return Core.THREAD_CORE.get().get(Coll.class.getName() +":"+ dn +":"+ tn,
+            new Supplier<Coll> () {
+                @Override
+                public Coll get() {
+                    Conn conn = Conn.getInstance(opts);
+                    return  new Coll( conn , dn , tn );
+                }
+            });
         }
 
     }
-    
+
     public static class Case {
 
         private static final String[] RELS = new String[] {

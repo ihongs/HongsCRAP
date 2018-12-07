@@ -374,9 +374,9 @@ public class SocketHelper extends ActionHelper {
                 } else {
                     end = cok.indexOf(";", beg);
                     if (end == -1) {
-                        return decode(cok.substring(beg,end).trim());
-                    } else {
                         return decode(cok.substring(beg/**/).trim());
+                    } else {
+                        return decode(cok.substring(beg,end).trim());
                     }
                 }
             }

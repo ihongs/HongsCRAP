@@ -352,7 +352,7 @@ public class SocketHelper extends ActionHelper {
         if (head == null) {
             return  null;
         }
-        List<String> cook = (List) head.get ("Cookie");
+        List<String> cook = (List) head.get("Cookie");
         if (cook == null) {
             return  null;
         }
@@ -362,13 +362,13 @@ public class SocketHelper extends ActionHelper {
         for (String cok : cook) {
             int beg = 0 ;
             int end = 0 ;
-            while(0 < (end = cok.indexOf  ("=", beg) ) ) {
-                String key = cok.substring(beg, end).trim( );
+            while ((end = cok.indexOf("=", beg)) != -1) {
+                String key = cok.substring(beg,end).trim();
                 beg =  end + 1;
                 if (!  key.equals(name)) {
-                    beg = cok.indexOf(";" , beg);
+                    beg = cok.indexOf(";", beg);
                 } else {
-                    end = cok.indexOf(";" , beg);
+                    end = cok.indexOf(";", beg);
                     if (end < 0) {
                         return decode(cok.substring(beg/**/).trim());
                     } else {

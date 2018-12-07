@@ -264,7 +264,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
     }
 
     /**
-     * @see close
+     * @see  close
      * @deprecated
      */
     public void destroy() {

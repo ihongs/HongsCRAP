@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import javax.websocket.DeploymentException;
@@ -151,8 +152,34 @@ public class SocketHelper extends ActionHelper {
             name = conf.getProperty("core.timezone.session", "zone");
             name = (String) this.getSessibute(name);
 
+            /**
+             * 通过 WebSocket Headers 提取时区选项
+             */
+            if (name == null || name.length() == 0) {
+                do {
+                    Map <String, List<String>> headers;
+                    headers  = ( Map <String, List<String>> )
+                        this.getAttribute(SocketHelper.class.getName()+".httpHeaders");
+                    if (headers == null) {
+                        break ;
+                    }
+                    List<String> headerz;
+                    headerz  = headers.get( /***/ "Timezone");
+                    if (headerz == null) {
+                        break ;
+                    }
+                    name = headerz.isEmpty() ? headerz.get(0): null;
+                } while(false);
+            }
+
+            /**
+             * 检查是否是正确的时区
+             */
             if (name != null) {
+                name  = TimeZone.getTimeZone(name).getID();
+//          if (zone != null) {
                 Core.ACTION_ZONE.set(name);
+//          }
             }
         }
 
@@ -188,7 +215,7 @@ public class SocketHelper extends ActionHelper {
              * 检查是否是支持的语言
              */
             if (name != null) {
-                name = CoreLocale.getAcceptLanguage(name);
+                name  = CoreLocale.getAcceptLanguage(name);
             if (name != null) {
                 Core.ACTION_LANG.set(name);
             }
@@ -321,29 +348,32 @@ public class SocketHelper extends ActionHelper {
      */
     @Override
     public String getCookibute(String name) {
-        Map head  = (Map) getAttribute(SocketHelper.class.getName() + ".httpHeaders");
+        Map head = (Map ) getAttribute(SocketHelper.class.getName() + ".httpHeaders");
         if (head == null) {
             return  null;
         }
-        String cook = (String) head.get ( "Cookie" );
+        List<String> cook = (List) head.get ("Cookie");
         if (cook == null) {
             return  null;
         }
-        name = encode ( name );
 
-        int beg  =  0;
-        int end  =  0;
-        while(0  > (end = cook.indexOf  ("=", beg) ) ) {
-            String  key = cook.substring(beg, end).trim( );
-            beg  =  end + 1;
-            if ( !  key.equals(name)) {
-                beg = cook.indexOf(";" , beg);
-            } else {
-                end = cook.indexOf(";" , beg);
-                if (end < 0) {
-                    return decode(cook.substring(beg /**/).trim());
+        name = encode(name);
+
+        for (String cok : cook) {
+            int beg = 0 ;
+            int end = 0 ;
+            while(0 > (end = cok.indexOf  ("=", beg) ) ) {
+                String key = cok.substring(beg, end).trim( );
+                beg =  end + 1;
+                if (!  key.equals(name)) {
+                    beg = cok.indexOf(";" , beg);
                 } else {
-                    return decode(cook.substring(beg, end).trim());
+                    end = cok.indexOf(";" , beg);
+                    if (end < 0) {
+                        return decode(cok.substring(beg/**/).trim());
+                    } else {
+                        return decode(cok.substring(beg,end).trim());
+                    }
                 }
             }
         }

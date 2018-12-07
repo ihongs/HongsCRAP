@@ -1,9 +1,11 @@
 package io.github.ihongs.dh.graphs;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
 import static io.github.ihongs.Cnst.ID_KEY;
 import io.github.ihongs.Cnst;
 import io.github.ihongs.Core;
@@ -991,7 +993,6 @@ public class MongosRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
         private final  String HREF;
         private MongoClient   CONN;
-        private int           CONT;
 
         private Conn ( String href , Map opts ) {
             if (href == null || href.isEmpty()) {
@@ -1018,28 +1019,17 @@ public class MongosRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             if (CONN == null) {
                 return;
             }
-            if (CONT >= 1   ) {
-                CONT -= 1;
-                return;
-            }
 
             CONN.close();
             CONN  = null;
-            CONT  =  0  ;
 
             if (0 < Core.DEBUG && 4 != (4 & Core.DEBUG)) {
                 CoreLogger.trace ( "Disconnect graph database " + HREF );
             }
         }
 
-        /**
-         * 获取数据连接会话
-         * 用完后务必 close
-         * @return
-         */
-        public synchronized MongoClient start() {
+        public MongoClient getClient() {
             if (CONN != null) {
-                CONT +=  1  ;
                 return  CONN;
             }
             throw  new  NullPointerException("Graph database is closed");
@@ -1135,7 +1125,7 @@ public class MongosRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
         private Coll(Conn conn, String dn, String tn) {
             CONN = conn;
-            CLIE = CONN.start        (  );
+            CLIE = CONN.getClient    (  );
             BASE = CLIE.getDatabase  (dn);
             COLL = BASE.getCollection(tn);
         }

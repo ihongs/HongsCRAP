@@ -44,15 +44,13 @@ import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainer
  *  public class Xxxx {
  *      @OnYyyy
  *      public void onYyyy(Session zz) {
- *          SocketHelper sh = SocketHelper.getInstance(zz);
- *          try {
+ *          try (
+ *              SocketHelper sh = SocketHelper.getInstance(zz);
+ *          ) {
  *              // TODO: Something ...
  *          }
  *          catch (Error|Exception ex) {
  *              CoreLogger.error ( ex);
- *          }
- *          finally {
- *              sh.destroy(); // 销毁环境, 务必执行
  *          }
  *      }
  *  }
@@ -65,7 +63,7 @@ import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainer
  *
  * @author Hongs
  */
-public class SocketHelper extends ActionHelper {
+public class  SocketHelper extends ActionHelper implements AutoCloseable {
 
     protected SocketHelper(Map data, Map prop) {
         super(data, prop, null, null);
@@ -246,7 +244,8 @@ public class SocketHelper extends ActionHelper {
     /**
      * 销毁环境
      */
-    public void destroy() {
+    @Override
+    public void close() {
         Core core = getCore();
 
         if (0 < Core.DEBUG && 8 != (8 & Core.DEBUG)) {
@@ -262,6 +261,14 @@ public class SocketHelper extends ActionHelper {
         }
 
         core.close();
+    }
+
+    /**
+     * @see close
+     * @deprecated
+     */
+    public void destroy() {
+        close();
     }
 
     public Core getCore() {

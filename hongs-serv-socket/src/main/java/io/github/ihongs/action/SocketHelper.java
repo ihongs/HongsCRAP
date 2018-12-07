@@ -359,20 +359,24 @@ public class SocketHelper extends ActionHelper {
 
         name = encode(name);
 
-        for (String cok : cook) {
-            int beg = 0 ;
-            int end = 0 ;
+        for(String cok : cook) {
+            String key ;
+            int beg = 0;
+            int end = 0;
             while ((end = cok.indexOf("=", beg)) != -1) {
-                String key = cok.substring(beg,end).trim();
-                beg =  end + 1;
-                if (!  key.equals(name)) {
+                key = cok . substring(beg, end).trim( );
+                beg = end + 1;
+                if (! key.equals(name)) {
                     beg = cok.indexOf(";", beg);
+                    if (beg == -1) {
+                        break;
+                    }
                 } else {
                     end = cok.indexOf(";", beg);
-                    if (end < 0) {
-                        return decode(cok.substring(beg/**/).trim());
-                    } else {
+                    if (end == -1) {
                         return decode(cok.substring(beg,end).trim());
+                    } else {
+                        return decode(cok.substring(beg/**/).trim());
                     }
                 }
             }

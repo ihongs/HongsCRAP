@@ -362,7 +362,7 @@ public class SocketHelper extends ActionHelper {
         for (String cok : cook) {
             int beg = 0 ;
             int end = 0 ;
-            while(0 > (end = cok.indexOf  ("=", beg) ) ) {
+            while(0 < (end = cok.indexOf  ("=", beg) ) ) {
                 String key = cok.substring(beg, end).trim( );
                 beg =  end + 1;
                 if (!  key.equals(name)) {

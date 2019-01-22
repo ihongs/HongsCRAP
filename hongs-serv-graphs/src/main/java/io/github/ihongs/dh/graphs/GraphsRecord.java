@@ -910,10 +910,10 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         }
 
         Map page = new HashMap( );
-        page.put("rowscount", tr);
-        page.put("pagecount", tp);
-        page.put("rows", rn);
-        page.put("page", pn);
+        page.put(Cnst.RN_KEY, rn);
+        page.put(Cnst.PN_KEY, pn);
+        page.put("count", tr );
+        page.put("pages", tp );
 
         if (tr == 0) {
             page.put("ern", 1); // 没有数据

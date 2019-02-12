@@ -246,7 +246,17 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
      */
     @Override
     public void close() {
-        Core core = getCore();
+        Core core = getCore ();
+        String kn = getClass()
+                  . getName ()
+                  + ":closing";
+
+        /**
+         * 规避递归调用导致死循环
+         */
+        if (!core.containsKey(kn))
+             core.put( kn , null );
+        else return ;
 
         if (0 < Core.DEBUG && 8 != (8 & Core.DEBUG)) {
             long time = System.currentTimeMillis(  ) - Core.ACTION_TIME.get();

@@ -11,27 +11,28 @@ import io.github.ihongs.util.Data;
 import io.github.ihongs.util.Synt;
 import io.github.ihongs.util.Tool;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.io.OutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.TimeZone;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
-import javax.websocket.DeploymentException;
-import javax.websocket.HandshakeResponse;
 import javax.websocket.Session;
+import javax.websocket.HandshakeResponse;
 import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerContainer;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.server.ServerEndpointConfig;
+
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 
@@ -100,9 +101,9 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
          */
         Core.ACTION_TIME.set(System.currentTimeMillis());
         Core.ACTION_NAME.set(Synt.declare(prop.get("ACTION_NAME"), ""));
-        Core.CLIENT_ADDR.set(Synt.declare(prop.get("ACTION_ADDR"), ""));
         Core.ACTION_LANG.set(Synt.declare(prop.get("ACTION_LANG"), ""));
         Core.ACTION_ZONE.set(Synt.declare(prop.get("ACTION_ZONE"), ""));
+        Core.CLIENT_ADDR.set(Synt.declare(prop.get("CLIENT_ADDR"), ""));
     }
 
     /**
@@ -227,10 +228,12 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         setAttribute("ACTION_NAME", Core.ACTION_NAME.get());
         setAttribute("ACTION_LANG", Core.ACTION_LANG.get());
         setAttribute("ACTION_ZONE", Core.ACTION_ZONE.get());
+        setAttribute("CLIENT_ADDR", Core.CLIENT_ADDR.get());
 
         /**
          * 输出一些调试信息
          */
+        /*
         if (0 < Core.DEBUG && 8 != (8 & Core.DEBUG)) {
             StringBuilder sb = new StringBuilder("WebSocket start");
               sb.append("\r\n\tACTION_NAME : ").append(Core.ACTION_NAME.get())
@@ -239,6 +242,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                 .append("\r\n\tACTION_ZONE : ").append(Core.ACTION_ZONE.get());
             CoreLogger.debug(sb.toString());
         }
+        */
     }
 
     /**
@@ -246,10 +250,9 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
      */
     @Override
     public void close() {
-        Core core = getCore ();
-        String kn = getClass()
-                  . getName ()
-                  + ":closing";
+        Core core = getCore();
+        String kn = SocketHelper.class.getName( ) + ":close";
+        String hn = SocketHelper.class.getName( ) + ":event";
 
         /**
          * 规避递归调用导致死循环
@@ -259,14 +262,18 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         else return ;
 
         if (0 < Core.DEBUG && 8 != (8 & Core.DEBUG)) {
-            long time = System.currentTimeMillis(  ) - Core.ACTION_TIME.get();
-            StringBuilder sb = new StringBuilder("...");
+            long time = System.currentTimeMillis(  ) - Core.ACTION_TIME.get( );
+            Set  keys = new  HashSet(core.keySet(  )  /***/);
+            String dn = Synt.declare(core.got   (hn), "...");
+            keys.remove ( kn );
+            keys.remove ( hn );
+            StringBuilder sb = new StringBuilder(dn);
               sb.append("\r\n\tACTION_NAME : ").append(Core.ACTION_NAME.get())
                 .append("\r\n\tACTION_TIME : ").append(Core.ACTION_TIME.get())
                 .append("\r\n\tACTION_LANG : ").append(Core.ACTION_LANG.get())
                 .append("\r\n\tACTION_ZONE : ").append(Core.ACTION_ZONE.get())
-                .append("\r\n\tObjects     : ").append(core.keySet().toString())
-                .append("\r\n\tRuntime     : ").append(Tool.humanTime(  time  ));
+                .append("\r\n\tObjects     : ").append(keys)
+                .append("\r\n\tRuntime     : ").append(Tool.humanTime( time ));
             CoreLogger.debug(sb.toString());
         }
 
@@ -291,6 +298,18 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
 
     public HttpSession getHttpSession() {
         return (HttpSession) getAttribute(HttpSession.class.getName());
+    }
+
+    /**
+     * 获取实例, 登记事件
+     * @param sess
+     * @param name
+     * @return
+     */
+    public static SocketHelper getInstance(Session sess , String name) {
+        SocketHelper inst = getInstance(sess);
+        inst.getCore().put(SocketHelper.class.getName()+":event",name);
+        return inst;
     }
 
     /**
@@ -598,15 +617,14 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
 
         @Override
         public void init(ServletContextHandler context) {
-            ServerContainer contain;
+            ServerContainer cont;
             try {
-                contain = WebSocketServerContainerInitializer.configureContext(context);
-            } catch (ServletException ex) {
-                throw new HongsError.Common(ex);
+                cont = WebSocketServerContainerInitializer.configureContext( context );
+            } catch (ServletException e) {
+                throw new HongsError.Common ( e );
             }
 
-            String pkgx  = CoreConfig.getInstance("defines"   )
-                                     .getProperty("apply.sock");
+            String pkgx  = CoreConfig.getInstance("defines").getProperty("apply.sock");
             if  (  pkgx != null ) {
                 String[]   pkgs = pkgx.split(";");
                 for(String pkgn : pkgs) {
@@ -622,9 +640,9 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                         ServerEndpoint anno = (ServerEndpoint) clso.getAnnotation(ServerEndpoint.class);
                         if (anno != null) {
                             try {
-                                contain.addEndpoint(clso);
-                            } catch  (  DeploymentException ex) {
-                                throw new HongsError.Common(ex);
+                              cont.addEndpoint(clso);
+                            } catch ( Exception ex ) {
+                              throw new HongsError.Common (ex);
                             }
                         }
                     }

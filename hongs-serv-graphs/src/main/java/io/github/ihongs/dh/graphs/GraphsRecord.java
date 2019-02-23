@@ -916,13 +916,13 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         page.put("pages", tp );
 
         if (tr == 0) {
-            page.put("ern", 1); // 没有数据
+            page.put("state", 0); // 没有数据
         } else
         if (tp < pn) {
-            page.put("ern", 2); // 页码超限
+            page.put("state", 0); // 页码超限
         } else
         {
-            page.put("ern", 0); // 正常
+            page.put("state", 1); // 正常
         }
 
         return page;

@@ -69,10 +69,6 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
      * 关系类型
      */
     public static final String RL_KEY = "labs";
-    /**
-     * 表单标签
-     */
-    public static final String DL_KEY = "db-label";
 
     private Session     db = null;
     private Transaction tx = null;
@@ -118,6 +114,15 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         } else {
             return  (GraphsRecord) core.got(code);
         }
+    }
+
+    /**
+     * 预定义标签
+     * 自动写入并作限制条件
+     * @return
+     */
+    public Set<String> getLabels() {
+        return Synt.toTerms(getParams().get("labels"));
     }
 
     /**
@@ -247,14 +252,13 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
     @Override
     public Map search(Map rd) throws HongsException {
         Map  f  = getFields();
-        Map  p  = getParams();
         Case ca = new Case(f);
 
         ca.match("(n)");
         ca.retur( "n" );
 
         // 限制当前表的标签
-        Set<String> la  = Synt.asSet(p.get(DL_KEY));
+        Set<String> la = getLabels();
         if (null != la && ! la.isEmpty()) {
             for(String lb : la) {
                ca.where("n:"+nquotes(lb));
@@ -442,6 +446,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         }
 
         Map<String, Map> flds = getFields();
+        Set<String>      laps = getLabels();
         Set<String>      keys = new HashSet();
         Set<String>      labs = new HashSet();
         Set<String>      rals = new HashSet();
@@ -451,17 +456,13 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
         cqls.append("MATCH (n {id:$id}) SET ");
 
-        // 预定义数据
-        Map at = getParams();
-        if (at.containsKey(DL_KEY)) {
-            Set las = Synt.asSet(at.get(DL_KEY));
-            if (las!= null)for(Object fv2 : las) {
-                String fv3 = Synt.asString( fv2);
-                String fv4 = nquotes( fv3);
-                cqls.append("n:")
-                    .append( fv4)
-                    .append( ",");
-            }
+        // 预定义标签
+        if (laps!= null)for(Object fv2 : laps) {
+            String fv3 = Synt.asString ( fv2 );
+            String fv4 = nquotes ( fv3 );
+            cqls.append("n:")
+                .append( fv4)
+                .append( ",");
         }
 
         // 写入新数据
@@ -488,7 +489,8 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                     throw e.toExemption( );
                 }
 
-                Set las = Synt.asSet(fv);
+                // 可选的标签
+                Set las = Synt.asSet( fv );
                 if (fv != null)
                 for(Object fv2 : las) {
                     String fv3 = Synt.asString(fv2);

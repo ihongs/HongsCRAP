@@ -1465,9 +1465,9 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                     Map fd2 = _subFs(fc);
                     for(Object fn2 : fd2.keySet()) {
                         Object fv2 = rd2.get(fn2);
-                        if (fv2 == null || "".equals(fv2)) {
+                        if ( null == fv2 || "".equals(fv2)) {
                             continue;
-                        }
+                        }   fv = fv2;
 
                         if ( ID_KEY . equals(fn2)) {
                             fn = mn +"."+ nquotes(fn2.toString());
@@ -1475,7 +1475,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                             fn = rn +"."+ nquotes(fn2.toString());
                         }
 
-                        if (fv instanceof Map ) {
+                        if (fv instanceof Map) {
                             pi = _cqlRl(whr, pms, fn, ( Map ) fv, pi);
                         } else
                         if (fv instanceof Collection

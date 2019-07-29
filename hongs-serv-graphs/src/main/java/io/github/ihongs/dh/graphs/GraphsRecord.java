@@ -1379,6 +1379,28 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
                 String ft = Synt.asString(fc.get("__type__"));
 
+                if (Cnst.OR_KEY.equals(fn)) {
+                    if (xi > 2) {
+                        continue;
+                    }
+                    Set rdz = Synt.asSet(fv);
+                    StringBuilder whr2 = new StringBuilder();
+                    StringBuilder whr3 = new StringBuilder();
+                    for(Object rdo : rdz) {
+                        whr3.setLength(0);
+                        Map rd2 = Synt.asMap(rdo);
+                        pi = _where(whr3, rd2, pi, 2);
+
+                        if (whr3.length() != 0) {
+                            whr3.setLength(whr3.length() - 5);
+                            whr2.append("(").append(whr3).append(")").append(" OR " );
+                        }
+                    }
+                        if (whr2.length() != 0) {
+                            whr2.setLength(whr2.length() - 4);
+                            whr .append("(").append(whr2).append(")").append(" AND ");
+                        }
+                } else
                 if (Cnst.AR_KEY.equals(fn)) {
                     if (xi > 1) {
                         continue;
@@ -1401,8 +1423,8 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                             whr .append("(").append(whr2).append(")").append(" AND ");
                         }
                 } else
-                if (Cnst.OR_KEY.equals(fn)) {
-                    if (xi > 2) {
+                if (Cnst.NR_KEY.equals(fn)) {
+                    if (xi > 1) {
                         continue;
                     }
                     Set rdz = Synt.asSet(fv);
@@ -1411,15 +1433,16 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                     for(Object rdo : rdz) {
                         whr3.setLength(0);
                         Map rd2 = Synt.asMap(rdo);
-                        pi = _where(whr3, rd2, pi, 2);
+                        pi = _where(whr3, rd2, pi, 1);
 
                         if (whr3.length() != 0) {
                             whr3.setLength(whr3.length() - 5);
-                            whr2.append("(").append(whr3).append(")").append(" OR " );
+                            whr2.append("(").append(whr3).append(")").append(" AND ");
                         }
                     }
                         if (whr2.length() != 0) {
-                            whr2.setLength(whr2.length() - 4);
+                            whr2.setLength(whr2.length() - 5);
+                            whr .append("NOT "); // 否定此条件
                             whr .append("(").append(whr2).append(")").append(" AND ");
                         }
                 } else

@@ -6,12 +6,12 @@
     <parent>
         <artifactId>hongs-crap</artifactId>
         <groupId>io.github.ihongs</groupId>
-        <version>0.4-SNAPSHOT</version>
+        <version>0.9-SNAPSHOT</version>
     </parent>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <dependencies>
         <dependency>
@@ -22,7 +22,7 @@
         <dependency>
             <artifactId>neo4j-java-driver</artifactId>
             <groupId>org.neo4j.driver</groupId>
-            <version>1.6.1</version>
+            <version>1.7.5</version>
         </dependency>
     </dependencies>
 </project>

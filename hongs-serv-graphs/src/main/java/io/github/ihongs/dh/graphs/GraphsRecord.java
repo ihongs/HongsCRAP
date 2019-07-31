@@ -64,11 +64,11 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
     /**
      * 关系方向, 0 出, 1 进, 2 双向
      */
-    public static final String RD_KEY = "dirn";
+    public static final String RD_KEY = "dir";
     /**
      * 关系类型
      */
-    public static final String RL_KEY = "labs";
+    public static final String RL_KEY = "lab";
 
     private Session     db = null;
     private Transaction tx = null;
@@ -122,7 +122,12 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
      * @return
      */
     public Set<String> getLabels() {
-        return Synt.toTerms(getParams().get("labels"));
+        Map ps = getParams();
+        if (ps.containsKey("labels")) {
+            return Synt.toTerms(ps.get("labels" ));
+        } else {
+            return Synt.toTerms(ps.get("part_id"));
+        }
     }
 
     /**
@@ -332,8 +337,8 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
     public String add(Map info) {
         String  id = Core.newIdentity( );
         info.remove(  ID_KEY  );
-        addNode(      id      );
-        setNode(id, info, null);
+        addNode(id      );
+        setNode(id, info);
         return  id;
     }
 
@@ -347,7 +352,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         if (node == null) {
             throw new NullPointerException("Can not set node '"+id+"', it is not exists");
         }
-        setNode(id, info, node);
+        setNode(id, info);
     }
 
     /**
@@ -359,7 +364,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         if (node == null) {
             throw new NullPointerException("Can not del node '"+id+"', it is not exists");
         }
-        delNode(id);
+        delNode(id      );
     }
 
     /**
@@ -438,9 +443,8 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
      * 设置节点
      * @param id
      * @param info
-     * @param node
      */
-    public void setNode(String id, Map info, Node node) {
+    public void setNode(String id, Map info) {
         if (id == null) {
             throw new NullPointerException("GraphsRecord.setNode: id can not be null");
         }

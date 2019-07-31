@@ -336,12 +336,25 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
      */
     public String add(Map info) {
         String  id = Core.newIdentity( );
-        info.remove(  ID_KEY  );
+        info.remove(ID_KEY);
         addNode(id      );
         setNode(id, info);
         return  id;
     }
 
+    /**
+     * 设置
+     * @param id
+     * @param info 
+     */
+    public void set(String id, Map info) {
+       Node node = getNode(id);
+        if (node == null) {
+            addNode( id );
+        }
+        setNode(id, info);
+    }
+    
     /**
      * 修改
      * @param id

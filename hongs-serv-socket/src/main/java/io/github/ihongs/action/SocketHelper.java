@@ -7,7 +7,7 @@ import io.github.ihongs.CoreLogger;
 import io.github.ihongs.HongsError;
 import io.github.ihongs.cmdlet.serv.ServerCmdlet;
 import io.github.ihongs.util.Classes;
-import io.github.ihongs.util.Data;
+import io.github.ihongs.util.Dawn;
 import io.github.ihongs.util.Synt;
 import io.github.ihongs.util.Tool;
 
@@ -496,7 +496,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         if (null != sess) {
             try {
                 Map    map = getResponseData( );
-                String str = Data.toString(map);
+                String str = Dawn.toString(map);
                 sess.getBasicRemote().sendText(str);
             } catch (IOException ex ) {
                 throw new HongsError(0x32, "Can not send to remote.", ex );

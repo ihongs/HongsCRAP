@@ -11,7 +11,7 @@ import io.github.ihongs.action.FormSet;
 import io.github.ihongs.dh.IEntity;
 import io.github.ihongs.dh.ITrnsct;
 import io.github.ihongs.dh.ModelCase;
-import io.github.ihongs.util.Data;
+import io.github.ihongs.util.Dawn;
 import io.github.ihongs.util.Dict;
 import io.github.ihongs.util.Synt;
 import io.github.ihongs.util.Tool;
@@ -121,13 +121,8 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
      * 自动写入并作限制条件
      * @return
      */
-    public Set<String> getLabels() {
-        Map ps = getParams();
-        if (ps.containsKey("labels")) {
-            return Synt.toTerms(ps.get("labels" ));
-        } else {
-            return Synt.toTerms(ps.get("part_id"));
-        }
+    public String getLabel() {
+        return Synt.asString ( getParams().get("label") );
     }
 
     /**
@@ -263,11 +258,9 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         ca.retur( "n" );
 
         // 限制当前表的标签
-        Set<String> la = getLabels();
-        if (null != la && ! la.isEmpty()) {
-            for(String lb : la) {
-               ca.where("n:"+nquotes(lb));
-            }
+        String pd = getLabel();
+        if (null != pd && ! pd.isEmpty()) {
+            ca.where("n:" + nquotes (pd));
         }
 
         return search(rd, ca);
@@ -345,7 +338,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
     /**
      * 设置
      * @param id
-     * @param info 
+     * @param info
      */
     public void set(String id, Map info) {
        Node node = getNode(id);
@@ -354,7 +347,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         }
         setNode(id, info);
     }
-    
+
     /**
      * 修改
      * @param id
@@ -463,7 +456,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         }
 
         Map<String, Map> flds = getFields();
-        Set<String>      laps = getLabels();
+            String       pd   = getLabel ();
         Set<String>      keys = new HashSet();
         Set<String>      labs = new HashSet();
         Set<String>      rals = new HashSet();
@@ -474,12 +467,10 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         cqls.append("MATCH (n {id:$id}) SET ");
 
         // 预定义标签
-        if (laps!= null)for(Object fv2 : laps) {
-            String fv3 = Synt.asString ( fv2 );
-            String fv4 = nquotes ( fv3 );
+        if (pd != null && !pd.isEmpty( )) {
             cqls.append("n:")
-                .append( fv4)
-                .append( ",");
+                .append( nquotes(pd) )
+                .append(", ");
         }
 
         // 写入新数据
@@ -515,7 +506,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                     labs.remove( fv3);
                     cqls.append("n:")
                         .append( fv4)
-                        .append( ",");
+                        .append(", ");
                 }
             } else
             if ("part".equals(ft)) {
@@ -1016,7 +1007,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                 if (so instanceof Collection
                 ||  so instanceof Object[ ]) {
                     StringBuilder op = new StringBuilder();
-                    Data.append ( op , so , true);
+                    Dawn.append ( op , so , true);
                     st = op.toString ( /*JSON*/ );
                 } else {
                     st = vquotes( so.toString() );

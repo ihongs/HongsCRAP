@@ -74,7 +74,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
     private Transaction tx = null;
 
     public GraphsRecord(Map form) {
-        super.setFields(form);
+        setFields(form);
 
         // 是否为对象模式
         Object ox  = Core.getInstance().got(Cnst.OBJECT_MODE);

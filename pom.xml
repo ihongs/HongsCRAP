@@ -7,8 +7,9 @@
     <version>0.9-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>hongs-serv-graphs</module>
         <module>hongs-serv-socket</module>
+        <module>hongs-serv-graphs</module>
+        <module>hongs-serv-graphy</module>
         <module>hongs-ueditor</module>
     </modules>
 </project>

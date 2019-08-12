@@ -13,8 +13,8 @@ import io.github.ihongs.dh.ITrnsct;
 import io.github.ihongs.dh.ModelCase;
 import io.github.ihongs.util.Dawn;
 import io.github.ihongs.util.Dict;
+import io.github.ihongs.util.Syno;
 import io.github.ihongs.util.Synt;
-import io.github.ihongs.util.Tool;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -974,7 +974,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
      * @return
      */
     public  static final String nquotes(String fn) {
-        return "`" + Tool.escape(fn, "\\`") + "`";
+        return "`" + Syno.escape(fn, "\\`") + "`";
     }
 
     /**
@@ -983,7 +983,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
      * @return
      */
     public  static final String vquotes(String fn) {
-        return "'" + Tool.escape(fn, "\\'") + "'";
+        return "'" + Syno.escape(fn, "\\'") + "'";
     }
 
     /**

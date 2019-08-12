@@ -8,8 +8,8 @@ import io.github.ihongs.HongsError;
 import io.github.ihongs.cmdlet.serv.ServerCmdlet;
 import io.github.ihongs.util.Classes;
 import io.github.ihongs.util.Dawn;
+import io.github.ihongs.util.Syno;
 import io.github.ihongs.util.Synt;
-import io.github.ihongs.util.Tool;
 
 import java.io.Writer;
 import java.io.OutputStream;
@@ -273,7 +273,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                 .append("\r\n\tACTION_LANG : ").append(Core.ACTION_LANG.get())
                 .append("\r\n\tACTION_ZONE : ").append(Core.ACTION_ZONE.get())
                 .append("\r\n\tObjects     : ").append(keys)
-                .append("\r\n\tRuntime     : ").append(Tool.humanTime( time ));
+                .append("\r\n\tRuntime     : ").append(Syno.humanTime( time ));
             CoreLogger.debug(sb.toString());
         }
 

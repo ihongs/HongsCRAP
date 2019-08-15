@@ -75,7 +75,7 @@ public class Grap extends Data {
             Map rd = new LinkedHashMap();
             padDat(doc, rd, gr.getFields().keySet());
 //          String id = (String) rd.get(Cnst.ID_KEY);
-            gr.setNode( id, rd);
+            gr.set(id , rd);
         }
     }
 
@@ -90,7 +90,7 @@ public class Grap extends Data {
             Map rd = new LinkedHashMap();
             padDat(doc, rd, gr.getFields().keySet());
             String id = (String) rd.get(Cnst.ID_KEY);
-            gr.setNode( id, rd);
+            gr.set(id , rd);
         }
     }
 
@@ -102,7 +102,7 @@ public class Grap extends Data {
         // 从图谱删除
         GraphsRecord gr = getGraph();
         if (gr != null) {
-            gr.delNode(id);
+            gr.del(id );
         }
     }
 

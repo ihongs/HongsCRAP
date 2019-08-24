@@ -16,17 +16,17 @@ import io.github.ihongs.util.Dict;
 import io.github.ihongs.util.Syno;
 import io.github.ihongs.util.Synt;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.neo4j.driver.v1.GraphDatabase;
 import org.neo4j.driver.v1.AuthTokens;
@@ -795,8 +795,8 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             }
         }
 
-        List<        Map> list = new LinkedList(  );
-        Map <String, Map> maps = new   HashMap (  );
+        List<        Map> list = new ArrayList (  );
+        Map <String, Map> maps = new  HashMap  (  );
 
         while (sr.hasNext()) {
             Record rec = sr.next(      );
@@ -811,14 +811,14 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             for(String fn: (Set<String>) rb) {
                 if (relKeys.containsKey(fn)) {
                     if(repKeys.contains(fn)) {
-                        row.put(fn, new LinkedList());
+                        row.put(fn, new ArrayList());
                     } else {
-                        row.put(fn, new   HashMap ());
+                        row.put(fn, new  HashMap ());
                     }
                 } else
                 if (ralKeys.containsKey(fn)) {
                     if(repKeys.contains(fn)) {
-                        row.put(fn, new LinkedList());
+                        row.put(fn, new ArrayList());
                     } else {
                         row.put(fn, null);
                     }
@@ -827,7 +827,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                     Set ls =labKeys.get(fn);
                     if(repKeys.contains(fn)) {
                         Set lv = new HashSet();
-                        for(String v : nod.labels( )) {
+                        for(String v : nod.labels()) {
                             if (ls.contains(v)) {
                                 lv.add (  v  );
                             }
@@ -835,7 +835,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                         row.put(fn, lv);
                     } else {
                         Object  lv = null ;
-                        for(String v : nod.labels( )) {
+                        for(String v : nod.labels()) {
                             if (ls.contains(v)) {
                                 lv = v ; break;
                             }

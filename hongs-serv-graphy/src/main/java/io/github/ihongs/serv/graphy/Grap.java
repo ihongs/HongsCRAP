@@ -102,7 +102,8 @@ public class Grap extends Data {
         // 从图谱删除
         GraphsRecord gr = getGraph();
         if (gr != null) {
-            gr.del(id );
+        //  gr.del    (id);
+            gr.delNode(id);
         }
     }
 

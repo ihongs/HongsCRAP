@@ -62,13 +62,17 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
     protected final  Pattern UPDATE_RULE = Pattern.compile("(^|\\s)(CREATE|UPADTE|DELETE|REMOVE|SET)\\s");
 
     /**
-     * 关系方向, 0 出, 1 进, 2 双向
+     * 关联关系方向, 0 出, 1 进, 2 双向
      */
     public static final String RD_KEY = "dir";
     /**
-     * 关系类型
+     * 关联关系标签
      */
     public static final String RL_KEY = "lab";
+    /**
+     * 关联节点标签
+     */
+    public static final String RT_KEY = "tab";
 
     private Session     db = null;
     private Transaction tx = null;
@@ -413,8 +417,10 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
      * @param id
      */
     public void delNode(String id) {
-        run("MATCH (n {id:$id})-[r]-() DELETE r", Synt.mapOf("id", id));
-        run("MATCH (n {id:$id}) "  +  "DELETE n", Synt.mapOf("id", id));
+        String pd  = getLabel();
+        pd  =  pd != null && ! pd.isEmpty() ? ":" + nquotes(pd) : "";
+        run("MATCH (n"+pd+" {id:$id})-[r]-() DELETE r", Synt.mapOf("id", id));
+        run("MATCH (n"+pd+" {id:$id}) "  +  "DELETE n", Synt.mapOf("id", id));
     }
 
     /**
@@ -423,7 +429,9 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
      * @return
      */
     public Node getNode(String id) {
-        StatementResult rs = run( "MATCH (n {id:$id}) RETURN n LIMIT 1", Synt.mapOf("id", id));
+        String pd  = getLabel();
+        pd  =  pd != null && ! pd.isEmpty() ? ":" + nquotes(pd) : "";
+        StatementResult rs = run( "MATCH (n"+pd+" {id:$id}) RETURN n LIMIT 1", Synt.mapOf("id", id));
         return rs.hasNext()
              ? rs.next(   )
                  .get ("n")
@@ -437,7 +445,9 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
      * @return
      */
     public Node addNode(String id) {
-        StatementResult rs = run("CREATE (n {id:$id}) RETURN n LIMIT 1", Synt.mapOf("id", id));
+        String pd  = getLabel();
+        pd  =  pd != null && ! pd.isEmpty() ? ":" + nquotes(pd) : "";
+        StatementResult rs = run("CREATE (n"+pd+" {id:$id}) RETURN n LIMIT 1", Synt.mapOf("id", id));
         return rs.hasNext()
              ? rs.next(   )
                  .get ("n")
@@ -456,22 +466,23 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         }
 
         Map<String, Map> flds = getFields();
-            String       pd   = getLabel ();
         Set<String>      keys = new HashSet();
         Set<String>      labs = new HashSet();
         Set<String>      rals = new HashSet();
         Set<Map>         rels = new HashSet();
         Map              vals = new HashMap();
         StringBuilder    cqls = new StringBuilder();
+        String           pd   = getLabel( );
 
-        cqls.append("MATCH (n {id:$id}) SET ");
-
-        // 预定义标签
-        if (pd != null && !pd.isEmpty( )) {
-            cqls.append("n:")
-                .append( nquotes(pd) )
-                .append(", ");
+        if (pd != null && ! pd.isEmpty( ) ) {
+            pd  = ":" + nquotes ( pd );
+        } else {
+            pd  =  "" ;
         }
+
+        cqls.append("MATCH (n")
+            .append(    pd    )
+            .append(" {id:$id}) SET ");
 
         // 写入新数据
         for(Object ot : info.entrySet( )) {
@@ -511,9 +522,10 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             } else
             if ("part".equals(ft)) {
                 Set res;
-                Set ids = new HashSet( );
-                String rt = Synt.declare(fc.get(RL_KEY), "");
+            //  Set ids = new HashSet( );
                 int    rd = Synt.declare(fc.get(RD_KEY), 2 );
+                String rl = Synt.declare(fc.get(RL_KEY), "");
+                String rt = Synt.declare(fc.get(RT_KEY), "");
                 if (Synt.declare(fc.get("__repeated__"), false)) {
                     res = Synt.asSet(fv);
                 } else {
@@ -522,15 +534,16 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                 if (fv != null)
                 for(Object fv2 : res) {
                     Map  reo = Synt.asMap(fv2);
-                    ids .add(reo.get(ID_KEY) );
+            //      ids .add(reo.get(ID_KEY) );
                     reo .put(RD_KEY, rd);
-                    reo .put(RL_KEY, rt);
+                    reo .put(RL_KEY, rl);
+                    reo .put(RT_KEY, rt);
                     rels.add(reo);
                 }
 
                 String rn = "r";
-                if (rt.length() != 0) {
-                    rn = rn + ":" + nquotes(rt);
+                if (rl.length() != 0) {
+                    rn = rn + ":" + nquotes(rl);
                 }
                 switch (rd) {
                     case 0:
@@ -543,13 +556,14 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                         rn =  "-[" + rn + "]-" ;
                         break;
                 }
-                rals.add("MATCH (n {id:$id})"+rn+"(m) DELETE r");
+                rals.add("MATCH (n"+ pd +" {id:$id})"+rn+"(m) DELETE r");
             } else
             if ("pick".equals(ft)) {
                 Set res;
-                Set ids = new HashSet( );
-                String rt = Synt.declare(fc.get(RL_KEY), "");
+            //  Set ids = new HashSet( );
                 int    rd = Synt.declare(fc.get(RD_KEY), 2 );
+                String rl = Synt.declare(fc.get(RL_KEY), "");
+                String rt = Synt.declare(fc.get(RT_KEY), "");
                 if (Synt.declare(fc.get("__repeated__"), false)) {
                     res = Synt.asSet(fv);
                 } else {
@@ -559,14 +573,15 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                 for(Object fv2 : res) {
                     Map  reo = Synt.mapOf(ID_KEY, fv2 );
                     reo .put(RD_KEY, rd);
-                    reo .put(RL_KEY, rt);
-                    ids .add(fv2);
+                    reo .put(RL_KEY, rl);
+                    reo .put(RT_KEY, rt);
+            //      ids .add(fv2);
                     rels.add(reo);
                 }
 
                 String rn = "r";
-                if (rt.length() != 0) {
-                    rn = rn + ":" + nquotes(rt);
+                if (rl.length() != 0) {
+                    rn = rn + ":" + nquotes(rl);
                 }
                 switch (rd) {
                     case 0:
@@ -579,7 +594,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                         rn =  "-[" + rn + "]-" ;
                         break;
                 }
-                rals.add("MATCH (n {id:$id})"+rn+"(m) DELETE r");
+                rals.add("MATCH (n"+ pd +" {id:$id})"+rn+"(m) DELETE r");
             } else
             {
                 /**
@@ -651,29 +666,36 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             for(Map rel : rels) {
                 String la , ra;
                 String fk = Synt.asString(rel.get(ID_KEY));
-                String rt = Synt.asString(rel.get(RL_KEY));
+                String rl = Synt.asString(rel.get(RL_KEY));
+                String rt = Synt.asString(rel.get(RT_KEY));
                 if (Synt.declare(rel.get(RD_KEY), 0) != 1) {
                     ra = "->"; la = "-";
                 } else {
                     la = "<-"; ra = "-";
                 }
 
+                // 关联标签
+                if (null != rt && rt.length() != 0) {
+                    rt = nquotes( rt );
+                    rt =  ":"  +  rt  ;
+                }
+
                 vals.clear();
                 vals.put("nid", id);
                 vals.put("mid", fk);
                 cqls.setLength( 0 );
-                cqls.append("MATCH (n {id:$nid}) ")
-                    .append("MATCH (m {id:$mid}) ")
+                cqls.append("MATCH (n").append(pd).append(" {id:$nid}) ")
+                    .append("MATCH (m").append(rt).append(" {id:$mid}) ")
                     .append("CREATE ")
                     .append("(n)" )
                     .append(  la  )
                     .append("[r"  );
 
                 // 添加标签
-                if (null != rt && rt.length() != 0) {
-                    rt = nquotes( rt );
+                if (null != rl && rl.length() != 0) {
+                    rl = nquotes( rl );
                     cqls.append ( ":");
-                    cqls.append ( rt );
+                    cqls.append ( rl );
                 }
 
                 // 添加属性
@@ -682,8 +704,9 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                     Map.Entry et = (Map.Entry)ot;
                     String fn = Synt.asString(et.getKey());
                     if (! ID_KEY.equals(fn)
+                    &&  ! RD_KEY.equals(fn)
                     &&  ! RL_KEY.equals(fn)
-                    &&  ! RD_KEY.equals(fn)) {
+                    &&  ! RT_KEY.equals(fn)) {
                         String k =""+vals.size();
                         Object v = et.getValue();
                         cqls.append(nquotes(fn))

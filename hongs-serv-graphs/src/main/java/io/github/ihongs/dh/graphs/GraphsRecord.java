@@ -59,7 +59,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
     protected boolean OBJECT_MODE = false;
     protected boolean TRNSCT_MODE = false;
     protected final  boolean TRNSCT_BASE ;
-    protected final  Pattern UPDATE_RULE = Pattern.compile("(^|\\s)(CREATE|UPADTE|DELETE|REMOVE|SET)\\s");
+//  protected final  Pattern UPDATE_RULE = Pattern.compile("(^|\\s)(CREATE|UPADTE|DELETE|REMOVE|SET)\\s");
 
     /**
      * 关联关系方向, 0 出, 1 进, 2 双向

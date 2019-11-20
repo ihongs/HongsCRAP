@@ -101,10 +101,10 @@ public class GrapCmdlet {
             String id = ( String ) od.get( Cnst.ID_KEY );
             if (Synt.declare(od.get("etime"), 0L) != 0L) {
             if (Synt.declare(od.get("state"), 1 ) >= 1 ) {
-                sd.put ("rtime", od.get("ctime"));
-                dr.redo( dt, id, sd );
+                sd.put("rtime" , od.get("ctime"));
+                dr.rev(id,sd);
             }  else  {
-                dr.drop( dt, id, sd );
+                dr.del(id,sd);
             }} else  {
             if (Synt.declare(od.get("state"), 1 ) >= 1 ) {
                 od = Synt.toMap( od.get( "data"));
@@ -161,7 +161,7 @@ public class GrapCmdlet {
 
         dr.begin();
 
-        int i  = 0;
+        int i = 0 ;
         for(String text : dats) {
             Map sd = data(text);
             String id = (String) sd.get(Cnst.ID_KEY);
@@ -169,7 +169,7 @@ public class GrapCmdlet {
                 id = Core.newIdentity();
                 sd.put(Cnst.ID_KEY, id);
             }   sd.put( "memo" , memo );
-            i += dr.save ( dt, id, sd );
+            i+= dr.put( id, sd );
 //          if (i % 500 == 0) {
 //               dr.commit( );
 //          }
@@ -215,10 +215,10 @@ public class GrapCmdlet {
 
         dr.begin();
 
-        int i  = 0;
+        int i = 0 ;
         for(Map od : dr.search(rd, 0, 0)) {
             String id = (String) od.get(Cnst.ID_KEY);
-            i += dr.save(dt, id, sd);
+            i+= dr.put( id, sd );
 //          if (i % 500 == 0) {
 //               dr.commit( );
 //          }
@@ -264,10 +264,10 @@ public class GrapCmdlet {
 
         dr.begin();
 
-        int i  = 0;
+        int i = 0 ;
         for(Map od : dr.search(rd, 0, 0)) {
             String id = (String) od.get(Cnst.ID_KEY);
-            i += dr.drop(dt, id, sd);
+            i+= dr.del( id, sd );
 //          if (i % 500 == 0) {
 //               dr.commit( );
 //          }

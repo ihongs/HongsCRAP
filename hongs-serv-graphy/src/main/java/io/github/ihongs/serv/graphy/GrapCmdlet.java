@@ -101,15 +101,15 @@ public class GrapCmdlet {
             String id = ( String ) od.get( Cnst.ID_KEY );
             if (Synt.declare(od.get("etime"), 0L) != 0L) {
             if (Synt.declare(od.get("state"), 1 ) >= 1 ) {
-                sd.put("rtime" , od.get("ctime"));
+                sd.put("rtime", od.get("ctime") );
                 dr.rev(id,sd);
             }  else  {
                 dr.del(id,sd);
             }} else  {
             if (Synt.declare(od.get("state"), 1 ) >= 1 ) {
-                od = Synt.toMap( od.get( "data"));
+                od = Synt.toMap(od.get( "data") );
                 od.putAll(sd);
-                dr.set(id,od);
+                dr.setDoc(id,dr.padDoc( od ));
             }  else  {
                 dr.delDoc(id);
             }}

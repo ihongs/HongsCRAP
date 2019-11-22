@@ -299,7 +299,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                 put(id, rd2);
             }
             catch (NullPointerException ex) {
-                throw new HongsException(0x1104, "Can not udpate for id: "+id);
+                throw new HongsException(0x404, "Can not udpate for id: "+id);
             }
         }
         return ids.size();
@@ -320,7 +320,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                 del(id);
             }
             catch (NullPointerException ex) {
-                throw new HongsException(0x1104, "Can not delete for id: "+id);
+                throw new HongsException(0x404, "Can not delete for id: "+id);
             }
         }
         return ids.size();
@@ -343,38 +343,44 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
      * 设置
      * @param id
      * @param info
+     * @return 1
      */
-    public void set(String id, Map info) {
+    public int set(String id, Map info) {
        Node node = getNode(id);
         if (node == null) {
             addNode( id );
         }
         setNode(id, info);
+        return 1;
     }
 
     /**
      * 修改
      * @param id
      * @param info
+     * @return 1
      */
-    public void put(String id, Map info) {
+    public int put(String id, Map info) {
        Node node = getNode(id);
         if (node == null) {
             throw new NullPointerException("Can not set node '"+id+"', it is not exists");
         }
         setNode(id, info);
+        return 1;
     }
 
     /**
      * 删除
      * @param id
+     * @return 1
      */
-    public void del(String id) {
+    public int del(String id) {
        Node node = getNode(id);
         if (node == null) {
             throw new NullPointerException("Can not del node '"+id+"', it is not exists");
         }
         delNode(id      );
+        return 1;
     }
 
     /**

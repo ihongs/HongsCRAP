@@ -4,7 +4,7 @@ import io.github.ihongs.Core;
 import io.github.ihongs.CoreConfig;
 import io.github.ihongs.CoreLocale;
 import io.github.ihongs.CoreLogger;
-import io.github.ihongs.HongsError;
+import io.github.ihongs.HongsExemption;
 import io.github.ihongs.cmdlet.serv.ServerCmdlet;
 import io.github.ihongs.util.reflex.Classes;
 import io.github.ihongs.util.Dawn;
@@ -132,7 +132,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         if (Core.BASE_HREF.length() +1 <= name.length()) {
             Core.ACTION_NAME.set(name.substring(Core.BASE_HREF.length() +1));
         } else {
-            throw new HongsError.Common("Wrong web socket uri: "+name );
+            throw new HongsExemption.Common("Wrong web socket uri: "+name );
         }
 
         InetSocketAddress addr = (InetSocketAddress)
@@ -452,7 +452,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             try {
                 return sess.getBasicRemote().getSendStream();
             } catch (IOException ex) {
-                throw new HongsError(0x32, "Can not get socket stream.", ex);
+                throw new HongsExemption(0x32, "Can not get socket stream.", ex);
             }
         }
         return super.getOutputStream();
@@ -469,7 +469,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             try {
                 return sess.getBasicRemote().getSendWriter();
             } catch (IOException ex) {
-                throw new HongsError(0x32, "Can not get socket writer.", ex);
+                throw new HongsExemption(0x32, "Can not get socket writer.", ex);
             }
         }
         return super.getOutputWriter();
@@ -499,10 +499,10 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                 String str = Dawn.toString(map);
                 sess.getBasicRemote().sendText(str);
             } catch (IOException ex ) {
-                throw new HongsError(0x32, "Can not send to remote.", ex );
+                throw new HongsExemption(0x32, "Can not send to remote.", ex );
             }
         } else {
-                throw new HongsError(0x32, "Session does not exist." /**/);
+                throw new HongsExemption(0x32, "Session does not exist." /**/);
         }
     }
 
@@ -621,7 +621,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             try {
                 cont = WebSocketServerContainerInitializer.configureContext( context );
             } catch (ServletException e) {
-                throw new HongsError.Common ( e );
+                throw new HongsExemption.Common( e );
             }
 
             String pkgx  = CoreConfig.getInstance("defines").getProperty("apply.sock");
@@ -642,7 +642,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                             try {
                               cont.addEndpoint(clso);
                             } catch ( Exception ex ) {
-                              throw new HongsError.Common (ex);
+                              throw new HongsExemption.Common (ex);
                             }
                         }
                     }
@@ -655,7 +655,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             try {
                 clso = Class.forName(clsn);
             } catch (ClassNotFoundException ex ) {
-                throw new HongsError.Common("Can not find class '" + clsn + "'.", ex);
+                throw new HongsExemption.Common("Can not find class '" + clsn + "'.", ex);
             }
             return clso;
         }
@@ -668,10 +668,10 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                 try {
                     clss = Classes.getClassNames(pkgn, true );
                 } catch (IOException ex) {
-                    throw new HongsError.Common("Can not load package '" + pkgn + "'.", ex);
+                    throw new HongsExemption.Common("Can not load package '" + pkgn + "'.", ex);
                 }
                 if (clss == null) {
-                    throw new HongsError.Common("Can not find package '" + pkgn + "'.");
+                    throw new HongsExemption.Common("Can not find package '" + pkgn + "'.");
                 }
             } else
             if (pkgn.endsWith(".*" )) {
@@ -679,10 +679,10 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                 try {
                     clss = Classes.getClassNames(pkgn, false);
                 } catch (IOException ex) {
-                    throw new HongsError.Common("Can not load package '" + pkgn + "'.", ex);
+                    throw new HongsExemption.Common("Can not load package '" + pkgn + "'.", ex);
                 }
                 if (clss == null) {
-                    throw new HongsError.Common("Can not find package '" + pkgn + "'.");
+                    throw new HongsExemption.Common("Can not find package '" + pkgn + "'.");
                 }
             } else {
                 clss = new HashSet();

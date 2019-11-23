@@ -132,7 +132,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         if (Core.BASE_HREF.length() +1 <= name.length()) {
             Core.ACTION_NAME.set(name.substring(Core.BASE_HREF.length() +1));
         } else {
-            throw new HongsExemption.Common("Wrong web socket uri: "+name );
+            throw new HongsExemption("Wrong web socket uri: "+name );
         }
 
         InetSocketAddress addr = (InetSocketAddress)
@@ -620,8 +620,8 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             ServerContainer cont;
             try {
                 cont = WebSocketServerContainerInitializer.configureContext( context );
-            } catch (ServletException e) {
-                throw new HongsExemption.Common( e );
+            } catch (ServletException ex) {
+                throw new HongsExemption(ex);
             }
 
             String pkgx  = CoreConfig.getInstance("defines").getProperty("apply.sock");
@@ -642,7 +642,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                             try {
                               cont.addEndpoint(clso);
                             } catch ( Exception ex ) {
-                              throw new HongsExemption.Common (ex);
+                              throw new HongsExemption(ex);
                             }
                         }
                     }
@@ -655,7 +655,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             try {
                 clso = Class.forName(clsn);
             } catch (ClassNotFoundException ex ) {
-                throw new HongsExemption.Common("Can not find class '" + clsn + "'.", ex);
+                throw new HongsExemption("Can not find class '" + clsn + "'.", ex);
             }
             return clso;
         }
@@ -668,10 +668,10 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                 try {
                     clss = Classes.getClassNames(pkgn, true );
                 } catch (IOException ex) {
-                    throw new HongsExemption.Common("Can not load package '" + pkgn + "'.", ex);
+                    throw new HongsExemption("Can not load package '" + pkgn + "'.", ex);
                 }
                 if (clss == null) {
-                    throw new HongsExemption.Common("Can not find package '" + pkgn + "'.");
+                    throw new HongsExemption("Can not find package '" + pkgn + "'.");
                 }
             } else
             if (pkgn.endsWith(".*" )) {
@@ -679,10 +679,10 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                 try {
                     clss = Classes.getClassNames(pkgn, false);
                 } catch (IOException ex) {
-                    throw new HongsExemption.Common("Can not load package '" + pkgn + "'.", ex);
+                    throw new HongsExemption("Can not load package '" + pkgn + "'.", ex);
                 }
                 if (clss == null) {
-                    throw new HongsExemption.Common("Can not find package '" + pkgn + "'.");
+                    throw new HongsExemption("Can not find package '" + pkgn + "'.");
                 }
             } else {
                 clss = new HashSet();

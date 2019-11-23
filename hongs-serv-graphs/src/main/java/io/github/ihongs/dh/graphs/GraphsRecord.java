@@ -1125,7 +1125,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             } catch (HongsException e) {
                 throw e.toExemption( );
             } catch (NullPointerException e) {
-                throw new HongsExemption.Common("Can not find form params in "+conf+"."+form);
+                throw new HongsExemption("Can not find form params in "+conf+"."+form);
             }
         }
 
@@ -1262,13 +1262,13 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
             Map fc = (Map ) fds.get(fn);
             if (fc == null) {
-                throw new HongsExemption.Common("Field item for "+fn+" is not exists");
+                throw new HongsExemption("Field item for "+fn+" is not exists");
             }
 
             String ft = (String) fc.get("__type__");
             if (! "pick".equals( ft )
             &&  ! "part".equals( ft )) {
-                throw new HongsExemption.Common("Field type for "+fn+" is not pick or part");
+                throw new HongsExemption("Field type for "+fn+" is not pick or part");
             }
 
             String mn = nquotes( fn + "_n" );

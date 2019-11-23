@@ -452,7 +452,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             try {
                 return sess.getBasicRemote().getSendStream();
             } catch (IOException ex) {
-                throw new HongsExemption(0x32, "Can not get socket stream.", ex);
+                throw new HongsExemption(0x832, "Can not get socket stream.", ex);
             }
         }
         return super.getOutputStream();
@@ -469,7 +469,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             try {
                 return sess.getBasicRemote().getSendWriter();
             } catch (IOException ex) {
-                throw new HongsExemption(0x32, "Can not get socket writer.", ex);
+                throw new HongsExemption(0x832, "Can not get socket writer.", ex);
             }
         }
         return super.getOutputWriter();
@@ -499,10 +499,10 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                 String str = Dawn.toString(map);
                 sess.getBasicRemote().sendText(str);
             } catch (IOException ex ) {
-                throw new HongsExemption(0x32, "Can not send to remote.", ex );
+                throw new HongsExemption(0x832, "Can not send to remote.", ex );
             }
         } else {
-                throw new HongsExemption(0x32, "Session does not exist." /**/);
+                throw new HongsExemption(0x832, "Session does not exist." /**/);
         }
     }
 

@@ -299,7 +299,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                 put(id, rd2);
             }
             catch (NullPointerException ex) {
-                throw new HongsException(0x404, "Can not udpate for id: "+id);
+                throw new HongsException(404, "Can not udpate for id: "+id);
             }
         }
         return ids.size();
@@ -320,7 +320,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
                 del(id);
             }
             catch (NullPointerException ex) {
-                throw new HongsException(0x404, "Can not delete for id: "+id);
+                throw new HongsException(404, "Can not delete for id: "+id);
             }
         }
         return ids.size();

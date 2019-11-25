@@ -9,7 +9,7 @@ import io.github.ihongs.HongsException;
 import io.github.ihongs.HongsExemption;
 import io.github.ihongs.action.FormSet;
 import io.github.ihongs.dh.IEntity;
-import io.github.ihongs.dh.ITrnsct;
+import io.github.ihongs.dh.IReflux;
 import io.github.ihongs.dh.ModelCase;
 import io.github.ihongs.util.Dawn;
 import io.github.ihongs.util.Dict;
@@ -54,11 +54,11 @@ import org.neo4j.driver.v1.types.Relationship;
  *
  * @author Hongs
  */
-public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoCloseable {
+public class GraphsRecord extends ModelCase implements IEntity, IReflux, AutoCloseable {
 
     protected boolean OBJECT_MODE = false;
-    protected boolean TRNSCT_MODE = false;
-    protected final  boolean TRNSCT_BASE ;
+    protected boolean REFLUX_MODE = false;
+    protected final  boolean REFLUX_BASE ;
 //  protected final  Pattern UPDATE_RULE = Pattern.compile("(^|\\s)(CREATE|UPADTE|DELETE|REMOVE|SET)\\s");
 
     /**
@@ -88,13 +88,13 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
         }
 
         // 是否要开启事务
-        Object tr  = Core.getInstance().got(Cnst.TRNSCT_MODE);
+        Object tr  = Core.getInstance().got(Cnst.REFLUX_MODE);
         if ( ( tr != null  &&  Synt.declare( tr , false  )  )
-        ||     CoreConfig.getInstance().getProperty("core.in.trnsct.mode", false)) {
-            TRNSCT_MODE = true;
+        ||     CoreConfig.getInstance().getProperty("core.in.reflux.mode", false)) {
+            REFLUX_MODE = true;
         }
 
-        TRNSCT_BASE = TRNSCT_MODE;
+        REFLUX_BASE = REFLUX_MODE;
     }
 
     /**
@@ -173,7 +173,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
     @Override
     public void begin( ) {
-        TRNSCT_MODE = true;
+        REFLUX_MODE = true;
         if (tx == null ) {
             tx  = open().beginTransaction();
         }
@@ -181,7 +181,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
     @Override
     public void commit() {
-        TRNSCT_MODE = TRNSCT_BASE;
+        REFLUX_MODE = REFLUX_BASE;
         if (tx != null ) {
             tx.success();
             tx.close();
@@ -191,7 +191,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
 
     @Override
     public void revert() {
-        TRNSCT_MODE = TRNSCT_BASE;
+        REFLUX_MODE = REFLUX_BASE;
         if (tx != null ) {
             tx.failure();
             tx.close();
@@ -393,7 +393,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             // 调试用日志
             CoreLogger.debug("GraphsRecord.run: "+cql);
         }
-        if (TRNSCT_MODE ) { // && UPDATE_RULE.matcher(cql).find(  )) {
+        if (REFLUX_MODE ) { // && UPDATE_RULE.matcher(cql).find(  )) {
             return conn().run(cql);
         } else {
             return open().run(cql);
@@ -411,7 +411,7 @@ public class GraphsRecord extends ModelCase implements IEntity, ITrnsct, AutoClo
             // 调试用日志
             CoreLogger.debug("GraphsRecord.run: "+injects(cql, pms));
         }
-        if (TRNSCT_MODE ) { // && UPDATE_RULE.matcher(cql).find(  )) {
+        if (REFLUX_MODE ) { // && UPDATE_RULE.matcher(cql).find(  )) {
             return conn().run(cql, pms);
         } else {
             return open().run(cql, pms);

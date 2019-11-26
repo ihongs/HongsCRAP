@@ -10,7 +10,7 @@ import io.github.ihongs.HongsExemption;
 import io.github.ihongs.action.FormSet;
 import io.github.ihongs.dh.IEntity;
 import io.github.ihongs.dh.IReflux;
-import io.github.ihongs.dh.ModelCase;
+import io.github.ihongs.dh.JFigure;
 import io.github.ihongs.util.Dawn;
 import io.github.ihongs.util.Dict;
 import io.github.ihongs.util.Syno;
@@ -54,7 +54,7 @@ import org.neo4j.driver.v1.types.Relationship;
  *
  * @author Hongs
  */
-public class GraphsRecord extends ModelCase implements IEntity, IReflux, AutoCloseable {
+public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoCloseable {
 
     protected boolean OBJECT_MODE = false;
     protected boolean REFLUX_MODE = false;

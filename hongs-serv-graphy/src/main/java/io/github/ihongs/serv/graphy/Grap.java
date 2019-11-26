@@ -5,7 +5,6 @@ import io.github.ihongs.Core;
 import io.github.ihongs.HongsException;
 import io.github.ihongs.dh.graphs.GraphsRecord;
 import io.github.ihongs.serv.matrix.Data;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +18,8 @@ import org.apache.lucene.document.Document;
 public class Grap extends Data {
 
     private Graph graph = null;
+
+    private Set<String> gpCols = null;
 
     public Grap(String conf, String form) {
         super(conf, form);
@@ -34,7 +35,7 @@ public class Grap extends Data {
     public static Grap getInstance(String conf, String form) {
         Grap  inst;
         Core   core = Core.getInstance();
-        String name = Grap.class.getName() +":"+ conf +":"+ form;
+        String name = Grap.class.getName() +":"+ conf +"."+ form;
         if (core.containsKey(name)) {
             inst = (Grap) core.got(name);
         } else {
@@ -45,7 +46,21 @@ public class Grap extends Data {
     }
 
     /**
+     * 图谱字段
+     * 无图谱字段时返回空集合
+     * @return
+     */
+    public Set <String> getGrapable() {
+        if (null != gpCols) {
+            return  gpCols;
+        }
+        gpCols = getCaseNames("grapable");
+        return gpCols;
+    }
+
+    /**
      * 获取模型
+     * 无图谱字段将返回 null
      * @return
      */
     public GraphsRecord getGraph() {
@@ -53,10 +68,9 @@ public class Grap extends Data {
             return  graph;
         }
 
-        // 必须明确指定哪些字段需要存入图谱
-        Set able  = getCaseNames("grapable");
-        if (able != null && !able.isEmpty()) {
-            graph = new  Graph  (   this   );
+        Set able  = getGrapable ( );
+        if (able != null && ! able.isEmpty()) {
+            graph = new Graph(this);
             return  graph;
         }
 
@@ -135,24 +149,25 @@ public class Grap extends Data {
         @Override
         public Map getFields() {
             try {
-                return super.getFields(  );
+                return   super.getFields();
             }
             catch (NullPointerException e) {
-                Map fs  = new LinkedHashMap(that.getFields());
-                Set gs  = getCaseNames("grapable");
+                Map fz ;
+                Map fs =  that.getFields();
+                Set gs =  that.getGrapable ( );
                 if (gs != null) {
-                    Iterator it = fs . entrySet( ).iterator();
-                    while (it.hasNext()) {
-                        Map.Entry et = (Map.Entry) it.next ();
-                        Object    fn = et.getKey();
-                        if (gs.contains(fn) || "@".equals(fn)) {
-                            continue;
+                    fz =  new LinkedHashMap( );
+                    for(Object fn : gs) {
+                        Object fc = fs.get(fn);
+                        if (fc != null) {
+                            fz.put (fn  ,  fc);
                         }
-                        it.remove( );
                     }
+                } else {
+                    fz =  fs ;
                 }
-                setFields(fs);
-                return    fs ;
+                setFields(fz);
+                return    fz ;
             }
         }
     }

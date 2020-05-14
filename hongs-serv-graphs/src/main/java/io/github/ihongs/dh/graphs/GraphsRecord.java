@@ -219,7 +219,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
         // 搜索
         Set<String> wd = Synt.toWords(rd.get(Cnst.WD_KEY));
         if (wd != null && !wd.isEmpty( )) {
-            finds(ca, wd, getSrchable( ));
+            finds(ca, wd, getRschable( ));
         }
 
         // 分页

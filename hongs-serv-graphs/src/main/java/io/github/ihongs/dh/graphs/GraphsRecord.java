@@ -277,10 +277,8 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
      * @throws HongsException
      */
     @Override
-    public Map create(Map rd) throws HongsException {
-        String id = add(rd);
-        rd.put(ID_KEY , id);
-        return rd;
+    public String create(Map rd) throws HongsException {
+        return add(rd);
     }
 
     /**

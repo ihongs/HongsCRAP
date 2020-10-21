@@ -511,8 +511,26 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
      * @param url
      */
     @Override
+    public void redirect(String url, String msg, int sta) {
+        throw new UnsupportedOperationException("Can not redirect to "+url+" in web socket");
+    }
+
+    /**
+     * @deprecated WebSocket 中不支持
+     * @param url
+     */
+    @Override
     public void redirect(String url) {
         throw new UnsupportedOperationException("Can not redirect to "+url+" in web socket");
+    }
+
+    /**
+     * @deprecated WebSocket 中不支持
+     * @param url
+     */
+    @Override
+    public void relocate(String url) {
+        throw new UnsupportedOperationException("Can not relocate to "+url+" in web socket");
     }
 
     /**
@@ -549,15 +567,6 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
     @Override
     public void error404(String msg) {
         throw new UnsupportedOperationException("Can not send http stat 404 in web socket, msg: "+msg);
-    }
-
-    /**
-     * @deprecated WebSocket 中不支持
-     * @param msg
-     */
-    @Override
-    public void error405(String msg) {
-        throw new UnsupportedOperationException("Can not send http stat 405 in web socket, msg: "+msg);
     }
 
     /**

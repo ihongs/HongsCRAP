@@ -520,7 +520,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
      * @param url
      */
     @Override
-    public void redirect(String url) {
+    public void redirect(String url, String msg) {
         throw new UnsupportedOperationException("Can not redirect to "+url+" in web socket");
     }
 
@@ -529,8 +529,8 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
      * @param url
      */
     @Override
-    public void relocate(String url) {
-        throw new UnsupportedOperationException("Can not relocate to "+url+" in web socket");
+    public void redirect(String url) {
+        throw new UnsupportedOperationException("Can not redirect to "+url+" in web socket");
     }
 
     /**

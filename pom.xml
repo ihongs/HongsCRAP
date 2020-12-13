@@ -4,7 +4,7 @@
     <name>Hong's Crap</name>
     <artifactId>hongs-crap</artifactId>
     <groupId>io.github.ihongs</groupId>
-    <version>0.9-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
         <module>hongs-serv-socket</module>
@@ -12,4 +12,17 @@
         <module>hongs-serv-graphy</module>
         <module>hongs-ueditor</module>
     </modules>
+    <build>
+        <plugins>
+            <plugin>
+                <!-- Usage: mvn versions:set -DnewVersion=1.0-SNAPSHOT -->
+                <artifactId>versions-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <version>2.8.1</version>
+                <configuration>
+                    <generateBackupPoms>false</generateBackupPoms>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

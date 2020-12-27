@@ -387,11 +387,11 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
      * @return
      */
     public StatementResult run(String cql) {
-        if ( 0 != Core.DEBUG && 8 != (8 & Core.DEBUG)) {
+        if (4 == (4 & Core.DEBUG)) {
             // 调试用日志
             CoreLogger.debug("GraphsRecord.run: "+cql);
         }
-        if (REFLUX_MODE ) { // && UPDATE_RULE.matcher(cql).find(  )) {
+        if (REFLUX_MODE ) { // && UPDATE_RULE.matcher(cql).find()) {
             return conn().run(cql);
         } else {
             return open().run(cql);
@@ -404,12 +404,12 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
      * @param pms
      * @return
      */
-    public StatementResult run(String cql, Map  pms  ) {
-        if ( 0 != Core.DEBUG && 8 != (8 & Core.DEBUG)) {
+    public StatementResult run(String cql, Map pms) {
+        if (4 == (4 & Core.DEBUG)) {
             // 调试用日志
             CoreLogger.debug("GraphsRecord.run: "+injects(cql, pms));
         }
-        if (REFLUX_MODE ) { // && UPDATE_RULE.matcher(cql).find(  )) {
+        if (REFLUX_MODE ) { // && UPDATE_RULE.matcher(cql).find()) {
             return conn().run(cql, pms);
         } else {
             return open().run(cql, pms);
@@ -1079,21 +1079,17 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                .toConfig()
             );
 
-            if (0 < Core.DEBUG && 4 != (4 & Core.DEBUG)) {
-                CoreLogger.trace ( "Connect to graph database " + HREF );
-            }
+            CoreLogger.trace("Connect to graph database {}", HREF);
         }
 
         @Override
         public  void close( ) throws Exception {
             if (CONN == null) return ;
 
-            CONN.close( );
-            CONN  = null ;
+            CONN.close();
+            CONN = null ;
 
-            if (0 < Core.DEBUG && 4 != (4 & Core.DEBUG)) {
-                CoreLogger.trace ( "Disconnect graph database " + HREF );
-            }
+            CoreLogger.trace("Disconnect graph database {}", HREF);
         }
 
         /**

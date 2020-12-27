@@ -261,7 +261,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
              core.put( kn , null );
         else return ;
 
-        if (0 < Core.DEBUG && 8 != (8 & Core.DEBUG)) {
+        if (4 == (4 & Core.DEBUG)) {
             long time = System.currentTimeMillis(  ) - Core.ACTION_TIME.get( );
             Set  keys = new  HashSet(core.keySet(  )  /***/);
             String dn = Synt.declare(core.got   (hn), "...");

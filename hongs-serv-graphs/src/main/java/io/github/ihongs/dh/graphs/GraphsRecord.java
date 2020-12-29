@@ -173,30 +173,30 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
 
     @Override
     public void begin( ) {
-        REFLUX_MODE = true;
         if (tx == null ) {
             tx  = open().beginTransaction();
         }
+        REFLUX_MODE = true;
     }
 
     @Override
     public void commit() {
-        REFLUX_MODE = REFLUX_BASE;
         if (tx != null ) {
             tx.success();
             tx.close();
             tx  = null;
         }
+        REFLUX_MODE = REFLUX_BASE;
     }
 
     @Override
     public void revert() {
-        REFLUX_MODE = REFLUX_BASE;
         if (tx != null ) {
             tx.failure();
             tx.close();
             tx  = null;
         }
+        REFLUX_MODE = REFLUX_BASE;
     }
 
     /**

@@ -128,9 +128,9 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
 
         Core.ACTION_TIME.set(System.currentTimeMillis());
 
-        String name  =  sess.getRequestURI( ).getPath( );
-        if (Core.BASE_HREF.length() +1 <= name.length()) {
-            Core.ACTION_NAME.set(name.substring(Core.BASE_HREF.length() +1));
+        String name = sess . getRequestURI( ).getPath( );
+        if (name.length() >= Core.SERV_PATH.length()+1 ) {
+            Core.ACTION_NAME.set(name.substring(Core.SERV_PATH.length() + 1));
         } else {
             throw new HongsExemption("Wrong web socket uri: "+name );
         }

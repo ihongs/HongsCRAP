@@ -3,7 +3,6 @@ package io.github.ihongs.dh.graphs;
 import static io.github.ihongs.Cnst.ID_KEY;
 import io.github.ihongs.Cnst;
 import io.github.ihongs.Core;
-import io.github.ihongs.CoreConfig;
 import io.github.ihongs.CoreLogger;
 import io.github.ihongs.HongsException;
 import io.github.ihongs.HongsExemption;
@@ -57,8 +56,9 @@ import org.neo4j.driver.v1.types.Relationship;
 public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoCloseable {
 
     protected boolean REFLUX_MODE = false;
-    protected final  boolean REFLUX_BASE ;
-//  protected final  Pattern UPDATE_RULE = Pattern.compile("(^|\\s)(CREATE|UPADTE|DELETE|REMOVE|SET)\\s");
+
+    protected final static Pattern INJECT_RULE = Pattern.compile("\\$(\\w+)");
+//  protected final static Pattern UPDATE_RULE = Pattern.compile("(^|\\s)(CREATE|UPADTE|DELETE|REMOVE|SET)\\s");
 
     /**
      * 关联关系方向, 0 出, 1 进, 2 双向
@@ -78,15 +78,6 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
 
     public GraphsRecord(Map form) {
         setFields(form);
-
-        // 是否要开启事务
-        Object tr  = Core.getInstance().got(Cnst.REFLUX_MODE);
-        if ( ( tr != null  &&  Synt.declare( tr , false  )  )
-        ||     CoreConfig.getInstance().getProperty("core.in.reflux.mode", false)) {
-            REFLUX_MODE = true;
-        }
-
-        REFLUX_BASE = REFLUX_MODE;
     }
 
     /**
@@ -178,7 +169,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
             tx.close();
             tx  = null;
         }
-        REFLUX_MODE = REFLUX_BASE;
+        REFLUX_MODE = false;
     }
 
     @Override
@@ -188,7 +179,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
             tx.close();
             tx  = null;
         }
-        REFLUX_MODE = REFLUX_BASE;
+        REFLUX_MODE = false;
     }
 
     /**
@@ -1015,9 +1006,8 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
      * @param pms
      * @return
      */
-    private static final Pattern CQLE = Pattern.compile("\\$(\\w+)");
     public  static final String injects(String cql, Map pms) {
-        Matcher matcher = CQLE. matcher(cql);
+        Matcher matcher = INJECT_RULE.matcher( cql );
         StringBuffer sb = new StringBuffer();
         String       st;
         Object       so;

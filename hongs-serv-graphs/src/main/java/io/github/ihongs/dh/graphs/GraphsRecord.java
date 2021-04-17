@@ -56,7 +56,6 @@ import org.neo4j.driver.v1.types.Relationship;
  */
 public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoCloseable {
 
-    protected boolean STRING_MODE = false;
     protected boolean REFLUX_MODE = false;
     protected final  boolean REFLUX_BASE ;
 //  protected final  Pattern UPDATE_RULE = Pattern.compile("(^|\\s)(CREATE|UPADTE|DELETE|REMOVE|SET)\\s");
@@ -79,13 +78,6 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
 
     public GraphsRecord(Map form) {
         setFields(form);
-
-        // 是否为对象模式
-        Object ox  = Core.getInstance().got(Cnst.STRING_MODE);
-        if ( ( ox != null  &&  Synt.declare( ox , false  )  )
-        ||     CoreConfig.getInstance().getProperty("core.in.object.mode", false)) {
-            STRING_MODE = true;
-        }
 
         // 是否要开启事务
         Object tr  = Core.getInstance().got(Cnst.REFLUX_MODE);
@@ -872,9 +864,11 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                 } else
                 if (nod.containsKey(fn)) {
                     Object cv = nod.get(fn).asObject();
+                    /*
                     if (STRING_MODE && null != cv ) {
                            cv = Synt.asString( cv );
                     }
+                    */
                     row.put(fn, cv  );
                 } else {
                     row.put(fn, null);
@@ -920,9 +914,11 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                 // 关系属性
                 for(String xn : re.keys( )) {
                     Object cv = re.get (xn).asObject();
+                    /*
                     if (STRING_MODE && null != cv ) {
                            cv = Synt.asString( cv );
                     }
+                    */
                     ral.put(xn, cv);
                 }
                 ral.put ( ID_KEY , mid);

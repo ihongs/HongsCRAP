@@ -56,7 +56,7 @@ import org.neo4j.driver.v1.types.Relationship;
  */
 public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoCloseable {
 
-    protected boolean OBJECT_MODE = false;
+    protected boolean STRING_MODE = false;
     protected boolean REFLUX_MODE = false;
     protected final  boolean REFLUX_BASE ;
 //  protected final  Pattern UPDATE_RULE = Pattern.compile("(^|\\s)(CREATE|UPADTE|DELETE|REMOVE|SET)\\s");
@@ -81,10 +81,10 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
         setFields(form);
 
         // 是否为对象模式
-        Object ox  = Core.getInstance().got(Cnst.OBJECT_MODE);
+        Object ox  = Core.getInstance().got(Cnst.STRING_MODE);
         if ( ( ox != null  &&  Synt.declare( ox , false  )  )
         ||     CoreConfig.getInstance().getProperty("core.in.object.mode", false)) {
-            OBJECT_MODE = true;
+            STRING_MODE = true;
         }
 
         // 是否要开启事务
@@ -871,13 +871,13 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                     }
                 } else
                 if (nod.containsKey(fn)) {
-                    Object data = nod.get(fn).asObject();
-                    if ( ! OBJECT_MODE && data != null ) {
-                           data = data.toString();
+                    Object cv = nod.get(fn).asObject();
+                    if (STRING_MODE && null != cv ) {
+                           cv = Synt.asString( cv );
                     }
-                    row.put( fn , data);
+                    row.put(fn, cv  );
                 } else {
-                    row.put( fn , null);
+                    row.put(fn, null);
                 }
             }
         }
@@ -920,8 +920,8 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                 // 关系属性
                 for(String xn : re.keys( )) {
                     Object cv = re.get (xn).asObject();
-                    if ( ! OBJECT_MODE && cv != null ) {
-                           cv = cv.toString();
+                    if (STRING_MODE && null != cv ) {
+                           cv = Synt.asString( cv );
                     }
                     ral.put(xn, cv);
                 }

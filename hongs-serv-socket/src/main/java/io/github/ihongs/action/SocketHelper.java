@@ -277,8 +277,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             CoreLogger.debug(sb.toString());
         }
 
-        core.close();
-        core.clear();
+        core.destroy();
     }
 
     /**

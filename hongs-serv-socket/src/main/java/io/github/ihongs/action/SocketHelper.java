@@ -278,6 +278,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         }
 
         core.close();
+        core.clear();
     }
 
     /**

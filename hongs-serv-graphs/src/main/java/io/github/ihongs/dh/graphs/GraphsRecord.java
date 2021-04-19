@@ -99,7 +99,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
             GraphsRecord inst = new GraphsRecord(fxrm);
             core.put( code, inst ) ; return inst ;
         } else {
-            return  (GraphsRecord) core.got(code);
+            return  (GraphsRecord) core.get(code);
         }
     }
 

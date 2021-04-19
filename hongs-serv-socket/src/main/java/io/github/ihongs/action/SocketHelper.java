@@ -141,7 +141,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             Core.CLIENT_ADDR.set(addr.getAddress().getHostAddress());
         }
 
-        CoreConfig conf = core.get(CoreConfig.class);
+        CoreConfig conf = core.got(CoreConfig.class);
 
         Core.ACTION_ZONE.set(conf.getProperty("core.timezone.default", "GMT-8"));
         if (conf.getProperty("core.timezone.probing", false)) {
@@ -264,7 +264,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         if (4 == (4 & Core.DEBUG)) {
             long time = System.currentTimeMillis(  ) - Core.ACTION_TIME.get( );
             Set  keys = new  HashSet(core.keySet(  )  /***/);
-            String dn = Synt.declare(core.got   (hn), "...");
+            String dn = Synt.declare(core.get   (hn), "...");
             keys.remove ( kn );
             keys.remove ( hn );
             StringBuilder sb = new StringBuilder(dn);
@@ -321,7 +321,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         Core         core = Core.getInstance();
         Map          prop = sess.getUserProperties ();
         SocketHelper hepr = (SocketHelper) prop.get(SocketHelper.class.getName());
-        SocketHelper hepc = (SocketHelper) core.got(SocketHelper.class.getName());
+        SocketHelper hepc = (SocketHelper) core.get(SocketHelper.class.getName());
 
         if (hepr == null) {
             /**

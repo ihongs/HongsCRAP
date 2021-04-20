@@ -40,7 +40,7 @@ public class Grap extends Data {
             inst = (Grap) core.get(name);
         } else {
             inst = new Grap(conf , form);
-            core.put( name , inst );
+            core.set( name , inst );
         }
         return inst;
     }

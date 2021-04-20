@@ -97,7 +97,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
         if ( ! core.containsKey( code ) ) {
             Map  fxrm = FormSet.getInstance(conf).getForm(form);
             GraphsRecord inst = new GraphsRecord(fxrm);
-            core.put( code, inst ) ; return inst ;
+            core.set( code, inst ) ; return inst ;
         } else {
             return  (GraphsRecord) core.get(code);
         }

@@ -94,7 +94,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
     throws HongsException {
         String code = GraphsRecord.class.getName( ) +":"+ conf +"."+ form;
         Core   core = Core.getInstance( );
-        if ( ! core.containsKey( code ) ) {
+        if ( ! core.isset (code) ) {
             Map  fxrm = FormSet.getInstance(conf).getForm(form);
             GraphsRecord inst = new GraphsRecord(fxrm);
             core.set( code, inst ) ; return inst ;

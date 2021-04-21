@@ -36,7 +36,7 @@ public class Grap extends Data {
         Grap  inst;
         Core   core = Core.getInstance();
         String name = Grap.class.getName() +":"+ conf +"."+ form;
-        if (core.containsKey(name)) {
+        if (core.isset(name)) {
             inst = (Grap) core.get(name);
         } else {
             inst = new Grap(conf , form);

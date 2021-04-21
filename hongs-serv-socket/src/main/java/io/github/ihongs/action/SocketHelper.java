@@ -89,8 +89,8 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         /**
          * 放入 Core 中以便在动作线程内随时取用
          */
-        core.put(SocketHelper.class.getName(), this);
-        core.put(ActionHelper.class.getName(), this);
+        core.set(SocketHelper.class.getName(), this);
+        core.set(ActionHelper.class.getName(), this);
 
         /**
          * 在 Jetty 中(其他的容器还没试)
@@ -119,8 +119,8 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         /**
          * 放入 Core 中以便在动作线程内随时取用
          */
-        core.put(SocketHelper.class.getName(), this);
-        core.put(ActionHelper.class.getName(), this);
+        core.set(SocketHelper.class.getName(), this);
+        core.set(ActionHelper.class.getName(), this);
 
         /**
          * 按照 Servlet 过程一样初始化动作环境
@@ -257,22 +257,21 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         /**
          * 规避递归调用导致死循环
          */
-        if (!core.containsKey(kn))
-             core.put( kn , null );
+        if (!core.isset(kn))
+             core. set (kn, null);
         else return ;
 
         if (4 == (4 & Core.DEBUG)) {
             long time = System.currentTimeMillis(  ) - Core.ACTION_TIME.get( );
-            Set  keys = new  HashSet(core.keySet(  )  /***/);
-            String dn = Synt.declare(core.get   (hn), "...");
-            keys.remove ( kn );
-            keys.remove ( hn );
+            String dn = Synt.declare ( core.get (hn), "...");
+            core.unset( kn );
+            core.unset( hn );
             StringBuilder sb = new StringBuilder(dn);
               sb.append("\r\n\tACTION_NAME : ").append(Core.ACTION_NAME.get())
                 .append("\r\n\tACTION_TIME : ").append(Core.ACTION_TIME.get())
                 .append("\r\n\tACTION_LANG : ").append(Core.ACTION_LANG.get())
                 .append("\r\n\tACTION_ZONE : ").append(Core.ACTION_ZONE.get())
-                .append("\r\n\tObjects     : ").append(keys)
+                .append("\r\n\tObjects     : ").append(core.toString ( /**/ ))
                 .append("\r\n\tRuntime     : ").append(Syno.humanTime( time ));
             CoreLogger.debug(sb.toString());
         }
@@ -308,7 +307,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
      */
     public static SocketHelper getInstance(Session sess , String name) {
         SocketHelper inst = getInstance(sess);
-        inst.getCore().put(SocketHelper.class.getName()+":event",name);
+        inst.getCore().set(SocketHelper.class.getName()+":event",name);
         return inst;
     }
 

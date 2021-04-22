@@ -33,14 +33,12 @@ public class Grap extends Data {
      * @return
      */
     public static Grap getInstance(String conf, String form) {
-        Grap  inst;
-        Core   core = Core.getInstance();
-        String name = Grap.class.getName() +":"+ conf +"."+ form;
-        if (core.isset(name)) {
-            inst = (Grap) core.get(name);
-        } else {
-            inst = new Grap(conf , form);
-            core.set( name , inst );
+        String name =  Grap.class.getName() +":"+ conf +"."+ form;
+        Core   core =  Core.getInstance(  );
+        Grap   inst = (Grap) core.get(name);
+        if (inst == null) {
+            inst = new Grap(conf, form);
+            core.set(name , inst);
         }
         return inst;
     }

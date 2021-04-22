@@ -257,8 +257,8 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         /**
          * 规避递归调用导致死循环
          */
-        if (!core.isset(kn))
-             core. set (kn, null);
+        if (!core.exists( kn ))
+             core.set(kn, null);
         else return ;
 
         if (4 == (4 & Core.DEBUG)) {

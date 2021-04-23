@@ -251,21 +251,16 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
     @Override
     public void close() {
         Core core = getCore();
-        String kn = SocketHelper.class.getName( ) + ":close";
-        String hn = SocketHelper.class.getName( ) + ":event";
+        String hn = SocketHelper.class.getName( );
+        String kn = ActionHelper.class.getName( );
 
-        /**
-         * 规避递归调用导致死循环
-         */
-        if (!core.exists( kn ))
-             core.set(kn, null);
-        else return ;
+        if (!core.exists(kn)) {
+            return;
+        }
 
         if (4 == (4 & Core.DEBUG)) {
             long time = System.currentTimeMillis(  ) - Core.ACTION_TIME.get( );
-            String dn = Synt.declare ( core.get (hn), "...");
-            core.unset( kn );
-            core.unset( hn );
+            String dn = Synt.declare(core.remove(hn + ":event"), "...");
             StringBuilder sb = new StringBuilder(dn);
               sb.append("\r\n\tACTION_NAME : ").append(Core.ACTION_NAME.get())
                 .append("\r\n\tACTION_TIME : ").append(Core.ACTION_TIME.get())
@@ -276,6 +271,10 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             CoreLogger.debug(sb.toString());
         }
 
+        // 先移出自身, 规避递归调用导致死循环
+        core.remove(kn);
+        core.remove(hn);
+        
         core.reset();
     }
 

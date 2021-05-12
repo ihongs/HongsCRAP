@@ -1,6 +1,5 @@
 package io.github.ihongs.serv.graphy;
 
-import io.github.ihongs.Cnst;
 import io.github.ihongs.Core;
 import io.github.ihongs.HongsException;
 import io.github.ihongs.dh.graphs.GraphsRecord;
@@ -76,6 +75,22 @@ public class Grap extends Data {
     }
 
     @Override
+    public void addDoc(final String   id ,
+                       final Document doc)
+    throws HongsException {
+        super.addDoc(id, doc);
+
+        // 保存到图谱
+        GraphsRecord gr = getGraph();
+        if (gr != null) {
+            Map rd = new LinkedHashMap();
+            padDat(doc, rd, gr.getFields().keySet());
+        //  String id = (String) rd.get(Cnst.ID_KEY);
+            gr.set(id , rd);
+        }
+    }
+
+    @Override
     public void setDoc(final String   id ,
                        final Document doc)
     throws HongsException {
@@ -86,22 +101,7 @@ public class Grap extends Data {
         if (gr != null) {
             Map rd = new LinkedHashMap();
             padDat(doc, rd, gr.getFields().keySet());
-//          String id = (String) rd.get(Cnst.ID_KEY);
-            gr.set(id , rd);
-        }
-    }
-
-    @Override
-    public void addDoc(final Document doc)
-    throws HongsException {
-        super.addDoc(/**/doc);
-
-        // 保存到图谱
-        GraphsRecord gr = getGraph();
-        if (gr != null) {
-            Map rd = new LinkedHashMap();
-            padDat(doc, rd, gr.getFields().keySet());
-            String id = (String) rd.get(Cnst.ID_KEY);
+        //  String id = (String) rd.get(Cnst.ID_KEY);
             gr.set(id , rd);
         }
     }

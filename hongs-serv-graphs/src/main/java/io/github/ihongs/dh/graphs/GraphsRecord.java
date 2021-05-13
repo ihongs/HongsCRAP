@@ -92,7 +92,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
      */
     public static GraphsRecord getInstance(String conf, String form)
     throws HongsException {
-        String code = GraphsRecord.class.getName( ) +":"+ conf +"."+ form;
+        String code = GraphsRecord.class.getName( ) +":"+ conf +"!"+ form;
         Core   core = Core.getInstance( );
         GraphsRecord  inst = (GraphsRecord) core.get(code);
         if (inst == null) {

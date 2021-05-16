@@ -3,6 +3,7 @@ package io.github.ihongs.dh.graphs;
 import static io.github.ihongs.Cnst.ID_KEY;
 import io.github.ihongs.Cnst;
 import io.github.ihongs.Core;
+import io.github.ihongs.CoreConfig;
 import io.github.ihongs.CoreLogger;
 import io.github.ihongs.HongsException;
 import io.github.ihongs.HongsExemption;
@@ -206,9 +207,9 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
         }
 
         // 分页
-        int sn = Cnst.RN_DEF;
-        int pn = Synt.declare(rd.get(Cnst.PN_KEY), 1 );
+        int sn = CoreConfig.getInstance().getProperty("fore.rows.per.page", Cnst.RN_DEF);
         int rn = Synt.declare(rd.get(Cnst.RN_KEY), sn);
+        int pn = Synt.declare(rd.get(Cnst.PN_KEY), 1 );
             sn = rn * (pn - 1);
         if (sn >= 0 && rn > 0) {
             ca.limit(sn , rn );

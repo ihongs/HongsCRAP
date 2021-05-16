@@ -3,7 +3,6 @@ package io.github.ihongs.dh.graphs;
 import static io.github.ihongs.Cnst.ID_KEY;
 import io.github.ihongs.Cnst;
 import io.github.ihongs.Core;
-import io.github.ihongs.CoreConfig;
 import io.github.ihongs.CoreLogger;
 import io.github.ihongs.HongsException;
 import io.github.ihongs.HongsExemption;
@@ -207,10 +206,10 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
         }
 
         // 分页
-        int sn = CoreConfig.getInstance().getProperty("fore.rows.per.page", Cnst.RN_DEF);
-        int rn = Synt.declare(rd.get(Cnst.RN_KEY), sn);
+        int rn = Cnst.RN_DEF;
+            rn = Synt.declare(rd.get(Cnst.RN_KEY), rn);
         int pn = Synt.declare(rd.get(Cnst.PN_KEY), 1 );
-            sn = rn * (pn - 1);
+        int sn = rn * (pn - 1);
         if (sn >= 0 && rn > 0) {
             ca.limit(sn , rn );
         }
@@ -927,18 +926,18 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
     }
 
     protected Map toPage(StatementResult sr, int rn, int pn) {
-        int tr = 0;
-        int tp = 0;
+        long tr = 0;
+        long tp = 0;
         if (sr.hasNext()) {
-            tr = sr.next( ).get ( "c" ).asInt( );
-            tp = (int) Math.ceil((double) tr/rn);
+            tr = sr.next( ).get ( "c" ).asLong();
+            tp = (long)Math.ceil((double) tr/rn);
         }
 
         Map page = new HashMap( );
         page.put(Cnst.RN_KEY, rn);
         page.put(Cnst.PN_KEY, pn);
-        page.put("count", tr );
-        page.put("pages", tp );
+        page.put("count", tr);
+        page.put("pages", tp);
 
         if (tr == 0) {
             page.put("state", 0); // 没有数据

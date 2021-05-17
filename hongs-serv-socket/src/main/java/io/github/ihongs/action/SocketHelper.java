@@ -58,7 +58,7 @@ import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainer
  * </code>
  * <pre>
  *  编辑 defines.properties,
- *  在 aplly.sock 配置中加入 前面定义的类的完整路径
+ *  在 apply.sock 配置中加入 前面定义的类的完整路径
  *  在 jetty.init 配置中加入 io.github.ihongs.action.ScoketHelper.Loader
  * </pre>
  *

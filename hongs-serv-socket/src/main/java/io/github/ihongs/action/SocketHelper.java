@@ -274,7 +274,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         // 先移出自身, 规避递归调用导致死循环
         core.remove(kn);
         core.remove(hn);
-        
+
         core.reset();
     }
 
@@ -338,6 +338,16 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         if (hepc == null || ! hepc.equals(hepr)) {
             hepr.updateHelper(core, sess);
         }
+
+        // 设置会话基础参数
+        int  nn;
+        CoreConfig cc = CoreConfig.getInstance( "socket" );
+        nn = cc.getProperty("core.socket.max.idle.timeout", 0);
+        if ( nn != 0 ) sess.setMaxIdleTimeout             (nn);
+        nn = cc.getProperty("core.socket.max.txt.buf.size", 0);
+        if ( nn != 0 ) sess.setMaxTextMessageBufferSize   (nn);
+        nn = cc.getProperty("core.socket.max.bin.buf.size", 0);
+        if ( nn != 0 ) sess.setMaxBinaryMessageBufferSize (nn);
 
         return hepr;
     }

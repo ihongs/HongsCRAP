@@ -229,20 +229,6 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         setAttribute("ACTION_LANG", Core.ACTION_LANG.get());
         setAttribute("ACTION_ZONE", Core.ACTION_ZONE.get());
         setAttribute("CLIENT_ADDR", Core.CLIENT_ADDR.get());
-
-        /**
-         * 输出一些调试信息
-         */
-        /*
-        if (0 < Core.DEBUG && 8 != (8 & Core.DEBUG)) {
-            StringBuilder sb = new StringBuilder("WebSocket start");
-              sb.append("\r\n\tACTION_NAME : ").append(Core.ACTION_NAME.get())
-                .append("\r\n\tACTION_TIME : ").append(Core.ACTION_TIME.get())
-                .append("\r\n\tACTION_LANG : ").append(Core.ACTION_LANG.get())
-                .append("\r\n\tACTION_ZONE : ").append(Core.ACTION_ZONE.get());
-            CoreLogger.debug(sb.toString());
-        }
-        */
     }
 
     /**

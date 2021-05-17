@@ -325,10 +325,12 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             hepr.updateHelper(core, sess);
         }
 
-        // 设置会话基础参数
-        CoreConfig cc = CoreConfig.getInstance("socket");
+        /**
+         * 设置会话基础参数
+         */
+        CoreConfig cc = CoreConfig.getInstance ( "socket" );
         int nn = cc.getProperty("core.socket.max.idle.timeout", 0);
-        if (nn != 0) sess.setMaxIdleTimeout(nn);
+        if (nn != 0) sess.setMaxIdleTimeout            (nn);
         nn = cc.getProperty("core.socket.max.txt.msg.buf.size", 0);
         if (nn != 0) sess.setMaxTextMessageBufferSize  (nn);
         nn = cc.getProperty("core.socket.max.bin.msg.buf.size", 0);

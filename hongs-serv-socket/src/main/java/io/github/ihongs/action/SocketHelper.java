@@ -478,7 +478,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
     @Override
     public void reply(Map dat) {
         super.reply(dat);
-         this.responed();
+         this.reply(   );
     }
 
     /**
@@ -486,7 +486,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
      * 将响应数据立即发送到客户端
      */
     @Override
-    public void responed() {
+    public void reply() {
         Session sess = getSockSession();
         if (null != sess) {
             try {
@@ -503,74 +503,26 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
 
     /**
      * @deprecated WebSocket 中不支持
-     * @param url
      */
     @Override
-    public void redirect(String url, String msg, int sta) {
-        throw new UnsupportedOperationException("Can not redirect to "+url+" in web socket");
+    public void indicate(int sta, String msg) {
+        throw new UnsupportedOperationException("Can not indicate in web socket");
     }
 
     /**
      * @deprecated WebSocket 中不支持
-     * @param url
      */
     @Override
-    public void redirect(String url, String msg) {
-        throw new UnsupportedOperationException("Can not redirect to "+url+" in web socket");
+    public void redirect(int sta, String url) {
+        throw new UnsupportedOperationException("Can not redirect in web socket");
     }
 
     /**
      * @deprecated WebSocket 中不支持
-     * @param url
      */
     @Override
-    public void redirect(String url) {
-        throw new UnsupportedOperationException("Can not redirect to "+url+" in web socket");
-    }
-
-    /**
-     * @deprecated WebSocket 中不支持
-     * @param msg
-     */
-    @Override
-    public void error400(String msg) {
-        throw new UnsupportedOperationException("Can not send http stat 400 in web socket, msg: "+msg);
-    }
-
-    /**
-     * @deprecated WebSocket 中不支持
-     * @param msg
-     */
-    @Override
-    public void error401(String msg) {
-        throw new UnsupportedOperationException("Can not send http stat 401 in web socket, msg: "+msg);
-    }
-
-    /**
-     * @deprecated WebSocket 中不支持
-     * @param msg
-     */
-    @Override
-    public void error403(String msg) {
-        throw new UnsupportedOperationException("Can not send http stat 403 in web socket, msg: "+msg);
-    }
-
-    /**
-     * @deprecated WebSocket 中不支持
-     * @param msg
-     */
-    @Override
-    public void error404(String msg) {
-        throw new UnsupportedOperationException("Can not send http stat 404 in web socket, msg: "+msg);
-    }
-
-    /**
-     * @deprecated WebSocket 中不支持
-     * @param msg
-     */
-    @Override
-    public void error500(String msg) {
-        throw new UnsupportedOperationException("Can not send http stat 500 in web socket, msg: "+msg);
+    public void redirect(int sta, String url, String msg) {
+        throw new UnsupportedOperationException("Can not redirect in web socket");
     }
 
     private String encode(String n) {

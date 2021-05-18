@@ -505,24 +505,24 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
      * @deprecated WebSocket 中不支持
      */
     @Override
-    public void indicate(int sta, String msg) {
+    public void route(int sta, String url, String msg) {
+        throw new UnsupportedOperationException("Can not redirect in web socket");
+    }
+
+    /**
+     * @deprecated WebSocket 中不支持
+     */
+    @Override
+    public void route(int sta, String url) {
+        throw new UnsupportedOperationException("Can not redirect in web socket");
+    }
+
+    /**
+     * @deprecated WebSocket 中不支持
+     */
+    @Override
+    public void error(int sta, String msg) {
         throw new UnsupportedOperationException("Can not indicate in web socket");
-    }
-
-    /**
-     * @deprecated WebSocket 中不支持
-     */
-    @Override
-    public void redirect(int sta, String url) {
-        throw new UnsupportedOperationException("Can not redirect in web socket");
-    }
-
-    /**
-     * @deprecated WebSocket 中不支持
-     */
-    @Override
-    public void redirect(int sta, String url, String msg) {
-        throw new UnsupportedOperationException("Can not redirect in web socket");
     }
 
     private String encode(String n) {

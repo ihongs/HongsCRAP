@@ -493,11 +493,11 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                 Map    map = getResponseData( );
                 String str = Dawn.toString(map);
                 sess.getBasicRemote().sendText(str);
-            } catch (IOException ex ) {
-                throw new HongsExemption(1110, "Can not send to remote.", ex );
+            } catch ( IOException e ) {
+                throw new HongsExemption(1110, "Can not send to remote.", e );
             }
         } else {
-                throw new HongsExemption(1110, "Session does not exist." /**/);
+                throw new HongsExemption(1110, "Session does not exist."/**/);
         }
     }
 

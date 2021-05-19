@@ -244,6 +244,8 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             return;
         }
 
+        this.flush();
+
         if (4 == (4 & Core.DEBUG)) {
             long time = System.currentTimeMillis(  ) - Core.ACTION_TIME.get( );
             String dn = Synt.declare(core.remove(hn + ":event"), "...");
@@ -471,28 +473,26 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
     }
 
     /**
-     * 响应输出
-     * 与 ActionHelper 不同, 此处会立即输出
-     * @param dat
+     * 输出数据
      */
     @Override
-    public void reply(Map dat) {
-        super.reply(dat);
-         this.reply(   );
+    public void flush() {
+        Map dat  = getResponseData( );
+        if (dat != null) {
+            write(Dawn.toString(dat));
+        }
     }
 
     /**
-     * 响应输出
-     * 将响应数据立即发送到客户端
+     * 输出文本
+     * @param txt
      */
     @Override
-    public void reply() {
+    public void write(String txt) {
         Session sess = getSockSession();
         if (null != sess) {
             try {
-                Map    map = getResponseData( );
-                String str = Dawn.toString(map);
-                sess.getBasicRemote().sendText(str);
+                sess.getBasicRemote().sendText(txt);
             } catch ( IOException e ) {
                 throw new HongsExemption(1110, "Can not send to remote.", e );
             }
@@ -505,24 +505,32 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
      * @deprecated WebSocket 中不支持
      */
     @Override
-    public void route(int sta, String url, String msg) {
-        throw new UnsupportedOperationException("Can not redirect in web socket");
+    public void write(String ct, String txt) {
+        throw new UnsupportedOperationException("Can not set content-type in web socket");
     }
 
     /**
      * @deprecated WebSocket 中不支持
      */
     @Override
-    public void route(int sta, String url) {
-        throw new UnsupportedOperationException("Can not redirect in web socket");
+    public void error(int sc, String msg) {
+        throw new UnsupportedOperationException("Can not send error in web socket");
     }
 
     /**
      * @deprecated WebSocket 中不支持
      */
     @Override
-    public void error(int sta, String msg) {
-        throw new UnsupportedOperationException("Can not indicate in web socket");
+    public void ensue(int sc, String url) {
+        throw new UnsupportedOperationException("Can not exec ensue in web socket");
+    }
+
+    /**
+     * @deprecated WebSocket 中不支持
+     */
+    @Override
+    public void ensue(int sc, String url, String msg) {
+        throw new UnsupportedOperationException("Can not exec ensue in web socket");
     }
 
     private String encode(String n) {

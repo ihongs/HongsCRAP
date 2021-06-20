@@ -143,46 +143,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
 
         CoreConfig conf = core.got(CoreConfig.class);
 
-        Core.ACTION_ZONE.set(conf.getProperty("core.timezone.default", "GMT-8"));
-        if (conf.getProperty("core.timezone.probing", false)) {
-            /**
-             * 时区可以记录到 Session 里
-             */
-            name = conf.getProperty("core.timezone.session", "zone");
-            name = (String) this.getSessibute(name);
-
-            /**
-             * 通过 WebSocket Headers 提取时区选项
-             */
-            if (name == null || name.length() == 0) {
-                do {
-                    Map <String, List<String>> headers;
-                    headers  = ( Map <String, List<String>> )
-                        this.getAttribute(SocketHelper.class.getName()+".httpHeaders");
-                    if (headers == null) {
-                        break ;
-                    }
-                    List<String> headerz;
-                    headerz  = headers.get( /***/ "Timezone");
-                    if (headerz == null) {
-                        break ;
-                    }
-                    name = headerz.isEmpty() ? headerz.get(0): null;
-                } while(false);
-            }
-
-            /**
-             * 检查是否是正确的时区
-             */
-            if (name != null) {
-                name  = TimeZone.getTimeZone(name).getID();
-//          if (zone != null) {
-                Core.ACTION_ZONE.set(name);
-//          }
-            }
-        }
-
-        Core.ACTION_LANG.set(conf.getProperty("core.language.default", "zh_CN"));
+//      Core.ACTION_LANG.set(conf.getProperty("core.language.default", "zh_CN"));
         if (conf.getProperty("core.language.probing", false)) {
             /**
              * 语言可以记录到 Session 里
@@ -218,6 +179,45 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             if (name != null) {
                 Core.ACTION_LANG.set(name);
             }
+            }
+        }
+
+//      Core.ACTION_ZONE.set(conf.getProperty("core.timezone.default", "GMT+8"));
+        if (conf.getProperty("core.timezone.probing", false)) {
+            /**
+             * 时区可以记录到 Session 里
+             */
+            name = conf.getProperty("core.timezone.session", "zone");
+            name = (String) this.getSessibute(name);
+
+            /**
+             * 通过 WebSocket Headers 提取时区选项
+             */
+            if (name == null || name.length() == 0) {
+                do {
+                    Map <String, List<String>> headers;
+                    headers  = ( Map <String, List<String>> )
+                        this.getAttribute(SocketHelper.class.getName()+".httpHeaders");
+                    if (headers == null) {
+                        break ;
+                    }
+                    List<String> headerz;
+                    headerz  = headers.get(/**/ "X-Timezone");
+                    if (headerz == null) {
+                        break ;
+                    }
+                    name = headerz.isEmpty() ? headerz.get(0): null;
+                } while(false);
+            }
+
+            /**
+             * 检查是否是正确的时区
+             */
+            if (name != null) {
+                name  = TimeZone.getTimeZone(name).getID();
+//          if (zone != null) {
+                Core.ACTION_ZONE.set(name);
+//          }
             }
         }
 

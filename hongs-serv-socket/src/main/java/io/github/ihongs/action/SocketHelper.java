@@ -1,5 +1,6 @@
 package io.github.ihongs.action;
 
+import io.github.ihongs.Cnst;
 import io.github.ihongs.Core;
 import io.github.ihongs.CoreConfig;
 import io.github.ihongs.CoreLocale;
@@ -143,12 +144,12 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
 
         CoreConfig conf = core.got(CoreConfig.class);
 
-//      Core.ACTION_LANG.set(conf.getProperty("core.language.default", "zh_CN"));
+//      Core.ACTION_LANG.set(conf.getProperty("core.language.default", Cnst.LANG_DEF));
         if (conf.getProperty("core.language.probing", false)) {
             /**
              * 语言可以记录到 Session 里
              */
-            name = conf.getProperty("core.language.session", "lang");
+            name = conf.getProperty("core.language.session", Cnst.LANG_KEY);
             name = (String) this.getSessibute(name);
 
             /**
@@ -182,12 +183,12 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             }
         }
 
-//      Core.ACTION_ZONE.set(conf.getProperty("core.timezone.default", "GMT+8"));
+//      Core.ACTION_ZONE.set(conf.getProperty("core.timezone.default", Cnst.ZONE_DEF));
         if (conf.getProperty("core.timezone.probing", false)) {
             /**
              * 时区可以记录到 Session 里
              */
-            name = conf.getProperty("core.timezone.session", "zone");
+            name = conf.getProperty("core.timezone.session", Cnst.ZONE_KEY);
             name = (String) this.getSessibute(name);
 
             /**

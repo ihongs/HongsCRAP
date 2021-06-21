@@ -5,9 +5,9 @@ import io.github.ihongs.Core;
 import io.github.ihongs.CoreConfig;
 import io.github.ihongs.CoreLocale;
 import io.github.ihongs.CoreLogger;
+import io.github.ihongs.CoreRoster;
 import io.github.ihongs.HongsExemption;
 import io.github.ihongs.cmdlet.serv.ServerCmdlet;
-import io.github.ihongs.util.reflex.Classes;
 import io.github.ihongs.util.Dawn;
 import io.github.ihongs.util.Syno;
 import io.github.ihongs.util.Synt;
@@ -631,7 +631,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             if (pkgn.endsWith(".**")) {
                 pkgn = pkgn.substring(0, pkgn.length() - 3);
                 try {
-                    clss = Classes.getClassNames(pkgn, true );
+                    clss = CoreRoster.getClassNames(pkgn, true );
                 } catch (IOException ex) {
                     throw new HongsExemption("Can not load package '" + pkgn + "'.", ex);
                 }
@@ -642,7 +642,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             if (pkgn.endsWith(".*" )) {
                 pkgn = pkgn.substring(0, pkgn.length() - 2);
                 try {
-                    clss = Classes.getClassNames(pkgn, false);
+                    clss = CoreRoster.getClassNames(pkgn, false);
                 } catch (IOException ex) {
                     throw new HongsExemption("Can not load package '" + pkgn + "'.", ex);
                 }

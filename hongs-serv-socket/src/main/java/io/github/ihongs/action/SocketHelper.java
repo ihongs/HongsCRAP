@@ -245,7 +245,11 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             return;
         }
 
-        this.flush();
+        try {
+            this.flush();
+        } catch (HongsExemption e) {
+            CoreLogger . error (e);
+        }
 
         if (4 == (4 & Core.DEBUG)) {
             long time = System.currentTimeMillis(  ) - Core.ACTION_TIME.get( );
@@ -491,14 +495,16 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
     @Override
     public void write(String txt) {
         Session sess = getSockSession();
-        if (null != sess) {
-            try {
-                sess.getBasicRemote().sendText(txt);
-            } catch ( IOException e ) {
-                throw new HongsExemption(1110, "Can not send to remote.", e );
-            }
-        } else {
-                throw new HongsExemption(1110, "Session does not exist."/**/);
+        if (null == sess) {
+            throw new HongsExemption(1110, "Session not exist.");
+        }
+        if (! sess.isOpen()) {
+            throw new HongsExemption(1110, "Session is closed.");
+        }
+        try {
+            sess.getBasicRemote().sendText(txt);
+        } catch ( IOException e ) {
+            throw new HongsExemption(1110, "Can not send to remote.", e );
         }
     }
 

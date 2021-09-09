@@ -484,6 +484,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
     public void flush() {
         Map dat  = getResponseData( );
         if (dat != null) {
+            super.reply( (Map) null );
             write(Dawn.toString(dat));
         }
     }

@@ -1177,7 +1177,8 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                 Cnst.CQ_REL, " =~ ", Cnst.NC_REL, " !~ ",
                 Cnst.LT_REL, " < " , Cnst.LE_REL, " <= ",
                 Cnst.GT_REL, " > " , Cnst.GE_REL, " >= ",
-                Cnst.IN_REL, " IN ", Cnst.NI_REL, " NI "
+                Cnst.IN_REL, " IN ", Cnst.NI_REL, " NI ",
+                Cnst.ON_REL, " "
         };
 
         private final Map fds ;
@@ -1520,7 +1521,11 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                         } else
                         if (fv instanceof Collection
                         ||  fv instanceof Object [ ]) {
-                            pi = _cqlIn(whr, pms, fn, " IN ", fv, pi);
+                            Set vz = Synt.asSet(fv);
+                                vz.remove("");
+                            if (vz.isEmpty())
+                                continue;
+                            pi = _cqlIn(whr, pms, fn, " IN ", vz, pi);
                         } else {
                             pi = _cqlEq(whr, pms, fn, " = " , fv, pi);
                         }
@@ -1534,6 +1539,10 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                         } else
                         if (fv instanceof Collection
                         ||  fv instanceof Object [ ]) {
+                            Set vz = Synt.asSet(fv);
+                                vz.remove("");
+                            if (vz.isEmpty())
+                                continue;
                             pi = _cqlIn(whr, pms, fn, " IN ", fv, pi);
                         } else {
                             pi = _cqlEq(whr, pms, fn, " = " , fv, pi);
@@ -1589,17 +1598,28 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
 
                     if (k < 14) {
                         i = _cqlEq(xql, pms, n, r, v, i);
-                    } else {
+                    } else
+                    if (k < 20) {
                         i = _cqlIn(xql, pms, n, r, v, i);
+                    } else
+                    if (v instanceof Collection
+                    ||  v instanceof Object [ ]) {
+                        Set a = Synt.asSet(v);
+                            a.remove("");
+                        if (a.isEmpty( ))
+                            continue;
+                        i = _cqlIn(xql, pms, n, " IN ", a, i);
+                    } else {
+                        if (v.equals(""))
+                            continue;
+                        i = _cqlEq(xql, pms, n, " = " , v, i);
                     }
+
                     xql.append(" AND ");
                 }
             }
             if (i > j) {
                 xql.setLength(xql.length() - 5);
-            }
-            if (! w.isEmpty( )) {
-                i = _cqlIn(xql, pms, n, " IN ", w, i);
             }
             return i;
         }

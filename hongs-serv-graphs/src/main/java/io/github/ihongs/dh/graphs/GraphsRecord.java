@@ -1342,9 +1342,19 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
             // 排序
             for(Object  xn : ob) {
                 String  ln ;
-                String  fn = xn. toString (   );
-                boolean de = fn.startsWith("-");
-                if (de) fn = fn.substring ( 1 );
+                String  fn = xn. toString( );
+
+                boolean de ;
+                if (fn.startsWith("-")) {
+                    de = true ;
+                    fn = fn.substring(1);
+                } else
+                if (fn.  endsWith("!")) {
+                    de = true ;
+                    fn = fn.substring(0, fn.length() - 1);
+                } else {
+                    de = false;
+                }
 
                 // 桥接关联表字段排序
                 int p  = fn.indexOf(".");

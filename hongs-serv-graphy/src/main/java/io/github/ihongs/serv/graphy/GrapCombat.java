@@ -1,45 +1,44 @@
 package io.github.ihongs.serv.graphy;
 
 import io.github.ihongs.HongsException;
-import io.github.ihongs.cmdlet.anno.Cmdlet;
+import io.github.ihongs.combat.anno.Combat;
 import io.github.ihongs.serv.matrix.Data;
-import io.github.ihongs.serv.matrix.DataCmdlet;
-import java.util.HashSet;
+import io.github.ihongs.serv.matrix.DataCombat;
 import java.util.Set;
 
 /**
  * 数据操作命令
  * @author hong
  */
-@Cmdlet("matrix.data")
-public class GrapCmdlet {
+@Combat("matrix.data")
+public class GrapCombat {
 
-    @Cmdlet("revert")
+    @Combat("revert")
     public static void revert(String[] args) throws HongsException, InterruptedException {
-        DataCmdlet.revert(args, new Inst());
+        DataCombat.revert(args, new Inst());
     }
 
-    @Cmdlet("update")
+    @Combat("update")
     public static void update(String[] args) throws HongsException, InterruptedException {
-        DataCmdlet.update(args, new Inst());
+        DataCombat.update(args, new Inst());
     }
 
-    @Cmdlet("delete")
+    @Combat("delete")
     public static void delete(String[] args) throws HongsException, InterruptedException {
-        DataCmdlet.delete(args, new Inst());
+        DataCombat.delete(args, new Inst());
     }
 
-    @Cmdlet("search")
+    @Combat("search")
     public static void search(String[] args) throws HongsException {
-        DataCmdlet.search(args, new Inst());
+        DataCombat.search(args, new Inst());
     }
 
-    @Cmdlet("uproot")
+    @Combat("uproot")
     public static void uproot(String[] args) throws HongsException {
-        DataCmdlet.uproot(args, new Inst());
+        DataCombat.uproot(args, new Inst());
     }
 
-    private static class Inst extends DataCmdlet.Inst {
+    private static class Inst extends DataCombat.Inst {
 
         @Override
         public Data getInstance(String conf, String form) {

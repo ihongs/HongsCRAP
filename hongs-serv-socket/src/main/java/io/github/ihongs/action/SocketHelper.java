@@ -454,7 +454,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             try {
                 return sess.getBasicRemote().getSendStream();
             } catch (IOException ex) {
-                throw new HongsExemption(1110, "Can not get socket stream.", ex);
+                throw new HongsExemption(ex, 1110, "Can not get socket stream.");
             }
         }
         return super.getOutputStream();
@@ -471,7 +471,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             try {
                 return sess.getBasicRemote().getSendWriter();
             } catch (IOException ex) {
-                throw new HongsExemption(1110, "Can not get socket writer.", ex);
+                throw new HongsExemption(ex, 1110, "Can not get socket writer.");
             }
         }
         return super.getOutputWriter();
@@ -505,7 +505,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         try {
             sess.getBasicRemote().sendText(txt);
         } catch ( IOException e ) {
-            throw new HongsExemption(1110, "Can not send to remote.", e );
+            throw new HongsExemption(e, 1110, "Can not send to remote.");
         }
     }
 
@@ -627,7 +627,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
             try {
                 clso = Class.forName(clsn);
             } catch (ClassNotFoundException ex ) {
-                throw new HongsExemption("Can not find class '" + clsn + "'.", ex);
+                throw new HongsExemption(ex, "Can not find class '" + clsn + "'.");
             }
             return clso;
         }
@@ -640,7 +640,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                 try {
                     clss = CoreRoster.getClassNames(pkgn, true );
                 } catch (IOException ex) {
-                    throw new HongsExemption("Can not load package '" + pkgn + "'.", ex);
+                    throw new HongsExemption(ex, "Can not load package '" + pkgn + "'.");
                 }
                 if (clss == null) {
                     throw new HongsExemption("Can not find package '" + pkgn + "'.");
@@ -651,7 +651,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                 try {
                     clss = CoreRoster.getClassNames(pkgn, false);
                 } catch (IOException ex) {
-                    throw new HongsExemption("Can not load package '" + pkgn + "'.", ex);
+                    throw new HongsExemption(ex, "Can not load package '" + pkgn + "'.");
                 }
                 if (clss == null) {
                     throw new HongsExemption("Can not find package '" + pkgn + "'.");

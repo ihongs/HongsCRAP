@@ -1127,13 +1127,15 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
             final String href = Synt.declare(opts.get("db-href"), "");
             final String name = Conn.class.getName(  ) + ":" + href  ;
 
-            return Core.GLOBAL_CORE.get ( name ,
-            new Supplier<Conn> () {
-                @Override
-                public Conn get() {
-                    return new Conn(href, opts);
+            return Core.GLOBAL_CORE.got(
+                name,
+                new Supplier <Conn> () {
+                    @Override
+                    public Conn get () {
+                        return new Conn(href, opts);
+                    }
                 }
-            });
+            );
         }
 
         private static Conn openByLink(String link) {

@@ -143,7 +143,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                     try {
                         commit();
                     } catch (Error er) {
-                        revert();
+                        cancel();
                         throw er;
                     }
                 }
@@ -173,7 +173,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
     }
 
     @Override
-    public void revert() {
+    public void cancel() {
         if (tx != null ) {
             tx.failure();
             tx.close();

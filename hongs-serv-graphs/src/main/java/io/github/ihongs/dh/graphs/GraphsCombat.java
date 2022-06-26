@@ -61,7 +61,7 @@ public class GraphsCombat {
             so.commit( );
         }
         catch (HongsExemption ex) {
-            so.revert( );
+            so.cancel( );
             throw ex;
         }
     }
@@ -90,7 +90,7 @@ public class GraphsCombat {
             so.commit( );
         }
         catch (HongsExemption ex) {
-            so.revert( );
+            so.cancel( );
             throw ex;
         }
     }
@@ -124,7 +124,7 @@ public class GraphsCombat {
             so.commit( );
         }
         catch (HongsExemption ex) {
-            so.revert( );
+            so.cancel( );
             throw ex;
         }
     }

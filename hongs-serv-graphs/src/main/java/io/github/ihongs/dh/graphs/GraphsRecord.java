@@ -937,7 +937,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
         page.put(Cnst.RN_KEY, rn);
         page.put(Cnst.PN_KEY, pn);
         page.put("count", tr);
-        page.put("pages", tp);
+        page.put("total", tp);
 
         if (tr == 0) {
             page.put("state", 0); // 没有数据

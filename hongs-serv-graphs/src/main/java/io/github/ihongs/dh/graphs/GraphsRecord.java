@@ -10,8 +10,8 @@ import io.github.ihongs.action.FormSet;
 import io.github.ihongs.dh.IEntity;
 import io.github.ihongs.dh.IReflux;
 import io.github.ihongs.dh.JFigure;
-import io.github.ihongs.util.Dawn;
 import io.github.ihongs.util.Dict;
+import io.github.ihongs.util.Dist;
 import io.github.ihongs.util.Syno;
 import io.github.ihongs.util.Synt;
 
@@ -1020,7 +1020,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                 if (so instanceof Collection
                 ||  so instanceof Object[ ]) {
                     StringBuilder op = new StringBuilder();
-                    Dawn.append ( op , so , true);
+                    Dist.append ( op , so , true);
                     st = op.toString ( /*JSON*/ );
                 } else {
                     st = vquotes( so.toString() );

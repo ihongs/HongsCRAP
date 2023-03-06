@@ -8,8 +8,8 @@ import io.github.ihongs.CoreLogger;
 import io.github.ihongs.CoreRoster;
 import io.github.ihongs.HongsExemption;
 import io.github.ihongs.combat.serv.ServerCombat;
-import io.github.ihongs.util.Dawn;
-import io.github.ihongs.util.Syno;
+import io.github.ihongs.util.Dist;
+import io.github.ihongs.util.Inst;
 import io.github.ihongs.util.Synt;
 
 import java.io.Writer;
@@ -260,7 +260,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
                 .append("\r\n\tACTION_LANG : ").append(Core.ACTION_LANG.get())
                 .append("\r\n\tACTION_ZONE : ").append(Core.ACTION_ZONE.get())
                 .append("\r\n\tObjects     : ").append(core.toString ( /**/ ))
-                .append("\r\n\tRuntime     : ").append(Syno.humanTime( time ));
+                .append("\r\n\tRuntime     : ").append(Inst.  phrase ( time ));
             CoreLogger.debug(sb.toString());
         }
 
@@ -485,7 +485,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         Map dat  = getResponseData( );
         if (dat != null) {
             super.reply( (Map) null );
-            write(Dawn.toString(dat));
+            write(Dist.toString(dat));
         }
     }
 

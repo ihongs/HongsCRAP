@@ -17,22 +17,22 @@ import java.util.Set;
  *
  * @author Hongs
  */
-public class TableDeff
+public class TableDiff
 {
 
   private final Table table;
-  private final TableDesc tableDesc;
+  private final TableForm tableDesc;
 
   /**
    * 通过表对象构造
    * @param table
    * @throws io.github.ihongs.HongsException
    */
-  public TableDeff(Table table)
+  public TableDiff(Table table)
   throws HongsException
   {
     this.table = table;
-    this.tableDesc = TableDesc.getInstance(table);
+    this.tableDesc = TableForm.getInstance(table);
   }
 
   /**
@@ -81,7 +81,7 @@ public class TableDeff
         return   sqls;
     }
 
-    TableDesc slaverDesc = TableDesc.getInstance(slaver);
+    TableForm slaverDesc = TableForm.getInstance(slaver);
     Iterator  it;
     Map.Entry et;
 
@@ -95,7 +95,7 @@ public class TableDeff
       // 主键
       if (tableDesc.priCols.isEmpty())
       {
-        sql = tableDesc.alterPriKeySql(slaver.tableName, TableDesc.DROP);
+        sql = tableDesc.alterPriKeySql(slaver.tableName, TableForm.DROP);
         sqls.add(sql);
       }
 
@@ -108,7 +108,7 @@ public class TableDeff
 
         if (!tableDesc.uniKeys.containsKey(key))
         {
-          sql = tableDesc.alterUniKeySql(slaver.tableName, TableDesc.DROP, key);
+          sql = tableDesc.alterUniKeySql(slaver.tableName, TableForm.DROP, key);
           sqls.add(sql);
         }
       }
@@ -122,7 +122,7 @@ public class TableDeff
 
         if (!tableDesc.idxKeys.containsKey(key))
         {
-          sql = tableDesc.alterIdxKeySql(slaver.tableName, TableDesc.DROP, key);
+          sql = tableDesc.alterIdxKeySql(slaver.tableName, TableForm.DROP, key);
           sqls.add(sql);
         }
       }
@@ -138,7 +138,7 @@ public class TableDeff
 
         if (!tableDesc.columns.containsKey(col))
         {
-          sql = tableDesc.alterColumnSql(slaver.tableName, TableDesc.DROP, col);
+          sql = tableDesc.alterColumnSql(slaver.tableName, TableForm.DROP, col);
           sqls.add(sql);
         }
       }
@@ -160,12 +160,12 @@ public class TableDeff
 
       if (! slaverDesc.columns.containsKey(col))
       {
-        sql = tableDesc.alterColumnSql(slaver.tableName, TableDesc.ADD, col);
+        sql = tableDesc.alterColumnSql(slaver.tableName, TableForm.ADD, col);
         sqls.add(sql);
       }
       else if (! dfn.equals(slaverDesc.columns.get(col)))
       {
-        sql = tableDesc.alterColumnSql(slaver.tableName, TableDesc.MODIFY, col);
+        sql = tableDesc.alterColumnSql(slaver.tableName, TableForm.MODIFY, col);
         sqls.add(sql);
       }
     }
@@ -180,7 +180,7 @@ public class TableDeff
     if (!tableDesc.priCols.isEmpty()
     &&  !tableDesc.priCols.equals(slaverDesc.priCols))
     {
-      sql = tableDesc.alterPriKeySql(slaver.tableName, TableDesc.ADD);
+      sql = tableDesc.alterPriKeySql(slaver.tableName, TableForm.ADD);
       sqls.add(sql);
     }
 
@@ -195,7 +195,7 @@ public class TableDeff
       if (!slaverDesc.uniKeys.containsKey(key)
       ||  !slaverDesc.uniKeys.get(key).equals(cols))
       {
-        sql = tableDesc.alterUniKeySql(slaver.tableName, TableDesc.ADD, key);
+        sql = tableDesc.alterUniKeySql(slaver.tableName, TableForm.ADD, key);
         sqls.add(sql);
       }
     }
@@ -211,7 +211,7 @@ public class TableDeff
       if (!slaverDesc.idxKeys.containsKey(key)
       ||  !slaverDesc.idxKeys.get(key).equals(cols))
       {
-        sql = tableDesc.alterIdxKeySql(slaver.tableName, TableDesc.ADD, key);
+        sql = tableDesc.alterIdxKeySql(slaver.tableName, TableForm.ADD, key);
         sqls.add(sql);
       }
     }

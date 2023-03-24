@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  *
  * @author Hongs
  */
-public class TableDesc {
+public class TableForm {
 
     /**
      * 字段信息 {字段名 : 字段描述串}
@@ -48,15 +48,15 @@ public class TableDesc {
     private static final Pattern typePat = Pattern.compile("^(DATE|TIME)", Pattern.CASE_INSENSITIVE);
     private static final Pattern timePat = Pattern.compile(   "[^/-:]"   , Pattern.CASE_INSENSITIVE);
 
-    public TableDesc() {
+    public TableForm() {
         this.columns = new LinkedHashMap<>();
         this.priCols = new LinkedHashSet<>();
         this.uniKeys = new LinkedHashMap<>();
         this.idxKeys = new LinkedHashMap<>();
     }
 
-    public static TableDesc getInstance(Table table) throws HongsException {
-        TableDesc  desc = new TableDesc();
+    public static TableForm getInstance(Table table) throws HongsException {
+        TableForm  desc = new TableForm();
 
         try {
             List   rows;
@@ -139,17 +139,17 @@ public class TableDesc {
         return buf.toString();
     }
 
-    public TableDesc addColumn(String col, String dfn) {
+    public TableForm addColumn(String col, String dfn) {
         this.columns.put(col, dfn);
         return this;
     }
 
-    public TableDesc addPriCol(String col) {
+    public TableForm addPriCol(String col) {
         this.priCols.add(col);
         return this;
     }
 
-    public TableDesc addUniKey(String col, String key) {
+    public TableForm addUniKey(String col, String key) {
         Set cols = this.uniKeys.get(key);
         if (cols == null) {
             cols = new LinkedHashSet();
@@ -159,7 +159,7 @@ public class TableDesc {
         return this;
     }
 
-    public TableDesc addIdxKey(String col, String key) {
+    public TableForm addIdxKey(String col, String key) {
         Set cols = this.idxKeys.get(key);
         if (cols == null) {
             cols = new LinkedHashSet();
@@ -238,13 +238,13 @@ public class TableDesc {
         StringBuilder sql = new StringBuilder();
         sql.append("ALTER TABLE `").append(tableName).append("`");
         switch (opr) {
-            case TableDesc.DROP:
+            case TableForm.DROP:
                 sql.append( " DROP `" ).append(col).append("`" );
                 break;
-            case TableDesc.ADD:
+            case TableForm.ADD:
                 sql.append(  " ADD `" ).append(col).append("` ").append(this.columns.get(col));
                 break;
-            case TableDesc.MODIFY:
+            case TableForm.MODIFY:
                 sql.append(" MODIFY `").append(col).append("` ").append(this.columns.get(col));
                 break;
         }

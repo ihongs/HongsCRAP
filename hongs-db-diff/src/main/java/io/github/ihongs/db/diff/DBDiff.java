@@ -19,7 +19,7 @@ import java.util.Set;
  *
  * @author Hongs
  */
-public class DBDeff
+public class DBDiff
 {
 
   private DB db;
@@ -29,7 +29,7 @@ public class DBDeff
    * @param db
    * @throws io.github.ihongs.HongsException
    */
-  public DBDeff(DB db)
+  public DBDiff(DB db)
   throws HongsException
   {
     this.db = db;
@@ -97,7 +97,7 @@ public class DBDeff
       if (tableSuffix != null) config.put("tableSuffix", tableSuffix);
       Table tablz = new Table(slaver, config);
 
-      TableDeff sync = new TableDeff( table );
+      TableDiff sync = new TableDiff( table );
       sqlz = sync.deffSlaver(tablz, delExtraFields);
       sqls.addAll( sqlz );
 

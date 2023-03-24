@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
  * 此工具仅适合 MySQL
  * @author Hongs
  */
-@Combat("common.db.deff")
-public class Cmd {
+@Combat("common.db.diff")
+public class DBComb {
 
     @Combat("__main__")
     public static void exec(String[] args) throws HongsException {
@@ -40,18 +40,18 @@ public class Cmd {
             Table toTb = toDb.getTable (to.substring(toMt.start() + 1));
 
             if (sc) {
-                new TableDeff(frTb).syncSlaver(toTb, df);
+                new TableDiff(frTb).syncSlaver(toTb, df);
             } else {
-                new TableDeff(frTb).deffSlaver(toTb, df);
+                new TableDiff(frTb).deffSlaver(toTb, df);
             }
         } else {
             DB    frDb = DB.getInstance(fr);
             DB    toDb = DB.getInstance(fr);
 
             if (sc) {
-                new DBDeff(frDb).syncSlaver(toDb, null, null, dt, df);
+                new DBDiff(frDb).syncSlaver(toDb, null, null, dt, df);
             } else {
-                new DBDeff(frDb).deffSlaver(toDb, null, null, dt, df);
+                new DBDiff(frDb).deffSlaver(toDb, null, null, dt, df);
             }
         }
     }

@@ -1,4 +1,4 @@
-package io.github.ihongs.db.deff;
+package io.github.ihongs.db.diff;
 
 import io.github.ihongs.HongsException;
 import io.github.ihongs.db.DB;

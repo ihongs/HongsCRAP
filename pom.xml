@@ -11,6 +11,7 @@
         <module>hongs-serv-graphs</module>
         <module>hongs-serv-graphy</module>
         <module>hongs-ueditor</module>
+        <module>hongs-db-diff</module>
     </modules>
     <build>
         <plugins>

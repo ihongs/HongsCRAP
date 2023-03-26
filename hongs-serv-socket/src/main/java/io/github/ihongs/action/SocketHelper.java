@@ -7,7 +7,7 @@ import io.github.ihongs.CoreLocale;
 import io.github.ihongs.CoreLogger;
 import io.github.ihongs.CoreRoster;
 import io.github.ihongs.HongsExemption;
-import io.github.ihongs.combat.serv.ServerCombat;
+import io.github.ihongs.server.init.Initer;
 import io.github.ihongs.util.Dist;
 import io.github.ihongs.util.Inst;
 import io.github.ihongs.util.Synt;
@@ -585,7 +585,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
      * 使用 defines.properties 设置 apply.sock 来告知 ServletContext 要加载哪些 WebSocket 类
      * 多个类名使用分号";"分隔
      */
-    static public class Loader implements ServerCombat.Initer {
+    static public class Loader implements Initer {
 
         @Override
         public void init(ServletContextHandler context) {

@@ -292,6 +292,24 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
     }
 
     /**
+     * @deprecated 必须通过 Session 获取, 总是抛出异常
+     * @throws UnsupportedOperationException
+     * @return 
+     */
+    public static SocketHelper newInstance() {
+        throw new UnsupportedOperationException("Unsupported get instance without session");
+    }
+
+    /**
+     * @deprecated 必须通过 Session 获取, 总是抛出异常
+     * @throws UnsupportedOperationException
+     * @return 
+     */
+    public static SocketHelper getInstance() {
+        throw new UnsupportedOperationException("Unsupported get instance without session");
+    }
+
+    /**
      * 获取实例, 登记事件
      * @param sess
      * @param name

@@ -34,7 +34,7 @@ public class GrapAction extends DataAction {
         ActionRunner runner = (ActionRunner) helper.getAttribute(ActionRunner.class.getName());
         Grap   entity = Grap.getInstance(runner.getModule(), runner.getEntity());
         String userId = (String) helper.getSessibute(Cnst.UID_SES);
-        if  (  userId == null  ) userId = Cnst.GUS_UID; // 匿名用户
+        if  (  userId == null  ) userId = Cnst.GST_UID; // 匿名用户
         entity.setUserId(userId);
         return entity;
     }

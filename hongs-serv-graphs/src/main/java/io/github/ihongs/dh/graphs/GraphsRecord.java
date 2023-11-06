@@ -259,7 +259,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
      * @throws HongsException
      */
     @Override
-    public Map detail(Map rd) throws HongsException {
+    public Map recite(Map rd) throws HongsException {
         Map  sd = search (rd);
         List list = (List) sd.get("list");
         Map  page = (Map ) sd.get("page");

@@ -1,8 +1,8 @@
 package io.github.ihongs.dh.graphs;
 
 import io.github.ihongs.Cnst;
-import io.github.ihongs.HongsException;
-import io.github.ihongs.HongsExemption;
+import io.github.ihongs.CruxException;
+import io.github.ihongs.CruxExemption;
 import io.github.ihongs.action.ActionHelper;
 import io.github.ihongs.combat.CombatHelper;
 import io.github.ihongs.combat.anno.Combat;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class GraphsCombat {
 
     @Combat("search")
-    public static void search(String[] args) throws HongsException {
+    public static void search(String[] args) throws CruxException {
         Map opts = CombatHelper.getOpts(args, new String[ ] {
             "conf=s",
             "form=s",
@@ -41,7 +41,7 @@ public class GraphsCombat {
     }
 
     @Combat("delete")
-    public static void delete(String[] args) throws HongsException {
+    public static void delete(String[] args) throws CruxException {
         Map opts = CombatHelper.getOpts(args, new String[ ] {
             "conf=s",
             "form=s",
@@ -55,19 +55,19 @@ public class GraphsCombat {
 
         try {
             so.begin ( );
-            for (String id  : ds) {
+            for (String id : ds) {
                 so.del( id );
             }
             so.commit( );
         }
-        catch (HongsExemption ex) {
+        catch (CruxExemption ex) {
             so.cancel( );
             throw ex;
         }
     }
 
     @Combat("update")
-    public static void update(String[] args) throws HongsException {
+    public static void update(String[] args) throws CruxException {
         Map opts = CombatHelper.getOpts(args, new String[ ] {
             "conf=s",
             "form=s",
@@ -84,19 +84,19 @@ public class GraphsCombat {
 
         try {
             so.begin ( );
-            for (String id  : ds) {
-                so.put( id  , rd);
+            for (String id : ds) {
+                so.put( id , rd);
             }
             so.commit( );
         }
-        catch (HongsExemption ex) {
+        catch (CruxExemption ex) {
             so.cancel( );
             throw ex;
         }
     }
 
     @Combat("create")
-    public static void create(String[] args) throws HongsException {
+    public static void create(String[] args) throws CruxException {
         Map opts = CombatHelper.getOpts(args, new String[ ] {
             "conf=s",
             "form=s",
@@ -123,7 +123,7 @@ public class GraphsCombat {
             }
             so.commit( );
         }
-        catch (HongsExemption ex) {
+        catch (CruxExemption ex) {
             so.cancel( );
             throw ex;
         }

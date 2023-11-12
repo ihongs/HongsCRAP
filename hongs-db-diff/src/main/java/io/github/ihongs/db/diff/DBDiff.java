@@ -1,6 +1,6 @@
 package io.github.ihongs.db.diff;
 
-import io.github.ihongs.HongsException;
+import io.github.ihongs.CruxException;
 import io.github.ihongs.db.DB;
 import io.github.ihongs.db.Table;
 
@@ -27,10 +27,10 @@ public class DBDiff
   /**
    * 通过库对象构造
    * @param db
-   * @throws io.github.ihongs.HongsException
+   * @throws io.github.ihongs.CruxException
    */
   public DBDiff(DB db)
-  throws HongsException
+  throws CruxException
   {
     this.db = db;
   }
@@ -42,10 +42,10 @@ public class DBDiff
    * @param tableSuffix 从库表后缀
    * @param delExtraTables 删除多余的表
    * @param delExtraFields 删除多余的字段
-   * @throws io.github.ihongs.HongsException
+   * @throws io.github.ihongs.CruxException
    */
   public void syncSlaver(DB slaver, String tablePrefix, String tableSuffix, boolean delExtraTables, boolean delExtraFields)
-  throws HongsException
+  throws CruxException
   {
     List<String> sqls = this.deffSlaver(slaver, tablePrefix, tableSuffix, delExtraTables, delExtraFields);
     DB sdb = slaver;
@@ -58,7 +58,7 @@ public class DBDiff
       }
       sdb.commit();
     }
-    catch (HongsException ex)
+    catch (CruxException ex )
     {
       sdb.cancel();
       throw ex;
@@ -66,7 +66,7 @@ public class DBDiff
   }
 
   public List<String> deffSlaver(DB slaver, String tablePrefix, String tableSuffix, boolean delExtraTables, boolean delExtraFields)
-  throws HongsException
+  throws CruxException
   {
     List<String> sqls = new ArrayList();
     List<String> sqlz;

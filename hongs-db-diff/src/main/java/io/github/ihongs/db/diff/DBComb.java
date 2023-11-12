@@ -1,6 +1,6 @@
 package io.github.ihongs.db.diff;
 
-import io.github.ihongs.HongsException;
+import io.github.ihongs.CruxException;
 import io.github.ihongs.combat.CombatHelper;
 import io.github.ihongs.combat.anno.Combat;
 import io.github.ihongs.db.DB;
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class DBComb {
 
     @Combat("__main__")
-    public static void exec(String[] args) throws HongsException {
+    public static void exec(String[] args) throws CruxException {
         Map opts = CombatHelper.getOpts(args,
             "from=s", "to=s", "sync:b", "del-tables:b", "del-fields:b"
         );

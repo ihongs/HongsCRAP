@@ -1,6 +1,6 @@
 package io.github.ihongs.dh.graphs;
 
-import io.github.ihongs.HongsException;
+import io.github.ihongs.CruxException;
 import io.github.ihongs.action.ActionHelper;
 import io.github.ihongs.action.ActionRunner;
 import io.github.ihongs.action.anno.Action;
@@ -21,11 +21,11 @@ public class GraphsAction extends JAction {
      *  方法 Action 注解的命名只能是 "动作名称", 不得含子级实体名称
      * @param helper
      * @return
-     * @throws HongsException
+     * @throws CruxException
      */
     @Override
     public IEntity getEntity(ActionHelper helper)
-    throws HongsException {
+    throws CruxException {
         ActionRunner runner = (ActionRunner)
            helper.getAttribute(ActionRunner.class.getName());
         return GraphsRecord.getInstance (runner.getModule(), runner.getEntity());

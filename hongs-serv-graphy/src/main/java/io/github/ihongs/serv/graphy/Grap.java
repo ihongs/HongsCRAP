@@ -1,7 +1,7 @@
 package io.github.ihongs.serv.graphy;
 
 import io.github.ihongs.Core;
-import io.github.ihongs.HongsException;
+import io.github.ihongs.CruxException;
 import io.github.ihongs.dh.graphs.GraphsRecord;
 import io.github.ihongs.serv.matrix.Data;
 import java.util.LinkedHashMap;
@@ -77,7 +77,7 @@ public class Grap extends Data {
     @Override
     public void addDoc(final String   id ,
                        final Document doc)
-    throws HongsException {
+    throws CruxException {
         super.addDoc(id, doc);
 
         // 保存到图谱
@@ -93,7 +93,7 @@ public class Grap extends Data {
     @Override
     public void setDoc(final String   id ,
                        final Document doc)
-    throws HongsException {
+    throws CruxException {
         super.setDoc(id, doc);
 
         // 保存到图谱
@@ -108,7 +108,7 @@ public class Grap extends Data {
 
     @Override
     public void delDoc(final String   id )
-    throws HongsException {
+    throws CruxException {
         super.delDoc(id /**/);
 
         // 从图谱删除

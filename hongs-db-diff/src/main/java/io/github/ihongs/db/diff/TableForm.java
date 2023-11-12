@@ -1,6 +1,6 @@
 package io.github.ihongs.db.diff;
 
-import io.github.ihongs.HongsException;
+import io.github.ihongs.CruxException;
 import io.github.ihongs.db.DB;
 import io.github.ihongs.db.Table;
 
@@ -55,7 +55,7 @@ public class TableForm {
         this.idxKeys = new LinkedHashMap<>();
     }
 
-    public static TableForm getInstance(Table table) throws HongsException {
+    public static TableForm getInstance(Table table) throws CruxException {
         TableForm  desc = new TableForm();
 
         try {
@@ -93,7 +93,7 @@ public class TableForm {
                     desc.addIdxKey(col, key);
                 }
             }
-        } catch (HongsException ex) {
+        } catch (CruxException ex) {
             if (ex.getErrno() == 1143) {
                 String msg = ex.getMessage();
                 if (msg.startsWith("Ex1143: Table ") && msg.endsWith(" doesn't exist")) {
@@ -175,10 +175,10 @@ public class TableForm {
      * @param table 要更改的表
      * @param opr 操作(DROP,ADD,MODIFY)
      * @param col 字段名
-     * @throws io.github.ihongs.HongsException
+     * @throws io.github.ihongs.CruxException
      */
     public void alterColumn(Table table, int opr, String col)
-            throws HongsException {
+            throws CruxException {
         String sql = this.alterColumnSql(table.tableName, opr, col);
         table.db.execute(sql);
     }
@@ -188,10 +188,10 @@ public class TableForm {
      *
      * @param table 要更改的表
      * @param opr 操作
-     * @throws io.github.ihongs.HongsException
+     * @throws io.github.ihongs.CruxException
      */
     public void alterPriKey(Table table, int opr)
-            throws HongsException {
+            throws CruxException {
         String sql = this.alterPriKeySql(table.tableName, opr);
         table.db.execute(sql);
     }
@@ -202,10 +202,10 @@ public class TableForm {
      * @param table 要更改的表
      * @param opr 操作
      * @param key 键名
-     * @throws io.github.ihongs.HongsException
+     * @throws io.github.ihongs.CruxException
      */
     public void alterUniKey(Table table, int opr, String key)
-            throws HongsException {
+            throws CruxException {
         String sql = this.alterUniKeySql(table.tableName, opr, key);
         table.db.execute(sql);
     }
@@ -216,10 +216,10 @@ public class TableForm {
      * @param table 要更改的表
      * @param opr 操作
      * @param key 键名
-     * @throws io.github.ihongs.HongsException
+     * @throws io.github.ihongs.CruxException
      */
     public void alterIdxKey(Table table, int opr, String key)
-            throws HongsException {
+            throws CruxException {
         String sql = this.alterIdxKeySql(table.tableName, opr, key);
         table.db.execute(sql);
     }
@@ -231,10 +231,10 @@ public class TableForm {
      * @param opr 更改类型(DROP,ADD,MODIFY)
      * @param col 字段名
      * @return 返回构造好的SQL语句
-     * @throws io.github.ihongs.HongsException
+     * @throws io.github.ihongs.CruxException
      */
     public String alterColumnSql(String tableName, int opr, String col)
-            throws HongsException {
+            throws CruxException {
         StringBuilder sql = new StringBuilder();
         sql.append("ALTER TABLE `").append(tableName).append("`");
         switch (opr) {

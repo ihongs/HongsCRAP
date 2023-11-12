@@ -1,6 +1,6 @@
 package io.github.ihongs.serv.graphy;
 
-import io.github.ihongs.HongsException;
+import io.github.ihongs.CruxException;
 import io.github.ihongs.combat.anno.Combat;
 import io.github.ihongs.serv.matrix.Data;
 import io.github.ihongs.serv.matrix.DataCombat;
@@ -14,27 +14,27 @@ import java.util.Set;
 public class GrapCombat {
 
     @Combat("revert")
-    public static void revert(String[] args) throws HongsException, InterruptedException {
+    public static void revert(String[] args) throws CruxException, InterruptedException {
         DataCombat.revert(args, new Inst());
     }
 
     @Combat("update")
-    public static void update(String[] args) throws HongsException, InterruptedException {
+    public static void update(String[] args) throws CruxException, InterruptedException {
         DataCombat.update(args, new Inst());
     }
 
     @Combat("delete")
-    public static void delete(String[] args) throws HongsException, InterruptedException {
+    public static void delete(String[] args) throws CruxException, InterruptedException {
         DataCombat.delete(args, new Inst());
     }
 
     @Combat("search")
-    public static void search(String[] args) throws HongsException {
+    public static void search(String[] args) throws CruxException {
         DataCombat.search(args, new Inst());
     }
 
     @Combat("uproot")
-    public static void uproot(String[] args) throws HongsException {
+    public static void uproot(String[] args) throws CruxException {
         DataCombat.uproot(args, new Inst());
     }
 

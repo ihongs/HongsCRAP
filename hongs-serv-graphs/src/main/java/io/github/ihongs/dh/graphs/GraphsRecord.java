@@ -4,8 +4,8 @@ import static io.github.ihongs.Cnst.ID_KEY;
 import io.github.ihongs.Cnst;
 import io.github.ihongs.Core;
 import io.github.ihongs.CoreLogger;
-import io.github.ihongs.HongsException;
-import io.github.ihongs.HongsExemption;
+import io.github.ihongs.CruxException;
+import io.github.ihongs.CruxExemption;
 import io.github.ihongs.action.FormSet;
 import io.github.ihongs.dh.IEntity;
 import io.github.ihongs.dh.IReflux;
@@ -88,10 +88,10 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
      * @param conf
      * @param form
      * @return
-     * @throws HongsException
+     * @throws CruxException
      */
     public static GraphsRecord getInstance(String conf, String form)
-    throws HongsException {
+    throws CruxException {
         String code = GraphsRecord.class.getName( ) +":"+ conf +":"+ form;
         Core   core = Core.getInstance( );
         GraphsRecord  inst = (GraphsRecord) core.get(code);
@@ -187,9 +187,9 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
      * @param rd
      * @param ca
      * @return
-     * @throws HongsException
+     * @throws CruxException
      */
-    public Map search(Map rd, Case ca) throws HongsException {
+    public Map search(Map rd, Case ca) throws CruxException {
         // 条件
         ca.where(rd);
 
@@ -233,10 +233,10 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
      * 查询
      * @param rd
      * @return
-     * @throws HongsException
+     * @throws CruxException
      */
     @Override
-    public Map search(Map rd) throws HongsException {
+    public Map search(Map rd) throws CruxException {
         Map  f  = getFields();
         Case ca = new Case(f);
 
@@ -256,10 +256,10 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
      * 详情
      * @param rd
      * @return
-     * @throws HongsException
+     * @throws CruxException
      */
     @Override
-    public Map recite(Map rd) throws HongsException {
+    public Map recite(Map rd) throws CruxException {
         Map  sd = search (rd);
         List list = (List) sd.get("list");
         Map  page = (Map ) sd.get("page");
@@ -275,10 +275,10 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
      * 新建
      * @param rd
      * @return
-     * @throws HongsException
+     * @throws CruxException
      */
     @Override
-    public String create(Map rd) throws HongsException {
+    public String create(Map rd) throws CruxException {
         return add(rd);
     }
 
@@ -286,10 +286,10 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
      * 修改(可批量)
      * @param rd
      * @return
-     * @throws HongsException
+     * @throws CruxException
      */
     @Override
-    public int update(Map rd) throws HongsException {
+    public int update(Map rd) throws CruxException {
         Map rd2 = new HashMap(rd);
         Set ids = Synt.asSet (rd2.remove(ID_KEY));
         for(Object od : ids) {
@@ -298,7 +298,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                 put(id, rd2);
             }
             catch (NullPointerException ex) {
-                throw new HongsException(404, "Can not udpate for id: "+id);
+                throw new CruxException(404, "Can not udpate for id: "+id);
             }
         }
         return ids.size();
@@ -308,10 +308,10 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
      * 删除(可批量)
      * @param rd
      * @return
-     * @throws HongsException
+     * @throws CruxException
      */
     @Override
-    public int delete(Map rd) throws HongsException {
+    public int delete(Map rd) throws CruxException {
         Set ids = Synt.asSet (rd.get (ID_KEY));
         for(Object od : ids) {
             String id = Synt.asString(od);
@@ -319,7 +319,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                 del(id);
             }
             catch (NullPointerException ex) {
-                throw new HongsException(404, "Can not delete for id: "+id);
+                throw new CruxException(404, "Can not delete for id: "+id);
             }
         }
         return ids.size();
@@ -509,7 +509,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                     String name = Synt.asString(fc.get("enum"));
                     Map    anum = FormSet.getInstance ( conf ).getEnum(name);
                     labs.addAll(anum.keySet());
-                } catch (HongsException e) {
+                } catch ( CruxException e) {
                     throw e.toExemption( );
                 }
 
@@ -772,7 +772,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                 Set    keys ;
                 try {
                     keys = FormSet.getInstance(conf).getEnum(name).keySet();
-                } catch (HongsException e) {
+                } catch ( CruxException e) {
                     throw e.toExemption( );
                 }
                 labKeys.put(fn, keys);
@@ -1120,10 +1120,10 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                       .getForm    (form)
                       .get        ("@" );
                 return getInstance(opts);
-            } catch (HongsException e) {
+            } catch ( CruxException e) {
                 throw e.toExemption( );
             } catch (NullPointerException e) {
-                throw new HongsExemption("Can not find form params in "+conf+"."+form);
+                throw new CruxExemption("Can not find form params in "+conf+"."+form);
             }
         }
 
@@ -1263,13 +1263,13 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
 
             Map fc = (Map ) fds.get(fn);
             if (fc == null) {
-                throw new HongsExemption("Field item for "+fn+" is not exists");
+                throw new CruxExemption("Field item for "+fn+" is not exists");
             }
 
             String ft = (String) fc.get("__type__");
             if (! "pick".equals( ft )
             &&  ! "part".equals( ft )) {
-                throw new HongsExemption("Field type for "+fn+" is not pick or part");
+                throw new CruxExemption("Field type for "+fn+" is not pick or part");
             }
 
             String mn = nquotes( fn + "_n" );
@@ -1659,7 +1659,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                 String conf = (String) fc.get("conf");
                 String name = (String) fc.get("form");
                 return FormSet.getInstance(conf).getForm(name);
-            } catch (HongsException e) {
+            } catch ( CruxException e) {
                 throw e.toExemption( );
             }
         }

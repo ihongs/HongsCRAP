@@ -1194,11 +1194,11 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
 
         private static final String[] RELS = new String[] {
                 Cnst.EQ_REL, " = " , Cnst.NE_REL, " <> ",
-                Cnst.CQ_REL, " =~ ", Cnst.NC_REL, " !~ ",
+                Cnst.SP_REL, " =~ ", Cnst.NS_REL, " !~ ",
                 Cnst.LT_REL, " < " , Cnst.LE_REL, " <= ",
                 Cnst.GT_REL, " > " , Cnst.GE_REL, " >= ",
                 Cnst.IN_REL, " IN ", Cnst.NI_REL, " NI ",
-                Cnst.ON_REL, " "
+                Cnst.IS_REL, ""
         };
 
         private final Map fds ;
@@ -1557,7 +1557,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                                 continue;
                             pi = _cqlIn(whr, pms, fn, " IN ", vz, pi);
                         } else {
-                            pi = _cqlEq(whr, pms, fn, " = " , fv, pi);
+                            pi = _cqlOn(whr, pms, fn, " = " , fv, pi);
                         }
                         whr.append(" AND ");
                     }
@@ -1575,7 +1575,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                                 continue;
                             pi = _cqlIn(whr, pms, fn, " IN ", fv, pi);
                         } else {
-                            pi = _cqlEq(whr, pms, fn, " = " , fv, pi);
+                            pi = _cqlOn(whr, pms, fn, " = " , fv, pi);
                         }
                         whr.append(" AND ");
                 }
@@ -1584,7 +1584,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
             return pi;
         }
 
-        private int _cqlEq(StringBuilder xql, Map pms, String n, String r, Object v, int i) {
+        private int _cqlOn(StringBuilder xql, Map pms, String n, String r, Object v, int i) {
             if (" !~ ".equals(r) ) {
                 xql.append("NOT ");
                 r = " =~ " ;
@@ -1611,6 +1611,29 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
             return  1 + i  ;
         }
 
+        private int _cqlIs(StringBuilder xql, Map pms, String n, Object v, int i) {
+            String  s = v.toString().trim();
+            String  r = null;
+            switch (s) {
+                case "EMPTY":
+                    r = "=" ;
+                    v =  "" ;
+                    break;
+                case "NOT-EMPTY":
+                    r = "<>";
+                    v =  "" ;
+                    break;
+                default:
+                    throw new CruxExemption(400, "Unsupported `is`: "+v);
+            }
+            pms.put(""+ i, v);
+            xql.append( n )
+               .append( r )
+               .append("$")
+               .append( i );
+            return  1 + i  ;
+        }
+
         private int _cqlRl(StringBuilder xql, Map pms, String n, Map m, int i) {
             Map w = new HashMap(m);
             int j = i ;
@@ -1619,30 +1642,27 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                 if (v != null ) {
                     String r = RELS[ k + 1 ];
 
-                    // 模糊匹配需对值进行处理
-                    if (k == 4) {
+                    // 单值匹配忽略空串
+                    if (k < 16 && "".equals(v)) {
+                        continue;
+                    }
+
+                    // 模糊匹配转为正则
+                    if (k == 4
+                    ||  k == 6) {
                         String s = v.toString( ).trim( );
                         s = s.replaceAll( "\\s+", ".*" );
                         v = ".*"+ Pattern.quote(s) +".*";
                     }
 
-                    if (k < 14) {
-                        i = _cqlEq(xql, pms, n, r, v, i);
+                    if (k < 16) {
+                        i = _cqlOn(xql, pms, n, r, v, i);
                     } else
                     if (k < 20) {
                         i = _cqlIn(xql, pms, n, r, v, i);
                     } else
-                    if (v instanceof Collection
-                    ||  v instanceof Object [ ]) {
-                        Set a = Synt.asSet(v);
-                            a.remove("");
-                        if (a.isEmpty( ))
-                            continue;
-                        i = _cqlIn(xql, pms, n, " IN ", a, i);
-                    } else {
-                        if (v.equals(""))
-                            continue;
-                        i = _cqlEq(xql, pms, n, " = " , v, i);
+                    {
+                        i = _cqlIs(xql, pms, n,    v, i);
                     }
 
                     xql.append(" AND ");

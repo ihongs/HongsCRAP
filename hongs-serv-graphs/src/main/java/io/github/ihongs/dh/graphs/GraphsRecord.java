@@ -1197,8 +1197,8 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                 Cnst.SP_REL, " =~ ", Cnst.NS_REL, " !~ ",
                 Cnst.LT_REL, " < " , Cnst.LE_REL, " <= ",
                 Cnst.GT_REL, " > " , Cnst.GE_REL, " >= ",
-                Cnst.IN_REL, " IN ", Cnst.NI_REL, " NI ",
-                Cnst.IS_REL, ""
+                Cnst.IN_REL, " IN ", Cnst.NO_REL, " NO ",
+                Cnst.IS_REL, " IS "
         };
 
         private final Map fds ;
@@ -1547,7 +1547,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                         }
 
                         if (fv instanceof Map) {
-                            pi = _cqlRl(whr, pms, fn, ( Map ) fv, pi);
+                            pi = _cqlRm(whr, pms, fn, ( Map ) fv, pi);
                         } else
                         if (fv instanceof Collection
                         ||  fv instanceof Object [ ]) {
@@ -1557,7 +1557,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                                 continue;
                             pi = _cqlIn(whr, pms, fn, " IN ", vz, pi);
                         } else {
-                            pi = _cqlOn(whr, pms, fn, " = " , fv, pi);
+                            pi = _cqlRn(whr, pms, fn, " = " , fv, pi);
                         }
                         whr.append(" AND ");
                     }
@@ -1565,7 +1565,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                 {
                         fn = "n."+ nquotes(fn);
                         if (fv instanceof Map) {
-                            pi = _cqlRl(whr, pms, fn, ( Map ) fv, pi);
+                            pi = _cqlRm(whr, pms, fn, ( Map ) fv, pi);
                         } else
                         if (fv instanceof Collection
                         ||  fv instanceof Object [ ]) {
@@ -1575,7 +1575,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                                 continue;
                             pi = _cqlIn(whr, pms, fn, " IN ", fv, pi);
                         } else {
-                            pi = _cqlOn(whr, pms, fn, " = " , fv, pi);
+                            pi = _cqlRn(whr, pms, fn, " = " , fv, pi);
                         }
                         whr.append(" AND ");
                 }
@@ -1584,7 +1584,47 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
             return pi;
         }
 
-        private int _cqlOn(StringBuilder xql, Map pms, String n, String r, Object v, int i) {
+        private int _cqlRm(StringBuilder xql, Map pms, String n, Map m, int i) {
+            Map w = new HashMap(m);
+            int j = i ;
+            for(int k = 0; k < RELS.length; k += 2) {
+                Object v = w.remove(RELS[k]);
+                if (v != null ) {
+                    String r = RELS[ k + 1 ];
+
+                    // 单值匹配忽略空串
+                    if (k < 16 && "".equals(v)) {
+                        continue;
+                    }
+
+                    // 模糊匹配转为正则
+                    if (k == 4
+                    ||  k == 6) {
+                        String s = v.toString( ).trim( );
+                        s = s.replaceAll( "\\s+", ".*" );
+                        v = ".*"+ Pattern.quote(s) +".*";
+                    }
+
+                    if (k < 16) {
+                        i = _cqlRn(xql, pms, n, r, v, i);
+                    } else
+                    if (k < 20) {
+                        i = _cqlIn(xql, pms, n, r, v, i);
+                    } else
+                    {
+                        i = _cqlIs(xql, pms, n,    v, i);
+                    }
+
+                    xql.append(" AND ");
+                }
+            }
+            if (i > j) {
+                xql.setLength(xql.length() - 5);
+            }
+            return i;
+        }
+
+        private int _cqlRn(StringBuilder xql, Map pms, String n, String r, Object v, int i) {
             if (" !~ ".equals(r) ) {
                 xql.append("NOT ");
                 r = " =~ " ;
@@ -1598,7 +1638,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
         }
 
         private int _cqlIn(StringBuilder xql, Map pms, String n, String r, Object v, int i) {
-            if (" NI ".equals(r) ) {
+            if (" NO ".equals(r) ) {
                 xql.append("NOT ");
                 r = " IN " ;
             }
@@ -1632,46 +1672,6 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                .append("$")
                .append( i );
             return  1 + i  ;
-        }
-
-        private int _cqlRl(StringBuilder xql, Map pms, String n, Map m, int i) {
-            Map w = new HashMap(m);
-            int j = i ;
-            for(int k = 0; k < RELS.length; k += 2) {
-                Object v = w.remove(RELS[k]);
-                if (v != null ) {
-                    String r = RELS[ k + 1 ];
-
-                    // 单值匹配忽略空串
-                    if (k < 16 && "".equals(v)) {
-                        continue;
-                    }
-
-                    // 模糊匹配转为正则
-                    if (k == 4
-                    ||  k == 6) {
-                        String s = v.toString( ).trim( );
-                        s = s.replaceAll( "\\s+", ".*" );
-                        v = ".*"+ Pattern.quote(s) +".*";
-                    }
-
-                    if (k < 16) {
-                        i = _cqlOn(xql, pms, n, r, v, i);
-                    } else
-                    if (k < 20) {
-                        i = _cqlIn(xql, pms, n, r, v, i);
-                    } else
-                    {
-                        i = _cqlIs(xql, pms, n,    v, i);
-                    }
-
-                    xql.append(" AND ");
-                }
-            }
-            if (i > j) {
-                xql.setLength(xql.length() - 5);
-            }
-            return i;
         }
 
         private Map<String, Map> _subFs(Map fc) {

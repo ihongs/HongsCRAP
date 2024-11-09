@@ -75,13 +75,15 @@ public class Grap extends Data {
     }
 
     @Override
-    public void addDoc(final String   id ,
-                       final Document doc)
+    public void addDoc(String id, Document doc)
+    throws CruxException {
+        addDoc(id, doc, getGraph());
+    }
+    public void addDoc(String id, Document doc, GraphsRecord gr)
     throws CruxException {
         super.addDoc(id, doc);
 
         // 保存到图谱
-        GraphsRecord gr = getGraph();
         if (gr != null) {
             Map rd = new LinkedHashMap();
             padDat(doc, rd, gr.getFields().keySet());
@@ -91,13 +93,15 @@ public class Grap extends Data {
     }
 
     @Override
-    public void setDoc(final String   id ,
-                       final Document doc)
+    public void setDoc(String id, Document doc)
+    throws CruxException {
+        setDoc(id, doc, getGraph());
+    }
+    public void setDoc(String id, Document doc, GraphsRecord gr)
     throws CruxException {
         super.setDoc(id, doc);
 
         // 保存到图谱
-        GraphsRecord gr = getGraph();
         if (gr != null) {
             Map rd = new LinkedHashMap();
             padDat(doc, rd, gr.getFields().keySet());
@@ -109,10 +113,13 @@ public class Grap extends Data {
     @Override
     public void delDoc(final String   id )
     throws CruxException {
-        super.delDoc(id /**/);
+        delDoc(id, getGraph());
+    }
+    public void delDoc(final String id, final GraphsRecord gr)
+    throws CruxException {
+        super.delDoc(id);
 
         // 从图谱删除
-        GraphsRecord gr = getGraph();
         if (gr != null) {
         //  gr.del    (id);
             gr.delNode(id);

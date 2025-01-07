@@ -1194,7 +1194,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
 
         private static final String[] RELS = new String[] {
                 Cnst.EQ_REL, " = " , Cnst.NE_REL, " <> ",
-                Cnst.SP_REL, " =~ ", Cnst.NS_REL, " !~ ",
+                Cnst.SE_REL, " =~ ", Cnst.NS_REL, " !~ ",
                 Cnst.LT_REL, " < " , Cnst.LE_REL, " <= ",
                 Cnst.GT_REL, " > " , Cnst.GE_REL, " >= ",
                 Cnst.IN_REL, " IN ", Cnst.NO_REL, " NO ",

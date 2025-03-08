@@ -1056,7 +1056,8 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
         return sb.toString(  );
     }
 
-    public static class Conn implements AutoCloseable, Core.Singleton {
+    @Core.Singleton
+    public static class Conn implements AutoCloseable {
 
         private final  String HREF;
         private        Driver CONN;

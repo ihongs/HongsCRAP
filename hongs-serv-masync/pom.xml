@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>jar</packaging>
+    <artifactId>hongs-serv-masync</artifactId>
+    <parent>
+        <artifactId>hongs-base</artifactId>
+        <groupId>io.github.ihongs</groupId>
+        <version>1.1-SNAPSHOT</version>
+    </parent>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    <dependencies>
+        <dependency>
+            <artifactId>hongs-serv-matrix</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>kafka_2.12</artifactId>
+            <groupId>org.apache.kafka</groupId>
+            <version>1.0.0</version>
+            <scope>provided</scope> 
+        </dependency>
+        <dependency>
+            <artifactId>kafka-clients</artifactId>
+            <groupId>org.apache.kafka</groupId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <artifactId>kafka-streams</artifactId>
+            <groupId>org.apache.kafka</groupId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+</project>

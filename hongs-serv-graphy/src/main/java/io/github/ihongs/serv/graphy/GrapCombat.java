@@ -7,7 +7,6 @@ import io.github.ihongs.dh.graphs.GraphsRecord;
 import io.github.ihongs.serv.matrix.DataCombat;
 import io.github.ihongs.util.Synt;
 import java.util.Map;
-import org.apache.lucene.document.Document;
 
 /**
  * 数据操作命令
@@ -29,6 +28,7 @@ public class GrapCombat {
             "cascades:b",
             "includes:b",
             "incloses:b",
+            "rollback:b",
             "grapable:b",
             "!A",
             "?Usage: revert --conf CONF_NAME --form FORM_NAME [--time TIMESTAMP] ID0 ID1 ..."
@@ -47,6 +47,7 @@ public class GrapCombat {
              Synt.declare (opts.get("cascades"), false),
              Synt.declare (opts.get("includes"), false),
              Synt.declare (opts.get("incloses"), false),
+             Synt.declare (opts.get("rollback"), false),
              Synt.declare (opts.get("grapable"), false)
         );
 
@@ -58,16 +59,16 @@ public class GrapCombat {
         protected final Grap         grap;
         protected final GraphsRecord grec;
 
-        public Casc(Grap grap, boolean cascades, boolean includes, boolean incloses, boolean grapable)
+        public Casc(Grap grap, boolean cascades, boolean includes, boolean incloses, boolean rollback, boolean grapable)
         throws CruxException {
-            super(grap , cascades , includes , incloses  );
+            super(grap , cascades , includes, incloses , rollback);
             this .grec = grapable ? grap.getGraph() : null;
             this .grap = grap;
         }
 
         @Override
-        public void set(String id, Document doc) throws CruxException {
-            grap.setDoc(id, doc, grec);
+        public void set(String id , Map dd) throws CruxException {
+            grap.setDoc(id, that.padDoc(dd), grec);
         }
 
     }

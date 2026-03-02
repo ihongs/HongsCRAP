@@ -207,7 +207,7 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
 
         // 分页
         int rn = Synt.declare(rd.get(Cnst.RN_KEY), Cnst.RN_DEF);
-        int pn = Synt.declare(rd.get(Cnst.PN_KEY), Cnst.PN_DEF);
+        int pn = Synt.declare(rd.get(Cnst.PN_KEY), 1);
         int sn = rn * (pn - 1);
         if (sn >= 0 && rn > 0) {
             ca.limit(sn , rn );

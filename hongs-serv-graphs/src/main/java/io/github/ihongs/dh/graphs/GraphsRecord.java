@@ -1036,12 +1036,10 @@ public class GraphsRecord extends JFigure implements IEntity, IReflux, AutoClose
                 so = pms.get(st );
                 if ( null != so )
                 if (so instanceof Collection
-                ||  so instanceof Object[ ]) {
-                    StringBuilder op = new StringBuilder();
-                    Dist.append ( op , so , true);
-                    st = op.toString ( /*JSON*/ );
+                ||  so instanceof Object[]) {
+                    st = Dist.toString(so,true);
                 } else {
-                    st = vquotes( so.toString() );
+                    st = vquotes(so.toString());
                 }
                 else
                 st = "null";

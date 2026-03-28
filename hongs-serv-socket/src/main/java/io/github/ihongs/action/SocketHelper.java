@@ -511,7 +511,6 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
      * 输出文本
      * @param txt
      */
-    @Override
     public void write(String txt) {
         Session sess = getSockSession();
         if (null == sess) {
@@ -525,14 +524,6 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         } catch ( IOException e ) {
             throw new CruxExemption(e, 1110, "Can not send to remote.");
         }
-    }
-
-    /**
-     * @deprecated WebSocket 中不支持
-     */
-    @Override
-    public void write(String ct, String txt) {
-        throw new UnsupportedOperationException("Can not set content-type in web socket");
     }
 
     /**

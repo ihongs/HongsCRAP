@@ -22,7 +22,7 @@
         <dependency>
             <artifactId>kafka_2.12</artifactId>
             <groupId>org.apache.kafka</groupId>
-            <version>1.0.0</version>
+            <version>3.9.1</version>
             <scope>provided</scope> 
         </dependency>
         <dependency>

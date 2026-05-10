@@ -25,17 +25,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpSession;
-import javax.websocket.Session;
-import javax.websocket.HandshakeResponse;
-import javax.websocket.server.HandshakeRequest;
-import javax.websocket.server.ServerContainer;
-import javax.websocket.server.ServerEndpoint;
-import javax.websocket.server.ServerEndpointConfig;
+import jakarta.servlet.http.HttpSession;
+import jakarta.websocket.Session;
+import jakarta.websocket.HandshakeResponse;
+import jakarta.websocket.server.HandshakeRequest;
+import jakarta.websocket.server.ServerEndpoint;
+import jakarta.websocket.server.ServerEndpointConfig;
 
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
+import org.eclipse.jetty.websocket.jakarta.server.config.JakartaWebSocketServletContainerInitializer;
 
 /**
  * WebSocket 助手类
@@ -137,7 +135,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         }
 
         InetSocketAddress addr = (InetSocketAddress)
-            getAttribute( "javax.websocket.endpoint.remoteAddress" );
+            getAttribute( "jakarta.websocket.endpoint.remoteAddress" );
         if (addr != null) {
             Core.CLIENT_ADDR.set(addr.getAddress().getHostAddress());
         }
@@ -598,37 +596,32 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
 
         @Override
         public void init(ServletContextHandler context) {
-            ServerContainer cont;
-            try {
-                cont = WebSocketServerContainerInitializer.configureContext( context );
-            } catch (ServletException ex) {
-                throw new CruxExemption(ex);
-            }
+            JakartaWebSocketServletContainerInitializer.configure(context, (servletContext, cont) -> {
+                String pkgx  = CoreConfig.getInstance("defines").getProperty("apply.sock");
+                if  (  pkgx != null ) {
+                    String[]   pkgs = pkgx.split(";");
+                    for(String pkgn : pkgs) {
+                        pkgn = pkgn.trim  ( );
+                        if  (  pkgn.length( ) == 0  ) {
+                            continue;
+                        }
 
-            String pkgx  = CoreConfig.getInstance("defines").getProperty("apply.sock");
-            if  (  pkgx != null ) {
-                String[]   pkgs = pkgx.split(";");
-                for(String pkgn : pkgs) {
-                    pkgn = pkgn.trim  ( );
-                    if  (  pkgn.length( ) == 0  ) {
-                        continue;
-                    }
+                        Set<String> clss = getClss(pkgn);
+                        for(String  clsn : clss) {
+                            Class   clso = getClso(clsn);
 
-                    Set<String> clss = getClss(pkgn);
-                    for(String  clsn : clss) {
-                        Class   clso = getClso(clsn);
-
-                        ServerEndpoint anno = (ServerEndpoint) clso.getAnnotation(ServerEndpoint.class);
-                        if (anno != null) {
-                            try {
-                              cont.addEndpoint(clso);
-                            } catch ( Exception ex ) {
-                              throw new CruxExemption(ex);
+                            ServerEndpoint anno = (ServerEndpoint) clso.getAnnotation(ServerEndpoint.class);
+                            if (anno != null) {
+                                try {
+                                  cont.addEndpoint(clso);
+                                } catch ( Exception ex ) {
+                                  throw new CruxExemption(ex);
+                                }
                             }
                         }
                     }
                 }
-            }
+            });
         }
 
         private Class getClso(String clsn) {

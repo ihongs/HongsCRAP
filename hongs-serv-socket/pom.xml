@@ -21,16 +21,20 @@
             <groupId>${project.groupId}</groupId>
             <version>${project.version}</version>
         </dependency>
+        <!-- websocket 由 server 提供, 无需打包 -->
         <dependency>
             <artifactId>jakarta.websocket-api</artifactId>
             <groupId>jakarta.websocket</groupId>
             <version>${websocket.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <artifactId>jakarta.websocket-client-api</artifactId>
             <groupId>jakarta.websocket</groupId>
             <version>${websocket.version}</version>
+            <scope>provided</scope>
         </dependency>
+        <!-- jetty websocket -->
         <dependency>
             <artifactId>websocket-jakarta-server</artifactId>
             <groupId>org.eclipse.jetty.websocket</groupId>

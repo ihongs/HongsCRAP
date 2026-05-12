@@ -39,7 +39,7 @@ abstract public class SocketAction extends Endpoint {
         sn.addMessageHandler(new MessageHandler.Whole<String>() {
             @Override
             public void onMessage(String msg) {
-                SocketAction.this.onMessage (sn, msg);
+                SocketAction.this.onMessage(sn, msg);
             }
         });
 

@@ -34,16 +34,18 @@
             <version>${websocket.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- jetty websocket -->
+        <!-- jetty websocket, 用 jetty 自行添加 -->
         <dependency>
             <artifactId>websocket-jakarta-server</artifactId>
             <groupId>org.eclipse.jetty.websocket</groupId>
             <version>${jetty.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <artifactId>websocket-jakarta-client</artifactId>
             <groupId>org.eclipse.jetty.websocket</groupId>
             <version>${jetty.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

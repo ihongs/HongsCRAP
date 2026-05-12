@@ -5,9 +5,8 @@ import io.github.ihongs.Core;
 import io.github.ihongs.CoreConfig;
 import io.github.ihongs.CoreLocale;
 import io.github.ihongs.CoreLogger;
-import io.github.ihongs.CoreRoster;
+import io.github.ihongs.CruxException;
 import io.github.ihongs.CruxExemption;
-import io.github.ihongs.server.init.Initer;
 import io.github.ihongs.util.Dist;
 import io.github.ihongs.util.Inst;
 import io.github.ihongs.util.Synt;
@@ -19,28 +18,33 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.TimeZone;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.TimeZone;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.websocket.Session;
-import jakarta.websocket.HandshakeResponse;
-import jakarta.websocket.server.HandshakeRequest;
-import jakarta.websocket.server.ServerEndpoint;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.DeploymentException;
+import jakarta.websocket.server.ServerContainer;
 import jakarta.websocket.server.ServerEndpointConfig;
-
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.websocket.jakarta.server.config.JakartaWebSocketServletContainerInitializer;
 
 /**
  * WebSocket 助手类
  *
+ * <pre>
+ *  编辑 defines.properties,
+ *  在 apply.sock 配置中加入 path.to.Xxxx
+ *  在 jetty.init 配置中加入 io.github.ihongs.socket.webs.Loader
+ * </pre>
  * <code>
  *  // 事件处理器示例:
- *  @ServerEndpoint(value="/sock/path/{xxx}", configurator=SocketHelper.Config.class)
+ *  @ServerEndpoint(value="/sock/path/{xxx}", configurator=io.github.ihongs.socket.webs.Config.class)
  *  public class Xxxx {
  *      @OnYyyy
  *      public void onYyyy(Session zz) {
@@ -55,11 +59,15 @@ import org.eclipse.jetty.websocket.jakarta.server.config.JakartaWebSocketServlet
  *      }
  *  }
  * </code>
- * <pre>
- *  编辑 defines.properties,
- *  在 apply.sock 配置中加入 前面定义的类的完整路径
- *  在 jetty.init 配置中加入 io.github.ihongs.action.ScoketHelper.Loader
- * </pre>
+ *
+ * <p>
+ *  也可直接在 Action 方法内执行:
+ * </p>
+ * <code>
+ *  HttpServletRequest  req = helper.getRequest ();
+ *  HttpServletResponse rsp = helper.getResponse();
+ *  SocketHelper.upgrade(req, rsp, YourEndpoint.class);
+ * </code>
  *
  * @author Hongs
  */
@@ -135,7 +143,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
         }
 
         InetSocketAddress addr = (InetSocketAddress)
-            getAttribute( "jakarta.websocket.endpoint.remoteAddress" );
+            getAttribute("jakarta.websocket.endpoint.remoteAddress");
         if (addr != null) {
             Core.CLIENT_ADDR.set(addr.getAddress().getHostAddress());
         }
@@ -292,7 +300,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
     /**
      * @deprecated 必须通过 Session 获取, 总是抛出异常
      * @throws UnsupportedOperationException
-     * @return 
+     * @return
      */
     public static SocketHelper newInstance() {
         throw new UnsupportedOperationException("Unsupported get instance without session");
@@ -301,7 +309,7 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
     /**
      * @deprecated 必须通过 Session 获取, 总是抛出异常
      * @throws UnsupportedOperationException
-     * @return 
+     * @return
      */
     public static SocketHelper getInstance() {
         throw new UnsupportedOperationException("Unsupported get instance without session");
@@ -565,107 +573,57 @@ public class  SocketHelper extends ActionHelper implements AutoCloseable {
     }
 
     /**
-     * WebSocket 配置器
-     * 用于初始化请求环境和记录 HttpSession 等
-     * 用于 \@ServerEndpoint(value="/xxx" configurator=SocketHelper.config)
+     * WebSocket 协议升级
+     * @param req
+     * @param rsp
+     * @param epc
+     * @throws CruxException
      */
-    static public class Config extends ServerEndpointConfig.Configurator {
-        @Override
-        public void modifyHandshake(
-           ServerEndpointConfig   config,
-                HandshakeRequest  request,
-                HandshakeResponse response)
-        {
-            Map head = request.getHeaders();
-            Map data = request.getParameterMap(/**/);
-                data = ActionHelper.parseParan(data);
-
-            Map prop = config.getUserProperties();
-            prop.put(SocketHelper.class.getName()+".httpHeaders", head);
-            prop.put(SocketHelper.class.getName()+".httpRequest", data);
-            prop.put( HttpSession.class.getName(), request.getHttpSession());
-        }
-    }
-
-    /**
-     * WebSocket 加载器
-     * 使用 defines.properties 设置 apply.sock 来告知 ServletContext 要加载哪些 WebSocket 类
-     * 多个类名使用分号";"分隔
-     */
-    static public class Loader implements Initer {
-
-        @Override
-        public void init(ServletContextHandler context) {
-            JakartaWebSocketServletContainerInitializer.configure(context, (servletContext, cont) -> {
-                String pkgx  = CoreConfig.getInstance("defines").getProperty("apply.sock");
-                if  (  pkgx != null ) {
-                    String[]   pkgs = pkgx.split(";");
-                    for(String pkgn : pkgs) {
-                        pkgn = pkgn.trim  ( );
-                        if  (  pkgn.length( ) == 0  ) {
-                            continue;
-                        }
-
-                        Set<String> clss = getClss(pkgn);
-                        for(String  clsn : clss) {
-                            Class   clso = getClso(clsn);
-
-                            ServerEndpoint anno = (ServerEndpoint) clso.getAnnotation(ServerEndpoint.class);
-                            if (anno != null) {
-                                try {
-                                  cont.addEndpoint(clso);
-                                } catch ( Exception ex ) {
-                                  throw new CruxExemption(ex);
-                                }
-                            }
-                        }
-                    }
-                }
-            });
+    public static void upgrade(HttpServletRequest req, HttpServletResponse rsp, Class<? extends Endpoint> epc) throws CruxException {
+        // 不是 WebSocket 握手，直接返回 400
+        if (!"websocket".equalsIgnoreCase(req.getHeader("Upgrade"))) {
+            throw new CruxException(400, "Must Upgrade: websocket");
         }
 
-        private Class getClso(String clsn) {
-            Class  clso;
-            try {
-                clso = Class.forName(clsn);
-            } catch (ClassNotFoundException ex ) {
-                throw new CruxExemption(ex, "Can not find class '" + clsn + "'.");
-            }
-            return clso;
+        String url = ActionDriver.getOriginPath(req); // 当前实际 URL
+        String sck = ServerContainer.class.getName(); // 容器属性 Key
+
+        // 获取容器
+        ServerContainer container = (ServerContainer) req
+            .getServletContext()
+            .getAttribute( sck );
+
+        // 容器自行 new Endpoint
+        ServerEndpointConfig conf = ServerEndpointConfig
+            .Builder
+            .create(epc, url)
+            .build (  );
+
+        // 登记参数, 以便事件内用
+        Map prop = conf.getUserProperties();
+        Map data = req .getParameterMap();
+        Map head = new HashMap();
+            Enumeration<String> keys = req.getHeaderNames();
+        while (keys.hasMoreElements()) {
+            String name = keys.nextElement ();
+            Enumeration<String> vals = req.getHeaders(name);
+            head.put(name, Collections.list(vals));
         }
+        prop.put(SocketHelper.class.getName() + ".httpRequest", data);
+        prop.put(SocketHelper.class.getName() + ".httpHeaders", head);
+        prop.put( HttpSession.class.getName(), req.getSession(false));
 
-        private Set<String> getClss(String pkgn) {
-            Set<String> clss;
-
-            if (pkgn.endsWith(".**")) {
-                pkgn = pkgn.substring(0, pkgn.length() - 3);
-                try {
-                    clss = CoreRoster.getClassNames(pkgn, true );
-                } catch (IOException ex) {
-                    throw new CruxExemption(ex, "Can not load package '" + pkgn + "'.");
-                }
-                if (clss == null) {
-                    throw new CruxExemption("Can not find package '" + pkgn + "'.");
-                }
-            } else
-            if (pkgn.endsWith(".*" )) {
-                pkgn = pkgn.substring(0, pkgn.length() - 2);
-                try {
-                    clss = CoreRoster.getClassNames(pkgn, false);
-                } catch (IOException ex) {
-                    throw new CruxExemption(ex, "Can not load package '" + pkgn + "'.");
-                }
-                if (clss == null) {
-                    throw new CruxExemption("Can not find package '" + pkgn + "'.");
-                }
-            } else {
-                clss = new HashSet();
-                clss.add  (  pkgn  );
-            }
-
-            return clss;
+        // 协议升级
+        try {
+            container.upgradeHttpToWebSocket(
+                req ,
+                rsp ,
+                conf,
+                Collections.EMPTY_MAP
+            );
+        } catch (IOException | DeploymentException e) {
+            throw new CruxException(e);
         }
-
     }
 
 }

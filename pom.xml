@@ -7,7 +7,6 @@
     <version>1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>hongs-serv-socket</module>
         <module>hongs-serv-hadoop</module>
         <module>hongs-serv-graphs</module>
         <module>hongs-serv-graphy</module>
